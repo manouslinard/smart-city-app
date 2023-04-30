@@ -1,6 +1,6 @@
 [
     {
-        "id": "e07bb08050cb01c2",
+        "id": "d74585856a7c013f",
         "type": "tab",
         "label": "Ergasia Flow 2",
         "disabled": false,
@@ -8,9 +8,9 @@
         "env": []
     },
     {
-        "id": "c15b259bedcacd00",
+        "id": "a74be64d38999f11",
         "type": "http request",
-        "z": "e07bb08050cb01c2",
+        "z": "d74585856a7c013f",
         "name": "",
         "method": "GET",
         "ret": "txt",
@@ -23,20 +23,19 @@
         "authType": "",
         "senderr": false,
         "headers": [],
-        "credentials": {},
         "x": 910,
         "y": 320,
         "wires": [
             [
-                "7f84ec2358719d82",
-                "989e10c810473c1b"
+                "92ac1078c6f63ee9",
+                "5a4ec39eca1d44b6"
             ]
         ]
     },
     {
-        "id": "13191987b616b2a2",
+        "id": "242d3720026ee8ca",
         "type": "change",
-        "z": "e07bb08050cb01c2",
+        "z": "d74585856a7c013f",
         "name": "",
         "rules": [
             {
@@ -56,14 +55,14 @@
         "y": 420,
         "wires": [
             [
-                "c15b259bedcacd00"
+                "a74be64d38999f11"
             ]
         ]
     },
     {
-        "id": "7f84ec2358719d82",
+        "id": "92ac1078c6f63ee9",
         "type": "debug",
-        "z": "e07bb08050cb01c2",
+        "z": "d74585856a7c013f",
         "name": "",
         "active": false,
         "tosidebar": true,
@@ -78,9 +77,9 @@
         "wires": []
     },
     {
-        "id": "c06bba585c8b8d43",
+        "id": "3367bc0fa63cd108",
         "type": "inject",
-        "z": "e07bb08050cb01c2",
+        "z": "d74585856a7c013f",
         "name": "",
         "props": [
             {
@@ -102,14 +101,14 @@
         "y": 280,
         "wires": [
             [
-                "a1bd93c98ed0f71c"
+                "e7646bd1d153effc"
             ]
         ]
     },
     {
-        "id": "a1bd93c98ed0f71c",
+        "id": "e7646bd1d153effc",
         "type": "http request",
-        "z": "e07bb08050cb01c2",
+        "z": "d74585856a7c013f",
         "name": "",
         "method": "GET",
         "ret": "obj",
@@ -130,17 +129,17 @@
         "y": 340,
         "wires": [
             [
-                "6e2f53a991a45798",
-                "dbf57b46265f0cf7"
+                "fb65179e6508585a",
+                "106db0e90b751d61"
             ]
         ]
     },
     {
-        "id": "6e2f53a991a45798",
+        "id": "fb65179e6508585a",
         "type": "function",
-        "z": "e07bb08050cb01c2",
+        "z": "d74585856a7c013f",
         "name": "function 6",
-        "func": "var countries = msg.payload.geonames;\nvar options = [];\nfor (var i = 0; i < countries.length; i++) {\n    var city = countries[i];\n    global.set(\"country_code\", city.countryCode);\n    if (city.fclName.includes(\"city\")){\n        options.push({\n            city: city.toponymName.toLowerCase(),\n            city_url: \"https://api.teleport.org/api/urban_areas/slug:\" + city.toponymName.toLowerCase()+\"/scores/\",\n        });\n    }\n}\n// msg.url = \"https://api.teleport.org/api/urban_areas/slug:athens/scores/\";\n// msg.payload.url = \"https://api.teleport.org/api/urban_areas/slug:athens/scores/\"\nmsg.payload = options;\n// msg.options = options;\nreturn msg;\n",
+        "func": "var countries = msg.payload.geonames;\nvar options = [];\nfor (var i = 0; i < countries.length; i++) {\n    var city = countries[i];\n    // global.set(\"country_code\", city.countryCode);\n    if (city.fclName.includes(\"city\")){\n        options.push({\n            city: city.toponymName.toLowerCase(),\n            city_url: \"https://api.teleport.org/api/urban_areas/slug:\" + city.toponymName.toLowerCase()+\"/scores/\",\n        });\n        try{\n            var myDict = { lat: city.lat, lng: city.lng, country_code: city.countryCode };\n            global.set(city.toponymName.toLowerCase(), myDict);\n        } catch (error) {\n            // do nothing\n        }\n    }\n}\n// msg.url = \"https://api.teleport.org/api/urban_areas/slug:athens/scores/\";\n// msg.payload.url = \"https://api.teleport.org/api/urban_areas/slug:athens/scores/\"\nmsg.payload = options;\n// msg.options = options;\nreturn msg;\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -150,14 +149,14 @@
         "y": 420,
         "wires": [
             [
-                "26b7baca21d28bb8"
+                "8fbb2b5ff522481f"
             ]
         ]
     },
     {
-        "id": "26b7baca21d28bb8",
+        "id": "8fbb2b5ff522481f",
         "type": "split",
-        "z": "e07bb08050cb01c2",
+        "z": "d74585856a7c013f",
         "name": "",
         "splt": "\\n",
         "spltType": "str",
@@ -169,15 +168,15 @@
         "y": 420,
         "wires": [
             [
-                "13191987b616b2a2",
-                "9f6c20ed67df1df0"
+                "242d3720026ee8ca",
+                "ba8bf575034371e9"
             ]
         ]
     },
     {
-        "id": "9f6c20ed67df1df0",
+        "id": "ba8bf575034371e9",
         "type": "debug",
-        "z": "e07bb08050cb01c2",
+        "z": "d74585856a7c013f",
         "name": "debug 11",
         "active": false,
         "tosidebar": true,
@@ -191,11 +190,11 @@
         "wires": []
     },
     {
-        "id": "989e10c810473c1b",
+        "id": "5a4ec39eca1d44b6",
         "type": "function",
-        "z": "e07bb08050cb01c2",
+        "z": "d74585856a7c013f",
         "name": "function 7",
-        "func": "var options = {};\ntry {\n    var payload = JSON.parse(msg.payload);\n    // msg.payload = JSON.parse(msg.payload);\n    if (payload.status === 404) {\n        return [null, msg];\n    }\n    var url = payload._links.self.href;\n\n    var start = url.indexOf(\"slug:\") + 5; // Get the index of \"slug:\" and add 5 to skip over it\n    var end = url.indexOf(\"/\", start); // Get the index of the next \"/\" after \"slug:\"\n    var citySlug = url.substring(start, end);\n\n    options.city_name = citySlug;\n    //options.city_summary = payload.summary.replace(/(<([^>]+)>)/gi, \"\").trim();\n    options.city_summary = payload.summary  // Remove HTML tags using regex\n        .replace(/<\\/?[^>]+(>|$)/g, \"\")\n        // Replace newline characters with empty string\n        .replace(/\\n/g, \"\")\n        .replace(/['\"]/g, \"\")\n        // Trim any remaining whitespace from beginning and end\n        .trim();\n\n    options.country_code = global.get(\"country_code\");\n    for (var i = 0; i < payload.categories.length; i++) {\n        var categ = payload.categories[i];\n        var key = categ.name.replace(/[\\s&]+/g, '_').replace(/_{2,}/g, '_');\n        options[key.toLowerCase()] = categ.score_out_of_10;\n    }\n\n    msg.payload = options;\n    return [msg, null];\n} catch (error) {\n    // does nothing\n    return [null, msg];\n}\n",
+        "func": "var options = {};\ntry {\n    var payload = JSON.parse(msg.payload);\n    // msg.payload = JSON.parse(msg.payload);\n    if (payload.status === 404) {\n        return [null, msg];\n    }\n    var url = payload._links.self.href;\n\n    var start = url.indexOf(\"slug:\") + 5; // Get the index of \"slug:\" and add 5 to skip over it\n    var end = url.indexOf(\"/\", start); // Get the index of the next \"/\" after \"slug:\"\n    var citySlug = url.substring(start, end);\n\n    options.city_name = citySlug;\n    //options.city_summary = payload.summary.replace(/(<([^>]+)>)/gi, \"\").trim();\n    options.city_summary = payload.summary  // Remove HTML tags using regex\n        .replace(/<\\/?[^>]+(>|$)/g, \"\")\n        // Replace newline characters with empty string\n        .replace(/\\n/g, \"\")\n        .replace(/['\"]/g, \"\")\n        // Trim any remaining whitespace from beginning and end\n        .trim();\n\n    // options.country_code = global.get(\"country_code\");\n    for (var i = 0; i < payload.categories.length; i++) {\n        var categ = payload.categories[i];\n        var key = categ.name.replace(/[\\s&]+/g, '_').replace(/_{2,}/g, '_');\n        options[key.toLowerCase()] = categ.score_out_of_10;\n    }\n\n    var city_saved = global.get(citySlug);  \n    // console.log(global.get(citySlug).lat);\n    options.lat = city_saved.lat;\n    options.lng = city_saved.lng;\n    options.country_code = city_saved.country_code;\n    msg.payload = options;\n    return [msg, null];\n} catch (error) {\n    // does nothing\n    return [null, msg];\n}\n",
         "outputs": 2,
         "noerr": 0,
         "initialize": "",
@@ -205,16 +204,16 @@
         "y": 380,
         "wires": [
             [
-                "45e2981d47f24ee3",
-                "76dff4d80ef73878"
+                "1eda50e5ae6fe553",
+                "502241ab429ac74f"
             ],
             []
         ]
     },
     {
-        "id": "45e2981d47f24ee3",
+        "id": "1eda50e5ae6fe553",
         "type": "debug",
-        "z": "e07bb08050cb01c2",
+        "z": "d74585856a7c013f",
         "name": "debug 12",
         "active": false,
         "tosidebar": true,
@@ -229,9 +228,9 @@
         "wires": []
     },
     {
-        "id": "5380906a922c76ad",
+        "id": "1a3736b40a30b0d3",
         "type": "sqlite",
-        "z": "e07bb08050cb01c2",
+        "z": "d74585856a7c013f",
         "mydb": "e1b7d6f10fa6ce00",
         "sqlquery": "msg.topic",
         "sql": "",
@@ -243,9 +242,9 @@
         ]
     },
     {
-        "id": "76dff4d80ef73878",
+        "id": "502241ab429ac74f",
         "type": "function",
-        "z": "e07bb08050cb01c2",
+        "z": "d74585856a7c013f",
         "name": "INSERT DATABASE",
         "func": "var keys = Object.keys(msg.payload);\n// console.log(keys);\n// Generate the SQL statement dynamically\nvar sql_create = 'CREATE TABLE IF NOT EXISTS cities_table (' + keys.join(', ') + ', PRIMARY KEY (city_name))';\nvar sql = 'INSERT OR IGNORE INTO cities_table (' + keys.join(', ') + ') VALUES (';\nsql += keys.map(function (key) { return \"'\" + msg.payload[key] + \"'\"; }).join(', ');\nsql += ')';\n//msg.topic = [sql_create, sql];\nvar create_msg = {};\ncreate_msg.topic = sql_create;\nmsg.topic = sql;\nreturn [create_msg, msg];\n\n//msg.payload = options;\n//return [msg, null];",
         "outputs": 2,
@@ -257,19 +256,19 @@
         "y": 400,
         "wires": [
             [
-                "ce8897d42225ae5f"
+                "e387502c74f6ef94"
             ],
             [
-                "d6a3245088ecbd7a"
+                "c9b1d11511e41471"
             ]
         ]
     },
     {
-        "id": "db0904da8248731b",
+        "id": "343ac9cce077aa82",
         "type": "function",
-        "z": "e07bb08050cb01c2",
+        "z": "d74585856a7c013f",
         "name": "CREATE TABLE",
-        "func": "msg.topic = 'create table if not exists cities_table(city_name PRIMARY KEY, city_summary, housing, cost_of_living, startups, venture_capital, travel_connectivity, commute, business_freedom, safety, healthcare, education, environmental_quality, economy, taxation, internet_access, leisure_culture, tolerance, outdoors, country_code)';\nreturn msg;",
+        "func": "msg.topic = 'create table if not exists cities_table(city_name PRIMARY KEY, city_summary, housing, cost_of_living, startups, venture_capital, travel_connectivity, commute, business_freedom, safety, healthcare, education, environmental_quality, economy, taxation, internet_access, leisure_culture, tolerance, outdoors, country_code, lat, lng)';\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -279,14 +278,14 @@
         "y": 520,
         "wires": [
             [
-                "5380906a922c76ad"
+                "1a3736b40a30b0d3"
             ]
         ]
     },
     {
-        "id": "b3769bd16d0904aa",
+        "id": "ed4efa235555ad39",
         "type": "inject",
-        "z": "e07bb08050cb01c2",
+        "z": "d74585856a7c013f",
         "name": "",
         "props": [
             {
@@ -308,14 +307,14 @@
         "y": 560,
         "wires": [
             [
-                "db0904da8248731b"
+                "343ac9cce077aa82"
             ]
         ]
     },
     {
-        "id": "0b11a0a0f1475fa3",
+        "id": "a6e4942517d4b8bc",
         "type": "inject",
-        "z": "e07bb08050cb01c2",
+        "z": "d74585856a7c013f",
         "name": "",
         "props": [
             {
@@ -337,14 +336,14 @@
         "y": 620,
         "wires": [
             [
-                "80152803fa6197c6"
+                "d0457c817017e63d"
             ]
         ]
     },
     {
-        "id": "80152803fa6197c6",
+        "id": "d0457c817017e63d",
         "type": "function",
-        "z": "e07bb08050cb01c2",
+        "z": "d74585856a7c013f",
         "name": "DROP DATABASE",
         "func": "msg.topic = \"drop table if exists cities_table\";\nreturn msg;\n",
         "outputs": 1,
@@ -356,14 +355,14 @@
         "y": 580,
         "wires": [
             [
-                "5380906a922c76ad"
+                "1a3736b40a30b0d3"
             ]
         ]
     },
     {
-        "id": "ce8897d42225ae5f",
+        "id": "e387502c74f6ef94",
         "type": "debug",
-        "z": "e07bb08050cb01c2",
+        "z": "d74585856a7c013f",
         "name": "debug 13",
         "active": false,
         "tosidebar": true,
@@ -378,9 +377,9 @@
         "wires": []
     },
     {
-        "id": "d6a3245088ecbd7a",
+        "id": "c9b1d11511e41471",
         "type": "sqlite",
-        "z": "e07bb08050cb01c2",
+        "z": "d74585856a7c013f",
         "mydb": "e1b7d6f10fa6ce00",
         "sqlquery": "msg.topic",
         "sql": "",
@@ -389,14 +388,14 @@
         "y": 400,
         "wires": [
             [
-                "de8d80f30b278ed7"
+                "4155d3f0546e6f0b"
             ]
         ]
     },
     {
-        "id": "de8d80f30b278ed7",
+        "id": "4155d3f0546e6f0b",
         "type": "debug",
-        "z": "e07bb08050cb01c2",
+        "z": "d74585856a7c013f",
         "name": "debug 14",
         "active": false,
         "tosidebar": true,
@@ -411,9 +410,9 @@
         "wires": []
     },
     {
-        "id": "bafd75142abc7cbc",
+        "id": "2ce2148e5856802f",
         "type": "link in",
-        "z": "e07bb08050cb01c2",
+        "z": "d74585856a7c013f",
         "name": "Function Call Countries",
         "links": [
             "f56b2158af468c6d"
@@ -422,14 +421,14 @@
         "y": 420,
         "wires": [
             [
-                "6e2f53a991a45798"
+                "fb65179e6508585a"
             ]
         ]
     },
     {
-        "id": "dbf57b46265f0cf7",
+        "id": "106db0e90b751d61",
         "type": "debug",
-        "z": "e07bb08050cb01c2",
+        "z": "d74585856a7c013f",
         "name": "debug 18",
         "active": false,
         "tosidebar": true,
@@ -443,9 +442,9 @@
         "wires": []
     },
     {
-        "id": "7b65903c8ff1c250",
+        "id": "39aae29ebbb8b5ca",
         "type": "link in",
-        "z": "e07bb08050cb01c2",
+        "z": "d74585856a7c013f",
         "name": "drop_table_link",
         "links": [
             "0dd070ac78a0f7bb"
@@ -454,14 +453,14 @@
         "y": 640,
         "wires": [
             [
-                "80152803fa6197c6"
+                "d0457c817017e63d"
             ]
         ]
     },
     {
-        "id": "26246dfbcf6d63f9",
+        "id": "ff745538a06de55c",
         "type": "link in",
-        "z": "e07bb08050cb01c2",
+        "z": "d74585856a7c013f",
         "name": "create_table_link",
         "links": [
             "e69b6b108373644e"
@@ -470,7 +469,7 @@
         "y": 500,
         "wires": [
             [
-                "db0904da8248731b"
+                "343ac9cce077aa82"
             ]
         ]
     },
