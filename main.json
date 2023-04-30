@@ -1,6 +1,6 @@
 [
     {
-        "id": "51cf0cf6d0f21df1",
+        "id": "710fda41e28c4a6b",
         "type": "tab",
         "label": "Ergasia Flow 2",
         "disabled": false,
@@ -8,9 +8,9 @@
         "env": []
     },
     {
-        "id": "bc86c0dd264978d4",
+        "id": "a21bacb4704027b0",
         "type": "http request",
-        "z": "51cf0cf6d0f21df1",
+        "z": "710fda41e28c4a6b",
         "name": "",
         "method": "GET",
         "ret": "txt",
@@ -27,15 +27,15 @@
         "y": 320,
         "wires": [
             [
-                "7406ca316cdb78a5",
-                "175a80aca0f331d0"
+                "03a417df74f7065d",
+                "61830ad81051d58f"
             ]
         ]
     },
     {
-        "id": "0a55f3167d379b0d",
+        "id": "e8e5cc87b70512f7",
         "type": "change",
-        "z": "51cf0cf6d0f21df1",
+        "z": "710fda41e28c4a6b",
         "name": "",
         "rules": [
             {
@@ -55,14 +55,14 @@
         "y": 420,
         "wires": [
             [
-                "bc86c0dd264978d4"
+                "a21bacb4704027b0"
             ]
         ]
     },
     {
-        "id": "7406ca316cdb78a5",
+        "id": "03a417df74f7065d",
         "type": "debug",
-        "z": "51cf0cf6d0f21df1",
+        "z": "710fda41e28c4a6b",
         "name": "",
         "active": false,
         "tosidebar": true,
@@ -77,9 +77,9 @@
         "wires": []
     },
     {
-        "id": "2593cd9892cf4aee",
+        "id": "c3d51755e779f543",
         "type": "inject",
-        "z": "51cf0cf6d0f21df1",
+        "z": "710fda41e28c4a6b",
         "name": "",
         "props": [
             {
@@ -101,14 +101,14 @@
         "y": 280,
         "wires": [
             [
-                "ba1e9419d2037f5f"
+                "b2e42a1153579529"
             ]
         ]
     },
     {
-        "id": "ba1e9419d2037f5f",
+        "id": "b2e42a1153579529",
         "type": "http request",
-        "z": "51cf0cf6d0f21df1",
+        "z": "710fda41e28c4a6b",
         "name": "",
         "method": "GET",
         "ret": "obj",
@@ -129,15 +129,15 @@
         "y": 340,
         "wires": [
             [
-                "83d41a7ef81a48ed",
-                "30b650c4374315e5"
+                "343c2aaf4a30ef90",
+                "c9b63c02ed12c11f"
             ]
         ]
     },
     {
-        "id": "83d41a7ef81a48ed",
+        "id": "343c2aaf4a30ef90",
         "type": "function",
-        "z": "51cf0cf6d0f21df1",
+        "z": "710fda41e28c4a6b",
         "name": "function 6",
         "func": "var countries = msg.payload.geonames;\nvar options = [];\nfor (var i = 0; i < countries.length; i++) {\n    var city = countries[i];\n    // global.set(\"country_code\", city.countryCode);\n    if (city.fclName.includes(\"city\")){\n        options.push({\n            city: city.toponymName.toLowerCase(),\n            city_url: \"https://api.teleport.org/api/urban_areas/slug:\" + city.toponymName.toLowerCase()+\"/scores/\",\n        });\n        try{\n            var myDict = { lat: city.lat, lng: city.lng, country_code: city.countryCode };\n            global.set(city.toponymName.toLowerCase(), myDict);\n        } catch (error) {\n            // do nothing\n        }\n    }\n}\n// msg.url = \"https://api.teleport.org/api/urban_areas/slug:athens/scores/\";\n// msg.payload.url = \"https://api.teleport.org/api/urban_areas/slug:athens/scores/\"\nmsg.payload = options;\n// msg.options = options;\nreturn msg;\n",
         "outputs": 1,
@@ -149,14 +149,14 @@
         "y": 420,
         "wires": [
             [
-                "9e3b4f7eb3753074"
+                "647ee55e87900433"
             ]
         ]
     },
     {
-        "id": "9e3b4f7eb3753074",
+        "id": "647ee55e87900433",
         "type": "split",
-        "z": "51cf0cf6d0f21df1",
+        "z": "710fda41e28c4a6b",
         "name": "",
         "splt": "\\n",
         "spltType": "str",
@@ -168,15 +168,15 @@
         "y": 420,
         "wires": [
             [
-                "0a55f3167d379b0d",
-                "5d28ffa74649efd3"
+                "e8e5cc87b70512f7",
+                "4d61aad7aa903be8"
             ]
         ]
     },
     {
-        "id": "5d28ffa74649efd3",
+        "id": "4d61aad7aa903be8",
         "type": "debug",
-        "z": "51cf0cf6d0f21df1",
+        "z": "710fda41e28c4a6b",
         "name": "debug 11",
         "active": false,
         "tosidebar": true,
@@ -190,9 +190,9 @@
         "wires": []
     },
     {
-        "id": "175a80aca0f331d0",
+        "id": "61830ad81051d58f",
         "type": "function",
-        "z": "51cf0cf6d0f21df1",
+        "z": "710fda41e28c4a6b",
         "name": "function 7",
         "func": "var options = {};\ntry {\n    var payload = JSON.parse(msg.payload);\n    // msg.payload = JSON.parse(msg.payload);\n    if (payload.status === 404) {\n        return [null, msg];\n    }\n    var url = payload._links.self.href;\n\n    var start = url.indexOf(\"slug:\") + 5; // Get the index of \"slug:\" and add 5 to skip over it\n    var end = url.indexOf(\"/\", start); // Get the index of the next \"/\" after \"slug:\"\n    var citySlug = url.substring(start, end);\n\n    options.city_name = citySlug;\n    //options.city_summary = payload.summary.replace(/(<([^>]+)>)/gi, \"\").trim();\n    options.city_summary = payload.summary  // Remove HTML tags using regex\n        .replace(/<\\/?[^>]+(>|$)/g, \"\")\n        // Replace newline characters with empty string\n        .replace(/\\n/g, \"\")\n        .replace(/['\"]/g, \"\")\n        // Trim any remaining whitespace from beginning and end\n        .trim();\n\n    // options.country_code = global.get(\"country_code\");\n    for (var i = 0; i < payload.categories.length; i++) {\n        var categ = payload.categories[i];\n        var key = categ.name.replace(/[\\s&]+/g, '_').replace(/_{2,}/g, '_');\n        options[key.toLowerCase()] = categ.score_out_of_10;\n    }\n\n    var city_saved = global.get(citySlug);  \n    // console.log(global.get(citySlug).lat);\n    options.lat = city_saved.lat;\n    options.lng = city_saved.lng;\n    options.country_code = city_saved.country_code;\n    msg.payload = options;\n    return [msg, null];\n} catch (error) {\n    // does nothing\n    return [null, msg];\n}\n",
         "outputs": 2,
@@ -204,16 +204,16 @@
         "y": 380,
         "wires": [
             [
-                "99799a4b44c7f14d",
-                "2d3a921005818038"
+                "72e1e944374384ff",
+                "6587a5f1681bc01c"
             ],
             []
         ]
     },
     {
-        "id": "99799a4b44c7f14d",
+        "id": "72e1e944374384ff",
         "type": "debug",
-        "z": "51cf0cf6d0f21df1",
+        "z": "710fda41e28c4a6b",
         "name": "debug 12",
         "active": false,
         "tosidebar": true,
@@ -228,9 +228,9 @@
         "wires": []
     },
     {
-        "id": "1677021b2e2092e7",
+        "id": "5feedae52699927e",
         "type": "sqlite",
-        "z": "51cf0cf6d0f21df1",
+        "z": "710fda41e28c4a6b",
         "mydb": "e1b7d6f10fa6ce00",
         "sqlquery": "msg.topic",
         "sql": "",
@@ -242,9 +242,9 @@
         ]
     },
     {
-        "id": "2d3a921005818038",
+        "id": "6587a5f1681bc01c",
         "type": "function",
-        "z": "51cf0cf6d0f21df1",
+        "z": "710fda41e28c4a6b",
         "name": "INSERT DATABASE",
         "func": "var keys = Object.keys(msg.payload);\n// console.log(keys);\n// Generate the SQL statement dynamically\nvar sql_create = 'CREATE TABLE IF NOT EXISTS cities_table (' + keys.join(', ') + ', PRIMARY KEY (city_name))';\nvar sql = 'INSERT OR IGNORE INTO cities_table (' + keys.join(', ') + ') VALUES (';\nsql += keys.map(function (key) { return \"'\" + msg.payload[key] + \"'\"; }).join(', ');\nsql += ')';\n//msg.topic = [sql_create, sql];\nvar create_msg = {};\ncreate_msg.topic = sql_create;\nmsg.topic = sql;\nreturn [create_msg, msg];\n\n//msg.payload = options;\n//return [msg, null];",
         "outputs": 2,
@@ -256,18 +256,18 @@
         "y": 400,
         "wires": [
             [
-                "6a0106f10189ffc9"
+                "9d48d5923b32d17c"
             ],
             [
-                "b4b1509fbec15c5f",
-                "8c1ebba9a473d886"
+                "e3076d347e15f65b",
+                "8d8da4fef585ed1e"
             ]
         ]
     },
     {
-        "id": "dbd7c668072ea85e",
+        "id": "de49e420a8735e02",
         "type": "function",
-        "z": "51cf0cf6d0f21df1",
+        "z": "710fda41e28c4a6b",
         "name": "CREATE TABLE",
         "func": "msg.topic = 'create table if not exists cities_table(city_name PRIMARY KEY, city_summary, housing, cost_of_living, startups, venture_capital, travel_connectivity, commute, business_freedom, safety, healthcare, education, environmental_quality, economy, taxation, internet_access, leisure_culture, tolerance, outdoors, country_code, lat, lng)';\nreturn msg;",
         "outputs": 1,
@@ -279,14 +279,14 @@
         "y": 520,
         "wires": [
             [
-                "1677021b2e2092e7"
+                "5feedae52699927e"
             ]
         ]
     },
     {
-        "id": "bdddc2e6dc8478c9",
+        "id": "5dcf807294732f9e",
         "type": "inject",
-        "z": "51cf0cf6d0f21df1",
+        "z": "710fda41e28c4a6b",
         "name": "",
         "props": [
             {
@@ -308,14 +308,14 @@
         "y": 560,
         "wires": [
             [
-                "dbd7c668072ea85e"
+                "de49e420a8735e02"
             ]
         ]
     },
     {
-        "id": "dfbcfdde53464751",
+        "id": "9105350e81b5e16c",
         "type": "inject",
-        "z": "51cf0cf6d0f21df1",
+        "z": "710fda41e28c4a6b",
         "name": "",
         "props": [
             {
@@ -337,14 +337,14 @@
         "y": 620,
         "wires": [
             [
-                "331a89dfb1a2ce4c"
+                "5fd3c21bdea7cfee"
             ]
         ]
     },
     {
-        "id": "331a89dfb1a2ce4c",
+        "id": "5fd3c21bdea7cfee",
         "type": "function",
-        "z": "51cf0cf6d0f21df1",
+        "z": "710fda41e28c4a6b",
         "name": "DROP DATABASE",
         "func": "msg.topic = \"drop table if exists cities_table\";\nreturn msg;\n",
         "outputs": 1,
@@ -356,14 +356,14 @@
         "y": 580,
         "wires": [
             [
-                "1677021b2e2092e7"
+                "5feedae52699927e"
             ]
         ]
     },
     {
-        "id": "6a0106f10189ffc9",
+        "id": "9d48d5923b32d17c",
         "type": "debug",
-        "z": "51cf0cf6d0f21df1",
+        "z": "710fda41e28c4a6b",
         "name": "debug 13",
         "active": false,
         "tosidebar": true,
@@ -378,9 +378,9 @@
         "wires": []
     },
     {
-        "id": "b4b1509fbec15c5f",
+        "id": "e3076d347e15f65b",
         "type": "sqlite",
-        "z": "51cf0cf6d0f21df1",
+        "z": "710fda41e28c4a6b",
         "mydb": "e1b7d6f10fa6ce00",
         "sqlquery": "msg.topic",
         "sql": "",
@@ -389,14 +389,14 @@
         "y": 400,
         "wires": [
             [
-                "8291360a8b318995"
+                "1e543727d81507bf"
             ]
         ]
     },
     {
-        "id": "8291360a8b318995",
+        "id": "1e543727d81507bf",
         "type": "debug",
-        "z": "51cf0cf6d0f21df1",
+        "z": "710fda41e28c4a6b",
         "name": "debug 14",
         "active": false,
         "tosidebar": true,
@@ -411,9 +411,9 @@
         "wires": []
     },
     {
-        "id": "b06c7a6a84c6c0ef",
+        "id": "d1589c018a1a2b87",
         "type": "link in",
-        "z": "51cf0cf6d0f21df1",
+        "z": "710fda41e28c4a6b",
         "name": "Function Call Countries",
         "links": [
             "f56b2158af468c6d"
@@ -422,14 +422,14 @@
         "y": 420,
         "wires": [
             [
-                "83d41a7ef81a48ed"
+                "343c2aaf4a30ef90"
             ]
         ]
     },
     {
-        "id": "30b650c4374315e5",
+        "id": "c9b63c02ed12c11f",
         "type": "debug",
-        "z": "51cf0cf6d0f21df1",
+        "z": "710fda41e28c4a6b",
         "name": "debug 18",
         "active": false,
         "tosidebar": true,
@@ -443,42 +443,46 @@
         "wires": []
     },
     {
-        "id": "9a960dcab721cd2d",
+        "id": "78808d10d2830e73",
         "type": "link in",
-        "z": "51cf0cf6d0f21df1",
+        "z": "710fda41e28c4a6b",
         "name": "drop_table_link",
         "links": [
             "8911e132a953726d",
-            "6e49cd495f22bfe9"
+            "6e49cd495f22bfe9",
+            "32c0444b80bcc948",
+            "cf73e43c155983ac"
         ],
         "x": 1125,
         "y": 640,
         "wires": [
             [
-                "331a89dfb1a2ce4c"
+                "5fd3c21bdea7cfee"
             ]
         ]
     },
     {
-        "id": "88c78827721f07fc",
+        "id": "40817cca2cacdb28",
         "type": "link in",
-        "z": "51cf0cf6d0f21df1",
+        "z": "710fda41e28c4a6b",
         "name": "create_table_link",
         "links": [
-            "8e8505dcb65ee7d9"
+            "8e8505dcb65ee7d9",
+            "b7ce6d1391dbdb55",
+            "48cfee4238c2f6bb"
         ],
         "x": 1065,
         "y": 500,
         "wires": [
             [
-                "dbd7c668072ea85e"
+                "de49e420a8735e02"
             ]
         ]
     },
     {
-        "id": "3cf33296f2769af8",
+        "id": "908001fdf93e585b",
         "type": "debug",
-        "z": "51cf0cf6d0f21df1",
+        "z": "710fda41e28c4a6b",
         "name": "debug 35",
         "active": false,
         "tosidebar": true,
@@ -492,9 +496,9 @@
         "wires": []
     },
     {
-        "id": "8c1ebba9a473d886",
+        "id": "8d8da4fef585ed1e",
         "type": "change",
-        "z": "51cf0cf6d0f21df1",
+        "z": "710fda41e28c4a6b",
         "name": "GIVES CITY OBJ",
         "rules": [
             {
@@ -514,19 +518,21 @@
         "y": 500,
         "wires": [
             [
-                "3cf33296f2769af8",
-                "f385e3ee455c6321"
+                "908001fdf93e585b",
+                "017b9a052e8f069c"
             ]
         ]
     },
     {
-        "id": "f385e3ee455c6321",
+        "id": "017b9a052e8f069c",
         "type": "link out",
-        "z": "51cf0cf6d0f21df1",
+        "z": "710fda41e28c4a6b",
         "name": "link out 5",
         "mode": "link",
         "links": [
-            "c212068ce4b7d3a3"
+            "c212068ce4b7d3a3",
+            "97e26c759d2014c3",
+            "01127155e278bbe8"
         ],
         "x": 1895,
         "y": 500,

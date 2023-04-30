@@ -1,0 +1,327 @@
+[
+    {
+        "id": "51ad7f3618a44e1c",
+        "type": "tab",
+        "label": "ImageFlow",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "741f32c287e1de17",
+        "type": "link in",
+        "z": "51ad7f3618a44e1c",
+        "name": "city_weather",
+        "links": [
+            "487b36b153d91327"
+        ],
+        "x": 105,
+        "y": 260,
+        "wires": [
+            [
+                "d498d1a265a027ca"
+            ]
+        ]
+    },
+    {
+        "id": "bd6951e41848ae13",
+        "type": "http request",
+        "z": "51ad7f3618a44e1c",
+        "name": "",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "credentials": {
+            "user": "",
+            "password": ""
+        },
+        "x": 450,
+        "y": 260,
+        "wires": [
+            [
+                "9153e3f91f7ab8ce",
+                "4a046ab256fbd166"
+            ]
+        ]
+    },
+    {
+        "id": "9153e3f91f7ab8ce",
+        "type": "debug",
+        "z": "51ad7f3618a44e1c",
+        "name": "debug 36",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 440,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "c28a72f42b34d986",
+        "type": "function",
+        "z": "51ad7f3618a44e1c",
+        "name": "CREATE TABLE WEATHER",
+        "func": "msg.topic = \"CREATE TABLE IF NOT EXISTS image_table (web_img_url, mob_img_url, city_name TEXT, CONSTRAINT unique_city_img UNIQUE (city_name, mob_img_url, web_img_url), FOREIGN KEY(city_name) REFERENCES cities_table(city_name))\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1200,
+        "y": 140,
+        "wires": [
+            [
+                "251a8d0ce2a0e2db"
+            ]
+        ]
+    },
+    {
+        "id": "39b4aef88baa975b",
+        "type": "inject",
+        "z": "51ad7f3618a44e1c",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 920,
+        "y": 200,
+        "wires": [
+            [
+                "c28a72f42b34d986"
+            ]
+        ]
+    },
+    {
+        "id": "e737985e62a853d0",
+        "type": "inject",
+        "z": "51ad7f3618a44e1c",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 920,
+        "y": 260,
+        "wires": [
+            [
+                "71c6bfa1151d95ed"
+            ]
+        ]
+    },
+    {
+        "id": "71c6bfa1151d95ed",
+        "type": "function",
+        "z": "51ad7f3618a44e1c",
+        "name": "DROP TABLE WEATHER",
+        "func": "msg.topic = \"drop table if exists image_table\";\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1190,
+        "y": 220,
+        "wires": [
+            [
+                "251a8d0ce2a0e2db"
+            ]
+        ]
+    },
+    {
+        "id": "ba454d26c02db4ad",
+        "type": "link in",
+        "z": "51ad7f3618a44e1c",
+        "name": "drop_table_link",
+        "links": [
+            "0dd070ac78a0f7bb"
+        ],
+        "x": 1085,
+        "y": 280,
+        "wires": [
+            [
+                "71c6bfa1151d95ed"
+            ]
+        ]
+    },
+    {
+        "id": "99cdc7c77fdb406f",
+        "type": "link in",
+        "z": "51ad7f3618a44e1c",
+        "name": "create_table_link",
+        "links": [
+            "e69b6b108373644e"
+        ],
+        "x": 1025,
+        "y": 140,
+        "wires": [
+            [
+                "c28a72f42b34d986"
+            ]
+        ]
+    },
+    {
+        "id": "251a8d0ce2a0e2db",
+        "type": "sqlite",
+        "z": "51ad7f3618a44e1c",
+        "mydb": "e1b7d6f10fa6ce00",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "",
+        "x": 1450,
+        "y": 180,
+        "wires": [
+            [
+                "ac17d5aba507e6a6"
+            ]
+        ]
+    },
+    {
+        "id": "dde2593e0aed95cb",
+        "type": "sqlite",
+        "z": "51ad7f3618a44e1c",
+        "mydb": "e1b7d6f10fa6ce00",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "INSERT",
+        "x": 840,
+        "y": 360,
+        "wires": [
+            [
+                "8da361bb61b1a341"
+            ]
+        ]
+    },
+    {
+        "id": "8da361bb61b1a341",
+        "type": "debug",
+        "z": "51ad7f3618a44e1c",
+        "name": "debug 37",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "topic",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1000,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "ac17d5aba507e6a6",
+        "type": "debug",
+        "z": "51ad7f3618a44e1c",
+        "name": "debug 38",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1600,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "d498d1a265a027ca",
+        "type": "function",
+        "z": "51ad7f3618a44e1c",
+        "name": "function 19",
+        "func": "var city = msg.payload;\nvar options = [];\nmsg.url = `https://api.teleport.org/api/urban_areas/slug:${city.city_name}/images/`\nmsg.city_name = city.city_name;\n// console.log(city.city_name);\n// global.set(\"city_name\", city.city_name);\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 250,
+        "y": 260,
+        "wires": [
+            [
+                "bd6951e41848ae13"
+            ]
+        ]
+    },
+    {
+        "id": "4a046ab256fbd166",
+        "type": "function",
+        "z": "51ad7f3618a44e1c",
+        "name": "function 20",
+        "func": "var photos = msg.payload.photos;\nvar mobile_url = \"\";\nvar web_url = \"\";\nfor (var i = 0; i < photos.length; i ++) {\n    mobile_url = photos[i].image.mobile;\n    web_url = photos[i].image.web;\n}\n\nmsg.topic = `INSERT OR IGNORE INTO image_table (web_img_url, mob_img_url, city_name) VALUES ('${web_url}', '${mobile_url}', '${msg.city_name}')`;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 630,
+        "y": 300,
+        "wires": [
+            [
+                "6856f6545b789498",
+                "dde2593e0aed95cb"
+            ]
+        ]
+    },
+    {
+        "id": "6856f6545b789498",
+        "type": "debug",
+        "z": "51ad7f3618a44e1c",
+        "name": "debug 40",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "topic",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 700,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "e1b7d6f10fa6ce00",
+        "type": "sqlitedb",
+        "db": "/tmp/cities.db",
+        "mode": "RWC"
+    }
+]
