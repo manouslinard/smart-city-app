@@ -1,16 +1,16 @@
 [
     {
-        "id": "710fda41e28c4a6b",
+        "id": "c08185895724dd88",
         "type": "tab",
-        "label": "Ergasia Flow 2",
+        "label": "Ergasia - Main Flow",
         "disabled": false,
         "info": "",
         "env": []
     },
     {
-        "id": "a21bacb4704027b0",
+        "id": "ed44396dbb655794",
         "type": "http request",
-        "z": "710fda41e28c4a6b",
+        "z": "c08185895724dd88",
         "name": "",
         "method": "GET",
         "ret": "txt",
@@ -27,42 +27,15 @@
         "y": 320,
         "wires": [
             [
-                "03a417df74f7065d",
-                "61830ad81051d58f"
+                "a78e3714540124ba",
+                "e582c6c6fc59f3e4"
             ]
         ]
     },
     {
-        "id": "e8e5cc87b70512f7",
-        "type": "change",
-        "z": "710fda41e28c4a6b",
-        "name": "",
-        "rules": [
-            {
-                "t": "set",
-                "p": "url",
-                "pt": "msg",
-                "to": "payload.city_url",
-                "tot": "msg"
-            }
-        ],
-        "action": "",
-        "property": "",
-        "from": "",
-        "to": "",
-        "reg": false,
-        "x": 810,
-        "y": 420,
-        "wires": [
-            [
-                "a21bacb4704027b0"
-            ]
-        ]
-    },
-    {
-        "id": "03a417df74f7065d",
+        "id": "a78e3714540124ba",
         "type": "debug",
-        "z": "710fda41e28c4a6b",
+        "z": "c08185895724dd88",
         "name": "",
         "active": false,
         "tosidebar": true,
@@ -77,43 +50,14 @@
         "wires": []
     },
     {
-        "id": "c3d51755e779f543",
-        "type": "inject",
-        "z": "710fda41e28c4a6b",
-        "name": "",
-        "props": [
-            {
-                "p": "payload"
-            },
-            {
-                "p": "topic",
-                "vt": "str"
-            }
-        ],
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "topic": "",
-        "payload": "",
-        "payloadType": "date",
-        "x": 180,
-        "y": 280,
-        "wires": [
-            [
-                "b2e42a1153579529"
-            ]
-        ]
-    },
-    {
-        "id": "b2e42a1153579529",
+        "id": "14e9897d59d75d22",
         "type": "http request",
-        "z": "710fda41e28c4a6b",
+        "z": "c08185895724dd88",
         "name": "",
         "method": "GET",
         "ret": "obj",
         "paytoqs": "ignore",
-        "url": "http://api.geonames.org/searchJSON?country=DE&username=yourusername",
+        "url": "",
         "tls": "",
         "persist": false,
         "proxy": "",
@@ -121,42 +65,38 @@
         "authType": "",
         "senderr": false,
         "headers": [],
-        "credentials": {
-            "user": "",
-            "password": ""
-        },
-        "x": 330,
+        "x": 430,
         "y": 340,
         "wires": [
             [
-                "343c2aaf4a30ef90",
-                "c9b63c02ed12c11f"
+                "7c18141e26f5a32c",
+                "cf7e174f15a03deb"
             ]
         ]
     },
     {
-        "id": "343c2aaf4a30ef90",
+        "id": "7c18141e26f5a32c",
         "type": "function",
-        "z": "710fda41e28c4a6b",
+        "z": "c08185895724dd88",
         "name": "function 6",
-        "func": "var countries = msg.payload.geonames;\nvar options = [];\nfor (var i = 0; i < countries.length; i++) {\n    var city = countries[i];\n    // global.set(\"country_code\", city.countryCode);\n    if (city.fclName.includes(\"city\")){\n        options.push({\n            city: city.toponymName.toLowerCase(),\n            city_url: \"https://api.teleport.org/api/urban_areas/slug:\" + city.toponymName.toLowerCase()+\"/scores/\",\n        });\n        try{\n            var myDict = { lat: city.lat, lng: city.lng, country_code: city.countryCode };\n            global.set(city.toponymName.toLowerCase(), myDict);\n        } catch (error) {\n            // do nothing\n        }\n    }\n}\n// msg.url = \"https://api.teleport.org/api/urban_areas/slug:athens/scores/\";\n// msg.payload.url = \"https://api.teleport.org/api/urban_areas/slug:athens/scores/\"\nmsg.payload = options;\n// msg.options = options;\nreturn msg;\n",
+        "func": "var countries = msg.payload.geonames;\nvar options = [];\nfor (var i = 0; i < countries.length; i++) {\n    var city = countries[i];\n    // global.set(\"country_code\", city.countryCode);\n    if (city.fclName.includes(\"city\")){\n        options.push({\n            city: city.toponymName.toLowerCase(),\n            city_url: \"https://api.teleport.org/api/urban_areas/slug:\" + city.toponymName.toLowerCase()+\"/scores/\",\n            lat: city.lat,\n            lng: city.lng,\n            country_code: city.countryCode \n        });\n    }\n}\n// msg.url = \"https://api.teleport.org/api/urban_areas/slug:athens/scores/\";\n// msg.payload.url = \"https://api.teleport.org/api/urban_areas/slug:athens/scores/\"\nmsg.payload = options;\n// msg.options = options;\nreturn msg;\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 500,
+        "x": 420,
         "y": 420,
         "wires": [
             [
-                "647ee55e87900433"
+                "68e5bc0a36aefe99"
             ]
         ]
     },
     {
-        "id": "647ee55e87900433",
+        "id": "68e5bc0a36aefe99",
         "type": "split",
-        "z": "710fda41e28c4a6b",
+        "z": "c08185895724dd88",
         "name": "",
         "splt": "\\n",
         "spltType": "str",
@@ -164,19 +104,19 @@
         "arraySpltType": "len",
         "stream": false,
         "addname": "",
-        "x": 650,
+        "x": 570,
         "y": 420,
         "wires": [
             [
-                "e8e5cc87b70512f7",
-                "4d61aad7aa903be8"
+                "c10f9db9b79e8f99",
+                "bd02225e15919e51"
             ]
         ]
     },
     {
-        "id": "4d61aad7aa903be8",
+        "id": "c10f9db9b79e8f99",
         "type": "debug",
-        "z": "710fda41e28c4a6b",
+        "z": "c08185895724dd88",
         "name": "debug 11",
         "active": false,
         "tosidebar": true,
@@ -190,11 +130,11 @@
         "wires": []
     },
     {
-        "id": "61830ad81051d58f",
+        "id": "e582c6c6fc59f3e4",
         "type": "function",
-        "z": "710fda41e28c4a6b",
+        "z": "c08185895724dd88",
         "name": "function 7",
-        "func": "var options = {};\ntry {\n    var payload = JSON.parse(msg.payload);\n    // msg.payload = JSON.parse(msg.payload);\n    if (payload.status === 404) {\n        return [null, msg];\n    }\n    var url = payload._links.self.href;\n\n    var start = url.indexOf(\"slug:\") + 5; // Get the index of \"slug:\" and add 5 to skip over it\n    var end = url.indexOf(\"/\", start); // Get the index of the next \"/\" after \"slug:\"\n    var citySlug = url.substring(start, end);\n\n    options.city_name = citySlug;\n    //options.city_summary = payload.summary.replace(/(<([^>]+)>)/gi, \"\").trim();\n    options.city_summary = payload.summary  // Remove HTML tags using regex\n        .replace(/<\\/?[^>]+(>|$)/g, \"\")\n        // Replace newline characters with empty string\n        .replace(/\\n/g, \"\")\n        .replace(/['\"]/g, \"\")\n        // Trim any remaining whitespace from beginning and end\n        .trim();\n\n    // options.country_code = global.get(\"country_code\");\n    for (var i = 0; i < payload.categories.length; i++) {\n        var categ = payload.categories[i];\n        var key = categ.name.replace(/[\\s&]+/g, '_').replace(/_{2,}/g, '_');\n        options[key.toLowerCase()] = categ.score_out_of_10;\n    }\n\n    var city_saved = global.get(citySlug);  \n    // console.log(global.get(citySlug).lat);\n    options.lat = city_saved.lat;\n    options.lng = city_saved.lng;\n    options.country_code = city_saved.country_code;\n    msg.payload = options;\n    return [msg, null];\n} catch (error) {\n    // does nothing\n    return [null, msg];\n}\n",
+        "func": "var options = {};\ntry {\n    // console.log(msg.city);\n    var payload = JSON.parse(msg.payload);\n    // msg.payload = JSON.parse(msg.payload);\n    if (payload.status === 404) {\n        return [null, msg];\n    }\n    var url = payload._links.self.href;\n\n    var start = url.indexOf(\"slug:\") + 5; // Get the index of \"slug:\" and add 5 to skip over it\n    var end = url.indexOf(\"/\", start); // Get the index of the next \"/\" after \"slug:\"\n    var citySlug = url.substring(start, end);\n\n    options.city_name = citySlug;\n    //options.city_summary = payload.summary.replace(/(<([^>]+)>)/gi, \"\").trim();\n    options.city_summary = payload.summary  // Remove HTML tags using regex\n        .replace(/<\\/?[^>]+(>|$)/g, \"\")\n        // Replace newline characters with empty string\n        .replace(/\\n/g, \"\")\n        .replace(/['\"]/g, \"\")\n        // Trim any remaining whitespace from beginning and end\n        .trim();\n\n    for (var i = 0; i < payload.categories.length; i++) {\n        var categ = payload.categories[i];\n        var key = categ.name.replace(/[\\s&]+/g, '_').replace(/_{2,}/g, '_');\n        options[key.toLowerCase()] = categ.score_out_of_10;\n    }\n\n    var city_saved = msg.city; \n    options.lat = city_saved.lat;\n    options.lng = city_saved.lng;\n    options.country_code = city_saved.country_code;\n    msg.payload = options;\n    return [msg, null];\n} catch (error) {\n    // does nothing\n    return [null, msg];\n}\n",
         "outputs": 2,
         "noerr": 0,
         "initialize": "",
@@ -204,16 +144,16 @@
         "y": 380,
         "wires": [
             [
-                "72e1e944374384ff",
-                "6587a5f1681bc01c"
+                "d5c5fbcf1cfe0bd6",
+                "e3ce243308f9e186"
             ],
             []
         ]
     },
     {
-        "id": "72e1e944374384ff",
+        "id": "d5c5fbcf1cfe0bd6",
         "type": "debug",
-        "z": "710fda41e28c4a6b",
+        "z": "c08185895724dd88",
         "name": "debug 12",
         "active": false,
         "tosidebar": true,
@@ -228,9 +168,9 @@
         "wires": []
     },
     {
-        "id": "5feedae52699927e",
+        "id": "3eb2aa6aceb957f6",
         "type": "sqlite",
-        "z": "710fda41e28c4a6b",
+        "z": "c08185895724dd88",
         "mydb": "e1b7d6f10fa6ce00",
         "sqlquery": "msg.topic",
         "sql": "",
@@ -242,9 +182,9 @@
         ]
     },
     {
-        "id": "6587a5f1681bc01c",
+        "id": "e3ce243308f9e186",
         "type": "function",
-        "z": "710fda41e28c4a6b",
+        "z": "c08185895724dd88",
         "name": "INSERT DATABASE",
         "func": "var keys = Object.keys(msg.payload);\n// console.log(keys);\n// Generate the SQL statement dynamically\nvar sql_create = 'CREATE TABLE IF NOT EXISTS cities_table (' + keys.join(', ') + ', PRIMARY KEY (city_name))';\nvar sql = 'INSERT OR IGNORE INTO cities_table (' + keys.join(', ') + ') VALUES (';\nsql += keys.map(function (key) { return \"'\" + msg.payload[key] + \"'\"; }).join(', ');\nsql += ')';\n//msg.topic = [sql_create, sql];\nvar create_msg = {};\ncreate_msg.topic = sql_create;\nmsg.topic = sql;\nreturn [create_msg, msg];\n\n//msg.payload = options;\n//return [msg, null];",
         "outputs": 2,
@@ -256,18 +196,18 @@
         "y": 400,
         "wires": [
             [
-                "9d48d5923b32d17c"
+                "399bfd2c69042ed2"
             ],
             [
-                "e3076d347e15f65b",
-                "8d8da4fef585ed1e"
+                "ae5f33cbe00a51f7",
+                "db34c6b93cb9fa87"
             ]
         ]
     },
     {
-        "id": "de49e420a8735e02",
+        "id": "024ec50492343ed9",
         "type": "function",
-        "z": "710fda41e28c4a6b",
+        "z": "c08185895724dd88",
         "name": "CREATE TABLE",
         "func": "msg.topic = 'create table if not exists cities_table(city_name PRIMARY KEY, city_summary, housing, cost_of_living, startups, venture_capital, travel_connectivity, commute, business_freedom, safety, healthcare, education, environmental_quality, economy, taxation, internet_access, leisure_culture, tolerance, outdoors, country_code, lat, lng)';\nreturn msg;",
         "outputs": 1,
@@ -279,14 +219,14 @@
         "y": 520,
         "wires": [
             [
-                "5feedae52699927e"
+                "3eb2aa6aceb957f6"
             ]
         ]
     },
     {
-        "id": "5dcf807294732f9e",
+        "id": "ab045dc905e2d95a",
         "type": "inject",
-        "z": "710fda41e28c4a6b",
+        "z": "c08185895724dd88",
         "name": "",
         "props": [
             {
@@ -308,14 +248,14 @@
         "y": 560,
         "wires": [
             [
-                "de49e420a8735e02"
+                "024ec50492343ed9"
             ]
         ]
     },
     {
-        "id": "9105350e81b5e16c",
+        "id": "6c685490e8f5a963",
         "type": "inject",
-        "z": "710fda41e28c4a6b",
+        "z": "c08185895724dd88",
         "name": "",
         "props": [
             {
@@ -337,14 +277,14 @@
         "y": 620,
         "wires": [
             [
-                "5fd3c21bdea7cfee"
+                "a9a30bd22d71834b"
             ]
         ]
     },
     {
-        "id": "5fd3c21bdea7cfee",
+        "id": "a9a30bd22d71834b",
         "type": "function",
-        "z": "710fda41e28c4a6b",
+        "z": "c08185895724dd88",
         "name": "DROP DATABASE",
         "func": "msg.topic = \"drop table if exists cities_table\";\nreturn msg;\n",
         "outputs": 1,
@@ -356,14 +296,14 @@
         "y": 580,
         "wires": [
             [
-                "5feedae52699927e"
+                "3eb2aa6aceb957f6"
             ]
         ]
     },
     {
-        "id": "9d48d5923b32d17c",
+        "id": "399bfd2c69042ed2",
         "type": "debug",
-        "z": "710fda41e28c4a6b",
+        "z": "c08185895724dd88",
         "name": "debug 13",
         "active": false,
         "tosidebar": true,
@@ -378,9 +318,9 @@
         "wires": []
     },
     {
-        "id": "e3076d347e15f65b",
+        "id": "ae5f33cbe00a51f7",
         "type": "sqlite",
-        "z": "710fda41e28c4a6b",
+        "z": "c08185895724dd88",
         "mydb": "e1b7d6f10fa6ce00",
         "sqlquery": "msg.topic",
         "sql": "",
@@ -389,14 +329,14 @@
         "y": 400,
         "wires": [
             [
-                "1e543727d81507bf"
+                "5be7492bafb7a177"
             ]
         ]
     },
     {
-        "id": "1e543727d81507bf",
+        "id": "5be7492bafb7a177",
         "type": "debug",
-        "z": "710fda41e28c4a6b",
+        "z": "c08185895724dd88",
         "name": "debug 14",
         "active": false,
         "tosidebar": true,
@@ -411,25 +351,25 @@
         "wires": []
     },
     {
-        "id": "d1589c018a1a2b87",
+        "id": "9fd5521dfc8924cb",
         "type": "link in",
-        "z": "710fda41e28c4a6b",
+        "z": "c08185895724dd88",
         "name": "Function Call Countries",
         "links": [
             "f56b2158af468c6d"
         ],
-        "x": 295,
+        "x": 185,
         "y": 420,
         "wires": [
             [
-                "343c2aaf4a30ef90"
+                "7c18141e26f5a32c"
             ]
         ]
     },
     {
-        "id": "c9b63c02ed12c11f",
+        "id": "cf7e174f15a03deb",
         "type": "debug",
-        "z": "710fda41e28c4a6b",
+        "z": "c08185895724dd88",
         "name": "debug 18",
         "active": false,
         "tosidebar": true,
@@ -438,14 +378,14 @@
         "complete": "false",
         "statusVal": "",
         "statusType": "auto",
-        "x": 500,
-        "y": 180,
+        "x": 640,
+        "y": 200,
         "wires": []
     },
     {
-        "id": "78808d10d2830e73",
+        "id": "b1e369ed55904903",
         "type": "link in",
-        "z": "710fda41e28c4a6b",
+        "z": "c08185895724dd88",
         "name": "drop_table_link",
         "links": [
             "8911e132a953726d",
@@ -457,14 +397,14 @@
         "y": 640,
         "wires": [
             [
-                "5fd3c21bdea7cfee"
+                "a9a30bd22d71834b"
             ]
         ]
     },
     {
-        "id": "40817cca2cacdb28",
+        "id": "4bee23d40f342517",
         "type": "link in",
-        "z": "710fda41e28c4a6b",
+        "z": "c08185895724dd88",
         "name": "create_table_link",
         "links": [
             "8e8505dcb65ee7d9",
@@ -475,14 +415,14 @@
         "y": 500,
         "wires": [
             [
-                "de49e420a8735e02"
+                "024ec50492343ed9"
             ]
         ]
     },
     {
-        "id": "908001fdf93e585b",
+        "id": "ace70d97f2c0d089",
         "type": "debug",
-        "z": "710fda41e28c4a6b",
+        "z": "c08185895724dd88",
         "name": "debug 35",
         "active": false,
         "tosidebar": true,
@@ -496,9 +436,9 @@
         "wires": []
     },
     {
-        "id": "8d8da4fef585ed1e",
+        "id": "db34c6b93cb9fa87",
         "type": "change",
-        "z": "710fda41e28c4a6b",
+        "z": "c08185895724dd88",
         "name": "GIVES CITY OBJ",
         "rules": [
             {
@@ -518,15 +458,15 @@
         "y": 500,
         "wires": [
             [
-                "908001fdf93e585b",
-                "017b9a052e8f069c"
+                "ace70d97f2c0d089",
+                "416ea1fcef10157c"
             ]
         ]
     },
     {
-        "id": "017b9a052e8f069c",
+        "id": "416ea1fcef10157c",
         "type": "link out",
-        "z": "710fda41e28c4a6b",
+        "z": "c08185895724dd88",
         "name": "link out 5",
         "mode": "link",
         "links": [
@@ -537,6 +477,89 @@
         "x": 1895,
         "y": 500,
         "wires": []
+    },
+    {
+        "id": "bd02225e15919e51",
+        "type": "change",
+        "z": "c08185895724dd88",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "url",
+                "pt": "msg",
+                "to": "payload.city_url",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "city",
+                "pt": "msg",
+                "to": "payload",
+                "tot": "msg",
+                "dc": true
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 760,
+        "y": 420,
+        "wires": [
+            [
+                "ed44396dbb655794"
+            ]
+        ]
+    },
+    {
+        "id": "d76fe19a3fd26d11",
+        "type": "function",
+        "z": "c08185895724dd88",
+        "name": "function 22",
+        "func": "var username = global.get(\"username\");\nmsg.url = \"http://api.geonames.org/searchJSON?country=DE&username=\" + username;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 410,
+        "y": 280,
+        "wires": [
+            [
+                "14e9897d59d75d22"
+            ]
+        ]
+    },
+    {
+        "id": "d3a2e00ee7eb9d6e",
+        "type": "inject",
+        "z": "c08185895724dd88",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 220,
+        "y": 280,
+        "wires": [
+            [
+                "d76fe19a3fd26d11"
+            ]
+        ]
     },
     {
         "id": "e1b7d6f10fa6ce00",
