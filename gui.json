@@ -75,8 +75,8 @@
         "place": "Select a country",
         "group": "07c2498f17a87e52",
         "order": 1,
-        "width": 0,
-        "height": 0,
+        "width": "5",
+        "height": "1",
         "passthru": true,
         "multiple": false,
         "options": [
@@ -368,6 +368,35 @@
         "x": 810,
         "y": 320,
         "wires": []
+    },
+    {
+        "id": "5758add2cc0d0aae",
+        "type": "ui_button",
+        "z": "f3d84fa3b7dfd7c1",
+        "name": "",
+        "group": "07c2498f17a87e52",
+        "order": 2,
+        "width": "1",
+        "height": "1",
+        "passthru": false,
+        "label": "Reset",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 50,
+        "y": 260,
+        "wires": [
+            [
+                "8a8ae5ae3bb86981",
+                "6a3280bc8e117e96"
+            ]
+        ]
     },
     {
         "id": "07c2498f17a87e52",
