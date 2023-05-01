@@ -209,7 +209,7 @@
         "type": "function",
         "z": "967295eaefb19bbf",
         "name": "CREATE TABLE",
-        "func": "msg.topic = 'create table if not exists cities_table(city_name PRIMARY KEY, city_summary, housing, cost_of_living, startups, venture_capital, travel_connectivity, commute, business_freedom, safety, healthcare, education, environmental_quality, economy, taxation, internet_access, leisure_culture, tolerance, outdoors, country_code, lat, lng)';\nreturn msg;",
+        "func": "msg.topic = 'CREATE TABLE IF NOT EXISTS cities_table (city_name TEXT, city_summary TEXT, housing REAL, cost_of_living REAL, startups REAL, venture_capital REAL, travel_connectivity REAL, commute REAL, business_freedom REAL, safety REAL, healthcare REAL, education REAL, environmental_quality REAL, economy REAL, taxation REAL, internet_access REAL, leisure_culture REAL, tolerance REAL, outdoors REAL, country_code TEXT, lat REAL, lng REAL, PRIMARY KEY(lat, lng))';\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -389,10 +389,7 @@
         "z": "967295eaefb19bbf",
         "name": "drop_table_link",
         "links": [
-            "8911e132a953726d",
-            "6e49cd495f22bfe9",
-            "32c0444b80bcc948",
-            "cf73e43c155983ac"
+            "6e49cd495f22bfe9"
         ],
         "x": 1055,
         "y": 680,
@@ -472,9 +469,8 @@
         "name": "link out 5",
         "mode": "link",
         "links": [
-            "c212068ce4b7d3a3",
-            "97e26c759d2014c3",
-            "01127155e278bbe8"
+            "01127155e278bbe8",
+            "c212068ce4b7d3a3"
         ],
         "x": 1895,
         "y": 500,
