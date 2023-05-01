@@ -70,7 +70,7 @@
         "type": "ui_dropdown",
         "z": "f3d84fa3b7dfd7c1",
         "name": "",
-        "label": "Countries",
+        "label": "",
         "tooltip": "Select a country",
         "place": "Select a country",
         "group": "07c2498f17a87e52",
@@ -95,7 +95,8 @@
         "wires": [
             [
                 "b942134d05d093d2",
-                "f054aeb1df64682e"
+                "f054aeb1df64682e",
+                "abb29c7122a0aaef"
             ]
         ]
     },
@@ -288,8 +289,8 @@
         "z": "f3d84fa3b7dfd7c1",
         "name": "CREATES TABLE",
         "info": "",
-        "x": 670,
-        "y": 320,
+        "x": 630,
+        "y": 420,
         "wires": []
     },
     {
@@ -354,9 +355,24 @@
         ]
     },
     {
+        "id": "abb29c7122a0aaef",
+        "type": "function",
+        "z": "f3d84fa3b7dfd7c1",
+        "name": "function 28",
+        "func": "// resets - initializes vars\nglobal.set('current_cities', []);\nglobal.set('current_counter', 0);\n",
+        "outputs": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 670,
+        "y": 320,
+        "wires": []
+    },
+    {
         "id": "07c2498f17a87e52",
         "type": "ui_group",
-        "name": "Countries",
+        "name": "App",
         "tab": "827648a1f0835a07",
         "order": 2,
         "disp": true,
@@ -367,7 +383,7 @@
     {
         "id": "827648a1f0835a07",
         "type": "ui_tab",
-        "name": "Home",
+        "name": "Smart City App",
         "icon": "dashboard",
         "disabled": false,
         "hidden": false
