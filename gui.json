@@ -37,7 +37,7 @@
         "type": "function",
         "z": "f3d84fa3b7dfd7c1",
         "name": "USER CHOOSE COUNTRY",
-        "func": "var country_code = msg.payload; // user sets this.\n// sees if the country is already saved:\nif (global.keys().includes(country_code)) {\n    if(global.get(country_code)) {\n        msg.payload = \"Did not save country - it already exists.\"\n        return [null, msg];\n    }\n}\nglobal.set(country_code, 1);\nvar username = global.get(\"username\");\nmsg.url = \"http://api.geonames.org/searchJSON?country=\" + country_code + \"&username=\"+username;\nreturn [msg, null];",
+        "func": "var country_code = msg.payload; // user sets this.\n// sees if the country is already saved:\nif (global.keys().includes(country_code)) {\n    if(global.get(country_code)) {\n        msg.payload = \"Did not save country - it already exists.\"\n        global.set(\"current_country\", country_code);\n        return [null, msg];\n    }\n}\nglobal.set(country_code, 1);\nglobal.set(\"current_country\", \"0\");\nvar username = global.get(\"username\");\nmsg.url = \"http://api.geonames.org/searchJSON?country=\" + country_code + \"&username=\"+username;\nreturn [msg, null];",
         "outputs": 2,
         "noerr": 0,
         "initialize": "",
@@ -70,13 +70,13 @@
         "type": "ui_dropdown",
         "z": "f3d84fa3b7dfd7c1",
         "name": "",
-        "label": "Countries",
+        "label": "",
         "tooltip": "Select a country",
         "place": "Select a country",
         "group": "07c2498f17a87e52",
         "order": 1,
-        "width": 0,
-        "height": 0,
+        "width": "5",
+        "height": "1",
         "passthru": true,
         "multiple": false,
         "options": [
@@ -95,7 +95,8 @@
         "wires": [
             [
                 "b942134d05d093d2",
-                "f054aeb1df64682e"
+                "f054aeb1df64682e",
+                "abb29c7122a0aaef"
             ]
         ]
     },
@@ -288,8 +289,8 @@
         "z": "f3d84fa3b7dfd7c1",
         "name": "CREATES TABLE",
         "info": "",
-        "x": 670,
-        "y": 320,
+        "x": 630,
+        "y": 420,
         "wires": []
     },
     {
@@ -322,7 +323,7 @@
         "type": "debug",
         "z": "f3d84fa3b7dfd7c1",
         "name": "debug 41",
-        "active": true,
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -354,9 +355,53 @@
         ]
     },
     {
+        "id": "abb29c7122a0aaef",
+        "type": "function",
+        "z": "f3d84fa3b7dfd7c1",
+        "name": "function 28",
+        "func": "// resets - initializes vars\nglobal.set('current_cities', []);\nglobal.set('current_counter', 0);\n",
+        "outputs": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 810,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "5758add2cc0d0aae",
+        "type": "ui_button",
+        "z": "f3d84fa3b7dfd7c1",
+        "name": "",
+        "group": "07c2498f17a87e52",
+        "order": 2,
+        "width": "1",
+        "height": "1",
+        "passthru": false,
+        "label": "Reset",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 50,
+        "y": 260,
+        "wires": [
+            [
+                "8a8ae5ae3bb86981",
+                "6a3280bc8e117e96"
+            ]
+        ]
+    },
+    {
         "id": "07c2498f17a87e52",
         "type": "ui_group",
-        "name": "Countries",
+        "name": "App",
         "tab": "827648a1f0835a07",
         "order": 2,
         "disp": true,
@@ -367,7 +412,7 @@
     {
         "id": "827648a1f0835a07",
         "type": "ui_tab",
-        "name": "Home",
+        "name": "Smart City App",
         "icon": "dashboard",
         "disabled": false,
         "hidden": false

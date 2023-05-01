@@ -12,3 +12,7 @@ You can initialize the app GUI by pressing in the gui-dataflow the inject button
 By initializing the dropdown this way, you also create the db and set the correct global variables (it is recommended if you want to restart the app). 
 <br>
 After injecting, go to http://127.0.0.1:1880/ui/ and select a country. All the wanted data of the available cities of the selected country should be saved inside an sqlite db in /tmp folder, called cities.db!
+
+---
+## Other links:
+You can see the documentation of this project [here](https://docs.google.com/document/d/1qboEuLH-l-9isQfCn9RzCzkCyO4TYGtqEFc8UejJHHo/edit?usp=sharing).

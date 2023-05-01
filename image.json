@@ -223,7 +223,7 @@
         "wires": [
             [
                 "dce4bc79c6d6c16e",
-                "ce03fe0cd934e64f"
+                "1f4e3dea3c35b66d"
             ]
         ]
     },
@@ -326,9 +326,28 @@
             "ae16c71f544a9be8",
             "a7be88948bc45e8a"
         ],
-        "x": 1055,
+        "x": 1235,
         "y": 360,
         "wires": []
+    },
+    {
+        "id": "1f4e3dea3c35b66d",
+        "type": "function",
+        "z": "fea5d235b75727a9",
+        "name": "function 27",
+        "func": "// initializes the current_cities attr.\n// if (!msg.hasOwnProperty(\"current_cities\")) {\n//     msg.current_cities = [];\n// }\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1070,
+        "y": 360,
+        "wires": [
+            [
+                "ce03fe0cd934e64f"
+            ]
+        ]
     },
     {
         "id": "e1b7d6f10fa6ce00",

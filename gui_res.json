@@ -43,23 +43,6 @@
         ]
     },
     {
-        "id": "208e4da46d09b98a",
-        "type": "debug",
-        "z": "1895d526297b5449",
-        "name": "debug 42",
-        "active": false,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "true",
-        "targetType": "full",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 660,
-        "y": 360,
-        "wires": []
-    },
-    {
         "id": "17e1929ad8fc0cf6",
         "type": "sqlite",
         "z": "1895d526297b5449",
@@ -72,9 +55,7 @@
         "wires": [
             [
                 "877e237372fd4301",
-                "4011182243691c48",
-                "9ebe471e3fd324b7",
-                "20ff3f1456bdc172"
+                "723ffa05fae426bf"
             ]
         ]
     },
@@ -83,7 +64,7 @@
         "type": "debug",
         "z": "1895d526297b5449",
         "name": "debug 43",
-        "active": true,
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -91,8 +72,8 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 900,
-        "y": 300,
+        "x": 860,
+        "y": 280,
         "wires": []
     },
     {
@@ -125,14 +106,14 @@
         "type": "function",
         "z": "1895d526297b5449",
         "name": "function 23",
-        "func": "var city = msg.payload[0]; //this has all the rankings\ncity.name = city.city_name.charAt(0).toUpperCase() + city.city_name.slice(1);\nmsg.payload[0].city_name = city.name;\nreturn msg;\n\n",
+        "func": "try {\n    var city = msg.payload[0]; //this has all the rankings\n    city.name = city.city_name.charAt(0).toUpperCase() + city.city_name.slice(1);\n    msg.payload[0].city_name = city.name;\n    return [msg, null];\n}\ncatch(error) {\n    return [null, msg];\n}",
         "outputs": 2,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1050,
-        "y": 220,
+        "x": 1090,
+        "y": 500,
         "wires": [
             [
                 "0da3c5ec499d8be0"
@@ -146,17 +127,17 @@
         "z": "1895d526297b5449",
         "group": "07c2498f17a87e52",
         "name": "City Image",
-        "order": 2,
+        "order": 5,
         "width": 0,
         "height": 0,
-        "format": "\n<h2>{{msg.payload[0].city_name}}</h2>\n<img src=\"{{msg.payload[0].web_img_url}}\" width=\"100%\" >\n    <!-- <p>Housing: {{msg.payload[0].housing}}</p>\n    <p>Cost of Living: {{msg.payload[0].cost_of_living}}</p>\n    <p>Startups: {{msg.payload[0].startups}}</p>\n    <p>Venture Capital: {{msg.payload[0].venture_capital}}</p>\n    <p>Travel Connectivity: {{msg.payload[0].travel_connectivity}}</p>\n    <p>Commute: {{msg.payload[0].commute}}</p>\n    <p>Business Freedom: {{msg.payload[0].business_freedom}}</p>\n    <p>Safety: {{msg.payload[0].safety}}</p>\n    <p>Healthcare: {{msg.payload[0].healthcare}}</p>\n    <p>Education: {{msg.payload[0].education}}</p>\n    <p>Environmental Quality: {{msg.payload[0].environmental_quality}}</p>\n    <p>Economy: {{msg.payload[0].economy}}</p>\n    <p>Taxation: {{msg.payload[0].taxation}}</p>\n    <p>Internet Access: {{msg.payload[0].internet_access}}</p>\n    <p>Leisure Culture: {{msg.payload[0].leisure_culture}}</p>\n    <p>Tolerance: {{msg.payload[0].tolerance}}</p>\n    <p>Outdoors: {{msg.payload[0].outdoors}}</p> -->\n    <!-- add more properties here -->\n",
+        "format": "\n<h2>{{msg.payload[0].city_name}}</h2>\n<img src=\"{{msg.payload[0].web_img_url}}\" width=\"100%\" >\n<br>\n<p>{{msg.payload[0].city_summary}}</p>\n    <!-- <p>Cost of Living: {{msg.payload[0].cost_of_living}}</p>\n    <p>Startups: {{msg.payload[0].startups}}</p>\n    <p>Venture Capital: {{msg.payload[0].venture_capital}}</p>\n    <p>Travel Connectivity: {{msg.payload[0].travel_connectivity}}</p>\n    <p>Commute: {{msg.payload[0].commute}}</p>\n    <p>Business Freedom: {{msg.payload[0].business_freedom}}</p>\n    <p>Safety: {{msg.payload[0].safety}}</p>\n    <p>Healthcare: {{msg.payload[0].healthcare}}</p>\n    <p>Education: {{msg.payload[0].education}}</p>\n    <p>Environmental Quality: {{msg.payload[0].environmental_quality}}</p>\n    <p>Economy: {{msg.payload[0].economy}}</p>\n    <p>Taxation: {{msg.payload[0].taxation}}</p>\n    <p>Internet Access: {{msg.payload[0].internet_access}}</p>\n    <p>Leisure Culture: {{msg.payload[0].leisure_culture}}</p>\n    <p>Tolerance: {{msg.payload[0].tolerance}}</p>\n    <p>Outdoors: {{msg.payload[0].outdoors}}</p> -->\n    <!-- add more properties here -->\n",
         "storeOutMessages": true,
         "fwdInMessages": true,
         "resendOnRefresh": true,
         "templateScope": "local",
         "className": "",
-        "x": 1270,
-        "y": 220,
+        "x": 1310,
+        "y": 500,
         "wires": [
             []
         ]
@@ -191,18 +172,19 @@
         "type": "function",
         "z": "1895d526297b5449",
         "name": "function 24",
-        "func": "const mon = [\n    \"housing\",\n    \"cost_of_living\",\n    \"startups\",\n    \"venture_capital\",\n    \"travel_connectivity\",\n    \"commute\",\n    \"business_freedom\",\n    \"safety\",\n    \"healthcare\",\n    \"education\",\n    \"environmental_quality\",\n    \"economy\",\n    \"taxation\",\n    \"internet_access\",\n    \"leisure_culture\",\n    \"tolerance\",\n    \"outdoors\"\n]\n\n\nvar city = msg.payload[0];\n\n// var rankings = {};\n\n// for (var i = 0; i < mon.length; i++) {\n//     var attr = mon[i];\n//     rankings[attr] = parseFloat(city[attr]).toFixed(2);\n//     // console.log(\"CITTY3: \" + attr);\n// }\n\n// // console.log(rankings);\n\n// // Get an array of the keys as labels\n// let labels = Object.keys(rankings);\n\n// // Get an array of the values as data\n// let data = Object.values(rankings);\n\n// // Set the payload to the chart configuration object\n// msg.payload = [{\n//     \"series\": [\"rank\"],\n//     \"data\": [data],\n//     \"labels\": labels\n// }];\n\n// msg.payload[0].labels = msg.payload[0].labels.map(label => label.charAt(0).toUpperCase() + label.slice(1));\n\n// // Send the message to the next node\n// return msg;\n\nvar city = msg.payload[0];\nvar rankings = {};\nfor (var i = 0; i < mon.length; i++) {\n    var attr = mon[i];\n    var value = parseFloat(city[attr]).toFixed(2);\n    if (value !== \"0.00\") {\n        rankings[attr] = value;\n    }\n}\nlet labels = Object.keys(rankings);\nlet data = Object.values(rankings);\nmsg.payload = [{\n    \"series\": [\"rank\"],\n    \"data\": [data],\n    \"labels\": labels\n}];\nmsg.payload[0].labels = msg.payload[0].labels.map(label => label.charAt(0).toUpperCase() + label.slice(1));\nreturn msg;\n\n",
-        "outputs": 1,
+        "func": "const mon = [\n    \"housing\",\n    \"cost_of_living\",\n    \"startups\",\n    \"venture_capital\",\n    \"travel_connectivity\",\n    \"commute\",\n    \"business_freedom\",\n    \"safety\",\n    \"healthcare\",\n    \"education\",\n    \"environmental_quality\",\n    \"economy\",\n    \"taxation\",\n    \"internet_access\",\n    \"leisure_culture\",\n    \"tolerance\",\n    \"outdoors\"\n]\n\ntry {\n    var city = msg.payload[0];\n    var rankings = {};\n    for (var i = 0; i < mon.length; i++) {\n        var attr = mon[i];\n        var value = parseFloat(city[attr]).toFixed(2);\n        if (value !== \"0.00\") {\n            rankings[attr] = value;\n        }\n    }\n    let labels = Object.keys(rankings);\n    let data = Object.values(rankings);\n    msg.payload = [{\n        \"series\": [\"rank\"],\n        \"data\": [data],\n        \"labels\": labels\n    }];\n    msg.payload[0].labels = msg.payload[0].labels.map(label => label.charAt(0).toUpperCase() + label.slice(1));\n    return [msg, null];\n} catch(error) {\n    // do nothing\n    return [null, msg];\n}\n",
+        "outputs": 2,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1050,
-        "y": 140,
+        "x": 1090,
+        "y": 420,
         "wires": [
             [
                 "3399029783d95bc3"
-            ]
+            ],
+            []
         ]
     },
     {
@@ -211,7 +193,7 @@
         "z": "1895d526297b5449",
         "name": "",
         "group": "07c2498f17a87e52",
-        "order": 3,
+        "order": 6,
         "width": 0,
         "height": 0,
         "label": "City Rankings",
@@ -243,8 +225,8 @@
         "outputs": 1,
         "useDifferentColor": false,
         "className": "",
-        "x": 1260,
-        "y": 140,
+        "x": 1320,
+        "y": 420,
         "wires": [
             []
         ]
@@ -255,7 +237,7 @@
         "z": "1895d526297b5449",
         "name": "",
         "group": "07c2498f17a87e52",
-        "order": 3,
+        "order": 7,
         "width": 0,
         "height": 0,
         "label": "Environment Forecast",
@@ -287,8 +269,8 @@
         "outputs": 1,
         "useDifferentColor": false,
         "className": "",
-        "x": 1240,
-        "y": 60,
+        "x": 1320,
+        "y": 320,
         "wires": [
             []
         ]
@@ -298,18 +280,339 @@
         "type": "function",
         "z": "1895d526297b5449",
         "name": "function 25",
-        "func": "var mon = [\n    \"weathercode\",\n    \"temperature\",\n    \"uv_index_max\",\n    \"uv_index_clear_sky_max\",\n    \"rain_sum\",\n    \"snowfall_sum\",\n    \"windspeed_10m_max\",\n    //\"winddirection_10m_dominant\",\n    \"shortwave_radiation_sum\"\n]\n\nvar data_res = msg.payload;\nvar data = {};\nfor (var i = 0; i < mon.length; i++) {\n    data[mon[i]] = [];\n    for (var j = 0; j < data_res.length; j++) {\n        data[mon[i]].push({ \"x\": data_res[j][\"time\"], \"y\": data_res[j][mon[i]]});\n    }\n}\n\n// console.log(data);\nlet labels = Object.keys(data);\nlet values = Object.values(data);\nconsole.log(values);\n\nmsg.payload = [{\n    // \"series\": [\"A\", \"B\", \"C\"], // names - labels\n    \"series\": labels,\n    // data -> the enviroment forecast. x = date and y = value -> should be in the same order as series.\n    // \"data\": [\n    //     [{ \"x\": \"2023-04-30\", \"y\": 5 }, { \"x\": \"2023-05-01\", \"y\": 4 }, { \"x\": \"2023-05-02\", \"y\": 2 }],\n    //     [{ \"x\": \"2023-04-30\", \"y\": 6 }, { \"x\": \"2023-05-01\", \"y\": 7 }, { \"x\": \"2023-05-02\", \"y\": 6 }],\n    //     [{ \"x\": \"2023-04-30\", \"y\": 7 }, { \"x\": \"2023-05-01\", \"y\": 7 }, { \"x\": \"2023-05-02\", \"y\": 7 }]\n    // ],\n    \"data\": values,\n    \"labels\": [\"\"]\n}]\nreturn msg;\n",
+        "func": "var mon = [\n    \"weathercode\",\n    \"temperature\",\n    \"uv_index_max\",\n    \"uv_index_clear_sky_max\",\n    \"rain_sum\",\n    \"snowfall_sum\",\n    \"windspeed_10m_max\",\n    //\"winddirection_10m_dominant\",\n    \"shortwave_radiation_sum\"\n]\ntry {\n    var data_res = msg.payload;\n    var data = {};\n    for (var i = 0; i < mon.length; i++) {\n        data[mon[i]] = [];\n        for (var j = 0; j < data_res.length; j++) {\n            data[mon[i]].push({ \"x\": data_res[j][\"time\"], \"y\": data_res[j][mon[i]]});\n        }\n    }\n\n    // console.log(data);\n    let labels = Object.keys(data);\n    let values = Object.values(data);\n    // console.log(values);\n\n    msg.payload = [{\n        // \"series\": [\"A\", \"B\", \"C\"], // names - labels\n        \"series\": labels,\n        // data -> the enviroment forecast. x = date and y = value -> should be in the same order as series.\n        // \"data\": [\n        //     [{ \"x\": \"2023-04-30\", \"y\": 5 }, { \"x\": \"2023-05-01\", \"y\": 4 }, { \"x\": \"2023-05-02\", \"y\": 2 }],\n        //     [{ \"x\": \"2023-04-30\", \"y\": 6 }, { \"x\": \"2023-05-01\", \"y\": 7 }, { \"x\": \"2023-05-02\", \"y\": 6 }],\n        //     [{ \"x\": \"2023-04-30\", \"y\": 7 }, { \"x\": \"2023-05-01\", \"y\": 7 }, { \"x\": \"2023-05-02\", \"y\": 7 }]\n        // ],\n        \"data\": values,\n        \"labels\": [\"\"]\n    }]\n    return [msg, null];\n} catch(error) {\n    // do nothing.\n    return [null, msg];\n}",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 950,
-        "y": 60,
+        "x": 1090,
+        "y": 320,
         "wires": [
             [
                 "196f531677e848fd"
             ]
+        ]
+    },
+    {
+        "id": "4b679bc60c2ce906",
+        "type": "ui_button",
+        "z": "1895d526297b5449",
+        "name": "",
+        "group": "07c2498f17a87e52",
+        "order": 3,
+        "width": "3",
+        "height": "1",
+        "passthru": false,
+        "label": "Previous",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "false",
+        "payloadType": "bool",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 400,
+        "y": 320,
+        "wires": [
+            [
+                "2650473b3c0ef6b5",
+                "a848ca7067be6091"
+            ]
+        ]
+    },
+    {
+        "id": "2616bf15d40c3cc5",
+        "type": "ui_button",
+        "z": "1895d526297b5449",
+        "name": "",
+        "group": "07c2498f17a87e52",
+        "order": 4,
+        "width": "3",
+        "height": "1",
+        "passthru": false,
+        "label": "Next",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "true",
+        "payloadType": "bool",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 390,
+        "y": 380,
+        "wires": [
+            [
+                "2650473b3c0ef6b5"
+            ]
+        ]
+    },
+    {
+        "id": "015941c431600923",
+        "type": "debug",
+        "z": "1895d526297b5449",
+        "name": "debug 44",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 800,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "723ffa05fae426bf",
+        "type": "function",
+        "z": "1895d526297b5449",
+        "name": "function 26",
+        "func": "// Get the value of the global context with the key 'current_cities'\nvar myList = global.get('current_cities');\n\n// If the value doesn't exist, create an empty array\nif (!myList) {\n    myList = [];\n}\n\n// Check if msg.payload[0].city_name already exists in myList\nvar cityExists = myList.some(function (cityObj) {\n    return cityObj.city_name === msg.payload[0].city_name;\n});\n\n// If the city does not exist, push msg.payload to myList\nif (!cityExists) {\n    myList.push(msg.payload);\n}\n\n// Set the value of the global context with the key 'current_cities' to the updated list\nglobal.set('current_cities', myList);\n\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 990,
+        "y": 220,
+        "wires": [
+            [
+                "16eceeeb55adb8eb"
+            ]
+        ]
+    },
+    {
+        "id": "16eceeeb55adb8eb",
+        "type": "debug",
+        "z": "1895d526297b5449",
+        "name": "debug 45",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 920,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "2bb0bee77e7b13b5",
+        "type": "function",
+        "z": "1895d526297b5449",
+        "name": "function 29",
+        "func": "var myList = global.get('current_cities');\nconsole.log(myList);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 310,
+        "y": 480,
+        "wires": [
+            [
+                "dd83cd64abd30d9b"
+            ]
+        ]
+    },
+    {
+        "id": "dd83cd64abd30d9b",
+        "type": "debug",
+        "z": "1895d526297b5449",
+        "name": "debug 46",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 480,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "50b74601fd98a2c1",
+        "type": "inject",
+        "z": "1895d526297b5449",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 140,
+        "y": 480,
+        "wires": [
+            [
+                "2bb0bee77e7b13b5"
+            ]
+        ]
+    },
+    {
+        "id": "2650473b3c0ef6b5",
+        "type": "function",
+        "z": "1895d526297b5449",
+        "name": "function 30",
+        "func": "var counter = global.get('current_counter');\n\n// console.log(msg.payload);\n\nif(msg.payload) {   // next\n    // console.log(\"Next\");\n    counter += 1;\n} else {    // previous\n    // console.log(\"Previous\");\n    counter -= 1;\n}\n\n\nglobal.set('current_counter', counter);\n\nvar current_country = global.get(\"current_country\");\nif (current_country != \"0\") {\n    global.set(\"current_country\", \"0\");\n    msg.payload = current_country;\n    var select_query = `SELECT * FROM cities_table WHERE cities_table.country_code = \"${current_country}\"`;\n    msg.topic = select_query;\n    return [null, msg];\n}\n\n// console.log(counter);\nvar myList = global.get('current_cities');\nvar index = (counter % myList.length + myList.length) % myList.length;\n// var index = counter % myList.length;\nmsg.payload = myList[index];\nreturn [msg, null];",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 650,
+        "y": 400,
+        "wires": [
+            [
+                "20ff3f1456bdc172",
+                "9ebe471e3fd324b7",
+                "4011182243691c48"
+            ],
+            [
+                "fd05cccac6755b60"
+            ]
+        ]
+    },
+    {
+        "id": "a848ca7067be6091",
+        "type": "debug",
+        "z": "1895d526297b5449",
+        "name": "debug 47",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 620,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "fd05cccac6755b60",
+        "type": "sqlite",
+        "z": "1895d526297b5449",
+        "mydb": "e1b7d6f10fa6ce00",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "",
+        "x": 630,
+        "y": 560,
+        "wires": [
+            [
+                "09ad4b23d9503a1c"
+            ]
+        ]
+    },
+    {
+        "id": "09ad4b23d9503a1c",
+        "type": "split",
+        "z": "1895d526297b5449",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 790,
+        "y": 560,
+        "wires": [
+            [
+                "015941c431600923",
+                "f87e224d652d3c33"
+            ]
+        ]
+    },
+    {
+        "id": "f87e224d652d3c33",
+        "type": "function",
+        "z": "1895d526297b5449",
+        "name": "function 31",
+        "func": "var city = msg.payload;\nvar select_query = `SELECT * FROM cities_table \nJOIN weather_table ON cities_table.geonameId = weather_table.geonameId \nJOIN image_table ON cities_table.geonameId = image_table.geonameId \nWHERE cities_table.geonameId = ${city.geonameId}\n`;\nmsg.topic = select_query;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 970,
+        "y": 580,
+        "wires": [
+            [
+                "51660c09f714191a"
+            ]
+        ]
+    },
+    {
+        "id": "51660c09f714191a",
+        "type": "sqlite",
+        "z": "1895d526297b5449",
+        "mydb": "e1b7d6f10fa6ce00",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "",
+        "x": 1150,
+        "y": 580,
+        "wires": [
+            [
+                "48a3053e387f17cf",
+                "c3e675b89f37b0a8"
+            ]
+        ]
+    },
+    {
+        "id": "48a3053e387f17cf",
+        "type": "debug",
+        "z": "1895d526297b5449",
+        "name": "debug 48",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1240,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "c3e675b89f37b0a8",
+        "type": "function",
+        "z": "1895d526297b5449",
+        "name": "function 32",
+        "func": "// Get the value of the global context with the key 'current_cities'\nvar myList = global.get('current_cities');\n\n// If the value doesn't exist, create an empty array\nif (!myList) {\n    myList = [];\n}\n\n// Check if msg.payload[0].city_name already exists in myList\nvar cityExists = myList.some(function (cityObj) {\n    return cityObj.city_name === msg.payload[0].city_name;\n});\n\n// If the city does not exist, push msg.payload to myList\nif (!cityExists) {\n    myList.push(msg.payload);\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1350,
+        "y": 580,
+        "wires": [
+            []
         ]
     },
     {
@@ -321,7 +624,7 @@
     {
         "id": "07c2498f17a87e52",
         "type": "ui_group",
-        "name": "Countries",
+        "name": "App",
         "tab": "827648a1f0835a07",
         "order": 2,
         "disp": true,
@@ -332,7 +635,7 @@
     {
         "id": "827648a1f0835a07",
         "type": "ui_tab",
-        "name": "Home",
+        "name": "Smart City App",
         "icon": "dashboard",
         "disabled": false,
         "hidden": false
