@@ -1,6 +1,6 @@
 [
     {
-        "id": "1118d6cb240f1d5d",
+        "id": "1895d526297b5449",
         "type": "tab",
         "label": "GUI City Results",
         "disabled": false,
@@ -8,43 +8,25 @@
         "env": []
     },
     {
-        "id": "16f88025b63dd8ef",
-        "type": "group",
-        "z": "1118d6cb240f1d5d",
-        "name": "Bar Chart",
-        "style": {
-            "label": false
-        },
-        "nodes": [
-            "41a56987ad99a59f",
-            "4da195ee24501131",
-            "b44af45c4bedc7b3"
-        ],
-        "x": 1254,
-        "y": 99,
-        "w": 572,
-        "h": 82
-    },
-    {
-        "id": "ae16c71f544a9be8",
+        "id": "a7be88948bc45e8a",
         "type": "link in",
-        "z": "1118d6cb240f1d5d",
+        "z": "1895d526297b5449",
         "name": "GUI show cities",
         "links": [
-            "5ecb13b7b13954ac"
+            "ce03fe0cd934e64f"
         ],
         "x": 295,
         "y": 200,
         "wires": [
             [
-                "eef6ffd7397ef311"
+                "7345592b1f1704b8"
             ]
         ]
     },
     {
-        "id": "86a8ccbcdbf9f06b",
+        "id": "40ea4692665fa1ad",
         "type": "function",
-        "z": "1118d6cb240f1d5d",
+        "z": "1895d526297b5449",
         "name": "filter",
         "func": "var city = msg.city;\nvar select_query = `SELECT * FROM cities_table \nJOIN weather_table ON cities_table.geonameId = weather_table.geonameId \nJOIN image_table ON cities_table.geonameId = image_table.geonameId \nWHERE cities_table.geonameId = ${city.geonameId}\n`;\nmsg.topic = select_query;\nreturn msg;",
         "outputs": 1,
@@ -56,14 +38,14 @@
         "y": 200,
         "wires": [
             [
-                "7d4397840bca240c"
+                "17e1929ad8fc0cf6"
             ]
         ]
     },
     {
-        "id": "0606cff2f3608570",
+        "id": "208e4da46d09b98a",
         "type": "debug",
-        "z": "1118d6cb240f1d5d",
+        "z": "1895d526297b5449",
         "name": "debug 42",
         "active": false,
         "tosidebar": true,
@@ -78,9 +60,9 @@
         "wires": []
     },
     {
-        "id": "7d4397840bca240c",
+        "id": "17e1929ad8fc0cf6",
         "type": "sqlite",
-        "z": "1118d6cb240f1d5d",
+        "z": "1895d526297b5449",
         "mydb": "e1b7d6f10fa6ce00",
         "sqlquery": "msg.topic",
         "sql": "",
@@ -89,18 +71,19 @@
         "y": 220,
         "wires": [
             [
-                "fd812a55b2418ba0",
-                "c2c2b6f69a896768",
-                "fd0de71494ed1923"
+                "877e237372fd4301",
+                "4011182243691c48",
+                "9ebe471e3fd324b7",
+                "20ff3f1456bdc172"
             ]
         ]
     },
     {
-        "id": "fd812a55b2418ba0",
+        "id": "877e237372fd4301",
         "type": "debug",
-        "z": "1118d6cb240f1d5d",
+        "z": "1895d526297b5449",
         "name": "debug 43",
-        "active": false,
+        "active": true,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -113,9 +96,9 @@
         "wires": []
     },
     {
-        "id": "6e307a9e82e9d8cb",
+        "id": "9ec2d5cde1f76d05",
         "type": "inject",
-        "z": "1118d6cb240f1d5d",
+        "z": "1895d526297b5449",
         "name": "",
         "props": [
             {
@@ -133,14 +116,14 @@
         "y": 120,
         "wires": [
             [
-                "86a8ccbcdbf9f06b"
+                "40ea4692665fa1ad"
             ]
         ]
     },
     {
-        "id": "c2c2b6f69a896768",
+        "id": "4011182243691c48",
         "type": "function",
-        "z": "1118d6cb240f1d5d",
+        "z": "1895d526297b5449",
         "name": "function 23",
         "func": "var city = msg.payload[0]; //this has all the rankings\ncity.name = city.city_name.charAt(0).toUpperCase() + city.city_name.slice(1);\nmsg.payload[0].city_name = city.name;\nreturn msg;\n\n",
         "outputs": 2,
@@ -152,36 +135,36 @@
         "y": 220,
         "wires": [
             [
-                "56852faa2d0857e6"
+                "0da3c5ec499d8be0"
             ],
             []
         ]
     },
     {
-        "id": "56852faa2d0857e6",
+        "id": "0da3c5ec499d8be0",
         "type": "ui_template",
-        "z": "1118d6cb240f1d5d",
-        "group": "41e6ce4d.27d9e4",
-        "name": "",
+        "z": "1895d526297b5449",
+        "group": "07c2498f17a87e52",
+        "name": "City Image",
         "order": 2,
         "width": 0,
         "height": 0,
-        "format": "<div>\n    <h2>{{msg.payload[0].city_name}}</h2>\n    <img src=\"{{msg.payload[0].web_img_url}}\" width=\"100%\" >\n    <p>Housing: {{msg.payload[0].housing}}</p>\n    <p>Cost of Living: {{msg.payload[0].cost_of_living}}</p>\n    <!-- add more properties here -->\n</div>",
+        "format": "\n<h2>{{msg.payload[0].city_name}}</h2>\n<img src=\"{{msg.payload[0].web_img_url}}\" width=\"100%\" >\n    <!-- <p>Housing: {{msg.payload[0].housing}}</p>\n    <p>Cost of Living: {{msg.payload[0].cost_of_living}}</p>\n    <p>Startups: {{msg.payload[0].startups}}</p>\n    <p>Venture Capital: {{msg.payload[0].venture_capital}}</p>\n    <p>Travel Connectivity: {{msg.payload[0].travel_connectivity}}</p>\n    <p>Commute: {{msg.payload[0].commute}}</p>\n    <p>Business Freedom: {{msg.payload[0].business_freedom}}</p>\n    <p>Safety: {{msg.payload[0].safety}}</p>\n    <p>Healthcare: {{msg.payload[0].healthcare}}</p>\n    <p>Education: {{msg.payload[0].education}}</p>\n    <p>Environmental Quality: {{msg.payload[0].environmental_quality}}</p>\n    <p>Economy: {{msg.payload[0].economy}}</p>\n    <p>Taxation: {{msg.payload[0].taxation}}</p>\n    <p>Internet Access: {{msg.payload[0].internet_access}}</p>\n    <p>Leisure Culture: {{msg.payload[0].leisure_culture}}</p>\n    <p>Tolerance: {{msg.payload[0].tolerance}}</p>\n    <p>Outdoors: {{msg.payload[0].outdoors}}</p> -->\n    <!-- add more properties here -->\n",
         "storeOutMessages": true,
         "fwdInMessages": true,
         "resendOnRefresh": true,
         "templateScope": "local",
         "className": "",
-        "x": 1160,
-        "y": 300,
+        "x": 1270,
+        "y": 220,
         "wires": [
             []
         ]
     },
     {
-        "id": "eef6ffd7397ef311",
+        "id": "7345592b1f1704b8",
         "type": "delay",
-        "z": "1118d6cb240f1d5d",
+        "z": "1895d526297b5449",
         "name": "",
         "pauseType": "delay",
         "timeout": "1",
@@ -199,21 +182,39 @@
         "y": 200,
         "wires": [
             [
-                "86a8ccbcdbf9f06b"
+                "40ea4692665fa1ad"
             ]
         ]
     },
     {
-        "id": "41a56987ad99a59f",
+        "id": "9ebe471e3fd324b7",
+        "type": "function",
+        "z": "1895d526297b5449",
+        "name": "function 24",
+        "func": "const mon = [\n    \"housing\",\n    \"cost_of_living\",\n    \"startups\",\n    \"venture_capital\",\n    \"travel_connectivity\",\n    \"commute\",\n    \"business_freedom\",\n    \"safety\",\n    \"healthcare\",\n    \"education\",\n    \"environmental_quality\",\n    \"economy\",\n    \"taxation\",\n    \"internet_access\",\n    \"leisure_culture\",\n    \"tolerance\",\n    \"outdoors\"\n]\n\n\nvar city = msg.payload[0];\n\n// var rankings = {};\n\n// for (var i = 0; i < mon.length; i++) {\n//     var attr = mon[i];\n//     rankings[attr] = parseFloat(city[attr]).toFixed(2);\n//     // console.log(\"CITTY3: \" + attr);\n// }\n\n// // console.log(rankings);\n\n// // Get an array of the keys as labels\n// let labels = Object.keys(rankings);\n\n// // Get an array of the values as data\n// let data = Object.values(rankings);\n\n// // Set the payload to the chart configuration object\n// msg.payload = [{\n//     \"series\": [\"rank\"],\n//     \"data\": [data],\n//     \"labels\": labels\n// }];\n\n// msg.payload[0].labels = msg.payload[0].labels.map(label => label.charAt(0).toUpperCase() + label.slice(1));\n\n// // Send the message to the next node\n// return msg;\n\nvar city = msg.payload[0];\nvar rankings = {};\nfor (var i = 0; i < mon.length; i++) {\n    var attr = mon[i];\n    var value = parseFloat(city[attr]).toFixed(2);\n    if (value !== \"0.00\") {\n        rankings[attr] = value;\n    }\n}\nlet labels = Object.keys(rankings);\nlet data = Object.values(rankings);\nmsg.payload = [{\n    \"series\": [\"rank\"],\n    \"data\": [data],\n    \"labels\": labels\n}];\nmsg.payload[0].labels = msg.payload[0].labels.map(label => label.charAt(0).toUpperCase() + label.slice(1));\nreturn msg;\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1050,
+        "y": 140,
+        "wires": [
+            [
+                "3399029783d95bc3"
+            ]
+        ]
+    },
+    {
+        "id": "3399029783d95bc3",
         "type": "ui_chart",
-        "z": "1118d6cb240f1d5d",
-        "g": "16f88025b63dd8ef",
+        "z": "1895d526297b5449",
         "name": "",
-        "group": "41e6ce4d.27d9e4",
+        "group": "07c2498f17a87e52",
         "order": 3,
-        "width": 10,
-        "height": 6,
-        "label": "",
+        "width": 0,
+        "height": 0,
+        "label": "City Rankings",
         "chartType": "horizontalBar",
         "legend": "false",
         "xformat": "HH:mm:ss",
@@ -221,12 +222,12 @@
         "nodata": "",
         "dot": false,
         "ymin": "0",
-        "ymax": "50",
+        "ymax": "10",
         "removeOlder": 1,
         "removeOlderPoints": "",
         "removeOlderUnit": "3600",
         "cutout": 0,
-        "useOneColor": true,
+        "useOneColor": false,
         "useUTC": false,
         "colors": [
             "#1f77b4",
@@ -242,102 +243,74 @@
         "outputs": 1,
         "useDifferentColor": false,
         "className": "",
-        "x": 1750,
+        "x": 1260,
         "y": 140,
         "wires": [
             []
         ]
     },
     {
-        "id": "4da195ee24501131",
-        "type": "split",
-        "z": "1118d6cb240f1d5d",
-        "g": "16f88025b63dd8ef",
+        "id": "196f531677e848fd",
+        "type": "ui_chart",
+        "z": "1895d526297b5449",
         "name": "",
-        "splt": "\\n",
-        "spltType": "str",
-        "arraySplt": 1,
-        "arraySpltType": "len",
-        "stream": false,
-        "addname": "",
-        "x": 1330,
-        "y": 140,
-        "wires": [
-            [
-                "b44af45c4bedc7b3",
-                "f6990c3ab4a858b5"
-            ]
-        ]
-    },
-    {
-        "id": "b44af45c4bedc7b3",
-        "type": "change",
-        "z": "1118d6cb240f1d5d",
-        "g": "16f88025b63dd8ef",
-        "name": "",
-        "rules": [
-            {
-                "t": "set",
-                "p": "topic",
-                "pt": "msg",
-                "to": "payload.month",
-                "tot": "msg"
-            },
-            {
-                "t": "set",
-                "p": "payload",
-                "pt": "msg",
-                "to": "payload.temp",
-                "tot": "msg"
-            }
+        "group": "07c2498f17a87e52",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "label": "Environment Forecast",
+        "chartType": "line",
+        "legend": "true",
+        "xformat": "Y-M-D",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "86400",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
         ],
-        "action": "",
-        "property": "",
-        "from": "",
-        "to": "",
-        "reg": false,
-        "x": 1540,
-        "y": 140,
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 1240,
+        "y": 60,
         "wires": [
-            [
-                "41a56987ad99a59f"
-            ]
+            []
         ]
     },
     {
-        "id": "fd0de71494ed1923",
+        "id": "20ff3f1456bdc172",
         "type": "function",
-        "z": "1118d6cb240f1d5d",
-        "name": "function 24",
-        "func": "/* const mon = [\n    \"housing\",\n    \"cost_of_living\",\n    \"startups\",\n    \"venture_capital\",\n    \"travel_connectivity\",\n    \"commute\",\n    \"business_freedom\",\n    \"safety\",\n    \"healthcare\",\n    \"education\",\n    \"environmental_quality\",\n    \"economy\",\n    \"taxation\",\n    \"internet_access\",\n    \"leisure_culture\", \n    \"tolerance\",\n    \"outdoors\"\n    \n]\n\nfor (var i = 0; i < msg.payload[0].length; i++) {\n    if(msg.payload[0][i].equals(mon[])){\n\n    }\n    const dataSet = {\n        \n    }\n    tempData.push(dataSet)\n} */\nconst mon = [\"housing\", \"cost_of_living\", \"startups\", \"venture_capital\", \"travel_connectivity\", \"commute\", \"business_freedom\", \"safety\", \"healthcare\", \"education\", \"environmental_quality\", \"economy\", \"taxation\", \"internet_access\", \"leisure_culture\", \"tolerance\", \"outdoors\"];\n\nconst tempData = [];\n\nfor (var i = 0; i < msg.payload[0].length; i++) {\n    const city = msg.payload[0][i];\n    const dataSet = {};\n    for (var j = 0; j < mon.length; j++) {\n        const key = mon[j];\n        if (city.hasOwnProperty(key)) {\n            dataSet[key] = city[key];\n        }\n    }\n    tempData.push(dataSet);\n}\n\nmsg.payload = tempData;\nreturn msg;\n\n\nmsg.payload = tempData\n\nreturn msg;\n",
+        "z": "1895d526297b5449",
+        "name": "function 25",
+        "func": "var mon = [\n    \"weathercode\",\n    \"temperature\",\n    \"uv_index_max\",\n    \"uv_index_clear_sky_max\",\n    \"rain_sum\",\n    \"snowfall_sum\",\n    \"windspeed_10m_max\",\n    //\"winddirection_10m_dominant\",\n    \"shortwave_radiation_sum\"\n]\n\nvar data_res = msg.payload;\nvar data = {};\nfor (var i = 0; i < mon.length; i++) {\n    data[mon[i]] = [];\n    for (var j = 0; j < data_res.length; j++) {\n        data[mon[i]].push({ \"x\": data_res[j][\"time\"], \"y\": data_res[j][mon[i]]});\n    }\n}\n\n// console.log(data);\nlet labels = Object.keys(data);\nlet values = Object.values(data);\nconsole.log(values);\n\nmsg.payload = [{\n    // \"series\": [\"A\", \"B\", \"C\"], // names - labels\n    \"series\": labels,\n    // data -> the enviroment forecast. x = date and y = value -> should be in the same order as series.\n    // \"data\": [\n    //     [{ \"x\": \"2023-04-30\", \"y\": 5 }, { \"x\": \"2023-05-01\", \"y\": 4 }, { \"x\": \"2023-05-02\", \"y\": 2 }],\n    //     [{ \"x\": \"2023-04-30\", \"y\": 6 }, { \"x\": \"2023-05-01\", \"y\": 7 }, { \"x\": \"2023-05-02\", \"y\": 6 }],\n    //     [{ \"x\": \"2023-04-30\", \"y\": 7 }, { \"x\": \"2023-05-01\", \"y\": 7 }, { \"x\": \"2023-05-02\", \"y\": 7 }]\n    // ],\n    \"data\": values,\n    \"labels\": [\"\"]\n}]\nreturn msg;\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1050,
-        "y": 140,
+        "x": 950,
+        "y": 60,
         "wires": [
             [
-                "4da195ee24501131"
+                "196f531677e848fd"
             ]
         ]
-    },
-    {
-        "id": "f6990c3ab4a858b5",
-        "type": "debug",
-        "z": "1118d6cb240f1d5d",
-        "name": "debug 44",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "false",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 1480,
-        "y": 260,
-        "wires": []
     },
     {
         "id": "e1b7d6f10fa6ce00",
@@ -346,22 +319,21 @@
         "mode": "RWC"
     },
     {
-        "id": "41e6ce4d.27d9e4",
+        "id": "07c2498f17a87e52",
         "type": "ui_group",
-        "name": "Default",
-        "tab": "c42e270a.a23fe",
-        "order": 1,
+        "name": "Countries",
+        "tab": "827648a1f0835a07",
+        "order": 2,
         "disp": true,
         "width": "6",
         "collapse": false,
         "className": ""
     },
     {
-        "id": "c42e270a.a23fe",
+        "id": "827648a1f0835a07",
         "type": "ui_tab",
         "name": "Home",
         "icon": "dashboard",
-        "order": 1,
         "disabled": false,
         "hidden": false
     }

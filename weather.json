@@ -1,6 +1,6 @@
 [
     {
-        "id": "cfee0119086d0c2b",
+        "id": "be3235bbd9f94982",
         "type": "tab",
         "label": "WeatherFlow",
         "disabled": false,
@@ -8,25 +8,25 @@
         "env": []
     },
     {
-        "id": "046de58eadd17e4b",
+        "id": "e48582812174227c",
         "type": "link in",
-        "z": "cfee0119086d0c2b",
+        "z": "be3235bbd9f94982",
         "name": "city_weather",
         "links": [
-            "04d230d3e2b61d9d"
+            "31359110a0a4c458"
         ],
         "x": 405,
         "y": 380,
         "wires": [
             [
-                "caddd41fa0eefe0d"
+                "b192bde870e8824e"
             ]
         ]
     },
     {
-        "id": "aba0797d214b8022",
+        "id": "30d4c35779eb3d34",
         "type": "http request",
-        "z": "cfee0119086d0c2b",
+        "z": "be3235bbd9f94982",
         "name": "",
         "method": "GET",
         "ret": "obj",
@@ -43,15 +43,15 @@
         "y": 380,
         "wires": [
             [
-                "6a141d72b9502e45",
-                "314aa62e6d53bf84"
+                "4f6be43f58a22cf5",
+                "854b7a4c6cda0aa1"
             ]
         ]
     },
     {
-        "id": "6a141d72b9502e45",
+        "id": "4f6be43f58a22cf5",
         "type": "debug",
-        "z": "cfee0119086d0c2b",
+        "z": "be3235bbd9f94982",
         "name": "debug 30",
         "active": false,
         "tosidebar": true,
@@ -66,11 +66,11 @@
         "wires": []
     },
     {
-        "id": "d7660277ceaffe76",
+        "id": "6fdbc823d4158f14",
         "type": "function",
-        "z": "cfee0119086d0c2b",
+        "z": "be3235bbd9f94982",
         "name": "CREATE TABLE WEATHER",
-        "func": "msg.topic = \"CREATE TABLE IF NOT EXISTS weather_table (time DATE, weathercode INTEGER, temperature_2m_max REAL, temperature_2m_min REAL, uv_index_max REAL, uv_index_clear_sky_max REAL, rain_sum REAL, snowfall_sum REAL, windspeed_10m_max REAL, winddirection_10m_dominant REAL, shortwave_radiation_sum REAL, lat REAL, lng REAL, city_name TEXT, geonameId INTEGER, CONSTRAINT unique_city_time UNIQUE (geonameId, time), FOREIGN KEY(geonameId) REFERENCES cities_table(geonameId))\";\nreturn msg;",
+        "func": "msg.topic = \"CREATE TABLE IF NOT EXISTS weather_table (time DATE, weathercode INTEGER, temperature REAL, uv_index_max REAL, uv_index_clear_sky_max REAL, rain_sum REAL, snowfall_sum REAL, windspeed_10m_max REAL, winddirection_10m_dominant REAL, shortwave_radiation_sum REAL, lat REAL, lng REAL, city_name TEXT, geonameId INTEGER, CONSTRAINT unique_city_time UNIQUE (geonameId, time), FOREIGN KEY(geonameId) REFERENCES cities_table(geonameId))\";\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -80,15 +80,15 @@
         "y": 260,
         "wires": [
             [
-                "3166963f9de049b1",
-                "a5802a5f4c966922"
+                "0421f753dacba2db",
+                "6ea5837a8d2b1f18"
             ]
         ]
     },
     {
-        "id": "c4718c9a5805e259",
+        "id": "cb27f455d284ac9c",
         "type": "inject",
-        "z": "cfee0119086d0c2b",
+        "z": "be3235bbd9f94982",
         "name": "",
         "props": [
             {
@@ -110,14 +110,14 @@
         "y": 320,
         "wires": [
             [
-                "d7660277ceaffe76"
+                "6fdbc823d4158f14"
             ]
         ]
     },
     {
-        "id": "6b0b95e3676b00c5",
+        "id": "3879fd63e8c0900e",
         "type": "inject",
-        "z": "cfee0119086d0c2b",
+        "z": "be3235bbd9f94982",
         "name": "",
         "props": [
             {
@@ -139,14 +139,14 @@
         "y": 380,
         "wires": [
             [
-                "8890601cfe05193f"
+                "536e5bd2210479a4"
             ]
         ]
     },
     {
-        "id": "8890601cfe05193f",
+        "id": "536e5bd2210479a4",
         "type": "function",
-        "z": "cfee0119086d0c2b",
+        "z": "be3235bbd9f94982",
         "name": "DROP TABLE WEATHER",
         "func": "msg.topic = \"drop table if exists weather_table\";\nreturn msg;\n",
         "outputs": 1,
@@ -158,15 +158,15 @@
         "y": 340,
         "wires": [
             [
-                "3166963f9de049b1",
-                "3077537ca0ec8996"
+                "0421f753dacba2db",
+                "62567bd90e92df4e"
             ]
         ]
     },
     {
-        "id": "0971ebd337e1d676",
+        "id": "6d19e273c8e8dc82",
         "type": "link in",
-        "z": "cfee0119086d0c2b",
+        "z": "be3235bbd9f94982",
         "name": "drop_table_link",
         "links": [
             "8a8ae5ae3bb86981"
@@ -175,14 +175,14 @@
         "y": 400,
         "wires": [
             [
-                "8890601cfe05193f"
+                "536e5bd2210479a4"
             ]
         ]
     },
     {
-        "id": "c3acf319416d5b5e",
+        "id": "7129cc6fa27d5dd4",
         "type": "link in",
-        "z": "cfee0119086d0c2b",
+        "z": "be3235bbd9f94982",
         "name": "create_table_link",
         "links": [
             "f054aeb1df64682e"
@@ -191,16 +191,16 @@
         "y": 260,
         "wires": [
             [
-                "d7660277ceaffe76"
+                "6fdbc823d4158f14"
             ]
         ]
     },
     {
-        "id": "314aa62e6d53bf84",
+        "id": "854b7a4c6cda0aa1",
         "type": "function",
-        "z": "cfee0119086d0c2b",
+        "z": "be3235bbd9f94982",
         "name": "function 16",
-        "func": "var options = [];\n// console.log(msg.city_name);\ntry {\n    var payload = msg.payload;\n    //console.log('payload.daily.city:', payload.city);\n    for (var i = 0; i < payload.daily.time.length; i++) {\n        var obj = {};\n        obj.time = payload.daily.time[i];\n        obj.weathercode = payload.daily.weathercode[i];\n        obj.temperature_2m_max = payload.daily.temperature_2m_max[i];\n        obj.temperature_2m_min = payload.daily.temperature_2m_min[i];\n        obj.uv_index_max = payload.daily.uv_index_max[i];\n        obj.uv_index_clear_sky_max = payload.daily.uv_index_clear_sky_max[i];\n        obj.rain_sum = payload.daily.rain_sum[i];\n        obj.snowfall_sum = payload.daily.snowfall_sum[i];\n        obj.windspeed_10m_max = payload.daily.windspeed_10m_max[i];\n        obj.winddirection_10m_dominant = payload.daily.winddirection_10m_dominant[i];\n        obj.shortwave_radiation_sum = payload.daily.shortwave_radiation_sum[i];\n        obj.city_name = msg.city_name;\n        obj.city_lat = msg.city_lat;\n        obj.city_lng = msg.city_lng;\n        obj.geonameId = msg.geonameId;\n        //console.log(obj.city_name);\n        options.push(obj);\n    }\n\n    msg.payload = options;\n    return [msg, null];\n} catch (error) {\n    // does nothing\n    return [null, msg];\n}\n\n",
+        "func": "var options = [];\n// console.log(msg.city_name);\ntry {\n    var payload = msg.payload;\n    //console.log('payload.daily.city:', payload.city);\n    for (var i = 0; i < payload.daily.time.length; i++) {\n        var obj = {};\n        obj.time = payload.daily.time[i];\n        obj.weathercode = payload.daily.weathercode[i];\n        obj.temperature = parseFloat((payload.daily.temperature_2m_max[i] + payload.daily.temperature_2m_min[i]) / 2).toFixed(2);\n        obj.uv_index_max = payload.daily.uv_index_max[i];\n        obj.uv_index_clear_sky_max = payload.daily.uv_index_clear_sky_max[i];\n        obj.rain_sum = payload.daily.rain_sum[i];\n        obj.snowfall_sum = payload.daily.snowfall_sum[i];\n        obj.windspeed_10m_max = payload.daily.windspeed_10m_max[i];\n        obj.winddirection_10m_dominant = payload.daily.winddirection_10m_dominant[i];\n        obj.shortwave_radiation_sum = payload.daily.shortwave_radiation_sum[i];\n        obj.city_name = msg.city_name;\n        obj.city_lat = msg.city_lat;\n        obj.city_lng = msg.city_lng;\n        obj.geonameId = msg.geonameId;\n        //console.log(obj.city_name);\n        options.push(obj);\n    }\n\n    msg.payload = options;\n    return [msg, null];\n} catch (error) {\n    // does nothing\n    return [null, msg];\n}\n\n",
         "outputs": 2,
         "noerr": 0,
         "initialize": "",
@@ -210,16 +210,16 @@
         "y": 440,
         "wires": [
             [
-                "315ba2fb8a0df56b",
-                "6c2b05a987c06a14"
+                "d3130e7c4afb7a69",
+                "55ea53a3e5f30bdb"
             ],
             []
         ]
     },
     {
-        "id": "3166963f9de049b1",
+        "id": "0421f753dacba2db",
         "type": "sqlite",
-        "z": "cfee0119086d0c2b",
+        "z": "be3235bbd9f94982",
         "mydb": "e1b7d6f10fa6ce00",
         "sqlquery": "msg.topic",
         "sql": "",
@@ -228,16 +228,16 @@
         "y": 300,
         "wires": [
             [
-                "f5cf3ca5e6446280"
+                "7028030308dd5f63"
             ]
         ]
     },
     {
-        "id": "6c2b05a987c06a14",
+        "id": "55ea53a3e5f30bdb",
         "type": "function",
-        "z": "cfee0119086d0c2b",
+        "z": "be3235bbd9f94982",
         "name": "INSERT DATABASE",
-        "func": "var sql = \"\";\nconsole.log(msg.payload.length);\nfor (var i = 0; i < msg.payload.length; i++) {\n    var time = msg.payload[i].time;\n    console.log(time);\n    var weathercode = msg.payload[i].weathercode;\n    var temperature_2m_max = msg.payload[i].temperature_2m_max;\n    var temperature_2m_min = msg.payload[i].temperature_2m_min;\n    var uv_index_max = msg.payload[i].uv_index_max;\n    var uv_index_clear_sky_max = msg.payload[i].uv_index_clear_sky_max;\n    var rain_sum = msg.payload[i].rain_sum;\n    var snowfall_sum = msg.payload[i].snowfall_sum;\n    var windspeed_10m_max = msg.payload[i].windspeed_10m_max;\n    var winddirection_10m_dominant = msg.payload[i].winddirection_10m_dominant;\n    var shortwave_radiation_sum = msg.payload[i].shortwave_radiation_sum;\n    var city_name = msg.payload[i].city_name;\n    var lat = msg.payload[i].city_lat;\n    var lng = msg.payload[i].city_lng;\n    var geonameId = msg.payload[i].geonameId;\n    sql = `INSERT OR IGNORE INTO weather_table (time, weathercode, temperature_2m_max, temperature_2m_min, uv_index_max, uv_index_clear_sky_max, rain_sum, snowfall_sum, windspeed_10m_max, winddirection_10m_dominant, shortwave_radiation_sum, city_name, lat, lng, geonameId) VALUES (strftime('%Y-%m-%d', '${time}'), ${weathercode}, ${temperature_2m_max}, ${temperature_2m_min}, ${uv_index_max}, ${uv_index_clear_sky_max}, ${rain_sum}, ${snowfall_sum}, ${windspeed_10m_max}, ${winddirection_10m_dominant}, ${shortwave_radiation_sum}, '${city_name}', ${lat}, ${lng}, ${geonameId})`;\n\n    node.send({ topic: sql }); // send the SQL statement to the next node\n}\n\n// msg.topic = sql;\n// return [null, msg];\n",
+        "func": "var sql = \"\";\nconsole.log(msg.payload.length);\nfor (var i = 0; i < msg.payload.length; i++) {\n    var time = msg.payload[i].time;\n    console.log(time);\n    var weathercode = msg.payload[i].weathercode;\n    var temperature = msg.payload[i].temperature;\n    var uv_index_max = msg.payload[i].uv_index_max;\n    var uv_index_clear_sky_max = msg.payload[i].uv_index_clear_sky_max;\n    var rain_sum = msg.payload[i].rain_sum;\n    var snowfall_sum = msg.payload[i].snowfall_sum;\n    var windspeed_10m_max = msg.payload[i].windspeed_10m_max;\n    var winddirection_10m_dominant = msg.payload[i].winddirection_10m_dominant;\n    var shortwave_radiation_sum = msg.payload[i].shortwave_radiation_sum;\n    var city_name = msg.payload[i].city_name;\n    var lat = msg.payload[i].city_lat;\n    var lng = msg.payload[i].city_lng;\n    var geonameId = msg.payload[i].geonameId;\n    sql = `INSERT OR IGNORE INTO weather_table (time, weathercode, temperature, uv_index_max, uv_index_clear_sky_max, rain_sum, snowfall_sum, windspeed_10m_max, winddirection_10m_dominant, shortwave_radiation_sum, city_name, lat, lng, geonameId) VALUES (strftime('%Y-%m-%d', '${time}'), ${weathercode}, ${temperature}, ${uv_index_max}, ${uv_index_clear_sky_max}, ${rain_sum}, ${snowfall_sum}, ${windspeed_10m_max}, ${winddirection_10m_dominant}, ${shortwave_radiation_sum}, '${city_name}', ${lat}, ${lng}, ${geonameId})`;\n\n    node.send({ topic: sql }); // send the SQL statement to the next node\n}\n\n// msg.topic = sql;\n// return [null, msg];\n",
         "outputs": 2,
         "noerr": 0,
         "initialize": "",
@@ -247,15 +247,15 @@
         "y": 560,
         "wires": [
             [
-                "049b6642cc58b5ca"
+                "afb7efb357ed1bb7"
             ],
             []
         ]
     },
     {
-        "id": "049b6642cc58b5ca",
+        "id": "afb7efb357ed1bb7",
         "type": "sqlite",
-        "z": "cfee0119086d0c2b",
+        "z": "be3235bbd9f94982",
         "mydb": "e1b7d6f10fa6ce00",
         "sqlquery": "msg.topic",
         "sql": "",
@@ -264,14 +264,14 @@
         "y": 540,
         "wires": [
             [
-                "2c091639f495c5fe"
+                "53d94ac90a6232ce"
             ]
         ]
     },
     {
-        "id": "2c091639f495c5fe",
+        "id": "53d94ac90a6232ce",
         "type": "debug",
-        "z": "cfee0119086d0c2b",
+        "z": "be3235bbd9f94982",
         "name": "debug 31",
         "active": false,
         "tosidebar": true,
@@ -286,9 +286,9 @@
         "wires": []
     },
     {
-        "id": "f5cf3ca5e6446280",
+        "id": "7028030308dd5f63",
         "type": "debug",
-        "z": "cfee0119086d0c2b",
+        "z": "be3235bbd9f94982",
         "name": "debug 32",
         "active": false,
         "tosidebar": true,
@@ -302,9 +302,9 @@
         "wires": []
     },
     {
-        "id": "315ba2fb8a0df56b",
+        "id": "d3130e7c4afb7a69",
         "type": "debug",
-        "z": "cfee0119086d0c2b",
+        "z": "be3235bbd9f94982",
         "name": "debug 33",
         "active": false,
         "tosidebar": true,
@@ -318,9 +318,9 @@
         "wires": []
     },
     {
-        "id": "caddd41fa0eefe0d",
+        "id": "b192bde870e8824e",
         "type": "function",
-        "z": "cfee0119086d0c2b",
+        "z": "be3235bbd9f94982",
         "name": "function 17",
         "func": "var city = msg.payload;\nvar options = [];\nmsg.url = `https://api.open-meteo.com/v1/forecast?latitude=${city.lat}&longitude=${city.lng}&daily=weathercode,temperature_2m_max,temperature_2m_min,uv_index_max,uv_index_clear_sky_max,rain_sum,snowfall_sum,windspeed_10m_max,winddirection_10m_dominant,shortwave_radiation_sum&current_weather=true&timezone=auto`\nmsg.city_name = city.city_name;\nmsg.city_lat = city.lat;\nmsg.city_lng = city.lng;\nmsg.geonameId = city.geonameId;\n// console.log(city.city_name);\n// global.set(\"city_name\", city.city_name);\nreturn msg;\n",
         "outputs": 1,
@@ -332,31 +332,31 @@
         "y": 380,
         "wires": [
             [
-                "aba0797d214b8022"
+                "30d4c35779eb3d34"
             ]
         ]
     },
     {
-        "id": "3077537ca0ec8996",
+        "id": "62567bd90e92df4e",
         "type": "link out",
-        "z": "cfee0119086d0c2b",
+        "z": "be3235bbd9f94982",
         "name": "link out 6",
         "mode": "link",
         "links": [
-            "2318b218bd6b8027"
+            "b661a07c368381fa"
         ],
         "x": 1655,
         "y": 380,
         "wires": []
     },
     {
-        "id": "a5802a5f4c966922",
+        "id": "6ea5837a8d2b1f18",
         "type": "link out",
-        "z": "cfee0119086d0c2b",
+        "z": "be3235bbd9f94982",
         "name": "link out 7",
         "mode": "link",
         "links": [
-            "dff595abbc1115e8"
+            "307287e0880fce65"
         ],
         "x": 1695,
         "y": 200,
