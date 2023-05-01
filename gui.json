@@ -1,6 +1,6 @@
 [
     {
-        "id": "ac26701193bf90fc",
+        "id": "f3d84fa3b7dfd7c1",
         "type": "tab",
         "label": "Ergasia - GUI",
         "disabled": false,
@@ -8,9 +8,9 @@
         "env": []
     },
     {
-        "id": "b3b35de9881f1a38",
+        "id": "861026f5f4bed466",
         "type": "http request",
-        "z": "ac26701193bf90fc",
+        "z": "f3d84fa3b7dfd7c1",
         "name": "",
         "method": "GET",
         "ret": "obj",
@@ -27,15 +27,15 @@
         "y": 160,
         "wires": [
             [
-                "85ec951ce35b16d6",
-                "c5856125646780db"
+                "6553e010da64a3c6",
+                "89a342e523d01804"
             ]
         ]
     },
     {
-        "id": "ac6d039055cbd699",
+        "id": "b942134d05d093d2",
         "type": "function",
-        "z": "ac26701193bf90fc",
+        "z": "f3d84fa3b7dfd7c1",
         "name": "USER CHOOSE COUNTRY",
         "func": "var country_code = msg.payload; // user sets this.\n// sees if the country is already saved:\nif (global.keys().includes(country_code)) {\n    if(global.get(country_code)) {\n        msg.payload = \"Did not save country - it already exists.\"\n        return [null, msg];\n    }\n}\nglobal.set(country_code, 1);\nvar username = global.get(\"username\");\nmsg.url = \"http://api.geonames.org/searchJSON?country=\" + country_code + \"&username=\"+username;\nreturn [msg, null];",
         "outputs": 2,
@@ -47,18 +47,18 @@
         "y": 80,
         "wires": [
             [
-                "382bf869a618f8f1",
-                "b3b35de9881f1a38"
+                "dbc4743cc02887e6",
+                "861026f5f4bed466"
             ],
             [
-                "20400465a10fa73e"
+                "952a49e1bfa17fdc"
             ]
         ]
     },
     {
-        "id": "fef2041a640d0a81",
+        "id": "f639f14b2d585cab",
         "type": "comment",
-        "z": "ac26701193bf90fc",
+        "z": "f3d84fa3b7dfd7c1",
         "name": "Sends link for chosen country",
         "info": "Sends link for chosen country",
         "x": 660,
@@ -66,17 +66,17 @@
         "wires": []
     },
     {
-        "id": "4bb1d90d782561b1",
+        "id": "fc74116f3214a6df",
         "type": "ui_dropdown",
-        "z": "ac26701193bf90fc",
+        "z": "f3d84fa3b7dfd7c1",
         "name": "",
         "label": "Countries",
         "tooltip": "Select a country",
         "place": "Select a country",
-        "group": "07c2498f17a87e52",
-        "order": 0,
-        "width": "0",
-        "height": "0",
+        "group": "41e6ce4d.27d9e4",
+        "order": 1,
+        "width": 0,
+        "height": 0,
         "passthru": true,
         "multiple": false,
         "options": [
@@ -94,15 +94,15 @@
         "y": 200,
         "wires": [
             [
-                "ac6d039055cbd699",
-                "e69b6b108373644e"
+                "b942134d05d093d2",
+                "f054aeb1df64682e"
             ]
         ]
     },
     {
-        "id": "2a974e9c118bdd14",
+        "id": "64f2565e04f0ed55",
         "type": "inject",
-        "z": "ac26701193bf90fc",
+        "z": "f3d84fa3b7dfd7c1",
         "name": "INITIALIZE DROPDOWN",
         "props": [
             {
@@ -124,15 +124,15 @@
         "y": 300,
         "wires": [
             [
-                "0dd070ac78a0f7bb",
-                "ed1ae0b7a1dfc6b1"
+                "8a8ae5ae3bb86981",
+                "6a3280bc8e117e96"
             ]
         ]
     },
     {
-        "id": "382bf869a618f8f1",
+        "id": "dbc4743cc02887e6",
         "type": "debug",
-        "z": "ac26701193bf90fc",
+        "z": "f3d84fa3b7dfd7c1",
         "name": "debug 17",
         "active": false,
         "tosidebar": true,
@@ -147,9 +147,9 @@
         "wires": []
     },
     {
-        "id": "70d325dc73314f11",
+        "id": "6246c8a03bcaaec2",
         "type": "inject",
-        "z": "ac26701193bf90fc",
+        "z": "f3d84fa3b7dfd7c1",
         "name": "CLEAR",
         "props": [
             {
@@ -172,14 +172,14 @@
         "y": 140,
         "wires": [
             [
-                "4bb1d90d782561b1"
+                "fc74116f3214a6df"
             ]
         ]
     },
     {
-        "id": "85ec951ce35b16d6",
+        "id": "6553e010da64a3c6",
         "type": "debug",
-        "z": "ac26701193bf90fc",
+        "z": "f3d84fa3b7dfd7c1",
         "name": "debug 15",
         "active": false,
         "tosidebar": true,
@@ -194,9 +194,9 @@
         "wires": []
     },
     {
-        "id": "c5856125646780db",
+        "id": "89a342e523d01804",
         "type": "function",
-        "z": "ac26701193bf90fc",
+        "z": "f3d84fa3b7dfd7c1",
         "name": "CHECK EXISTS",
         "func": "if (msg.payload.totalResultsCount > 0) {\n    return [msg, null]\n} else {\n    msg.payload = \"Country does not exist.\"\n    return [null, msg]\n}\n",
         "outputs": 2,
@@ -208,16 +208,16 @@
         "y": 160,
         "wires": [
             [
-                "6b99f6e37091c9bc",
-                "f56b2158af468c6d"
+                "1d99cd278f72bdda",
+                "eb017252574aaa7e"
             ],
             []
         ]
     },
     {
-        "id": "6b99f6e37091c9bc",
+        "id": "1d99cd278f72bdda",
         "type": "debug",
-        "z": "ac26701193bf90fc",
+        "z": "f3d84fa3b7dfd7c1",
         "name": "Country exists",
         "active": false,
         "tosidebar": true,
@@ -232,50 +232,50 @@
         "wires": []
     },
     {
-        "id": "f56b2158af468c6d",
+        "id": "eb017252574aaa7e",
         "type": "link out",
-        "z": "ac26701193bf90fc",
+        "z": "f3d84fa3b7dfd7c1",
         "name": "link out 2",
         "mode": "link",
         "links": [
-            "b4fbdf757e413517"
+            "a7fdfab82f3ee839"
         ],
         "x": 1145,
         "y": 160,
         "wires": []
     },
     {
-        "id": "0dd070ac78a0f7bb",
+        "id": "8a8ae5ae3bb86981",
         "type": "link out",
-        "z": "ac26701193bf90fc",
+        "z": "f3d84fa3b7dfd7c1",
         "name": "link out 3",
         "mode": "link",
         "links": [
-            "546dc51c5175f608",
-            "c04498d84a7e9864"
+            "0971ebd337e1d676",
+            "8cb10cb8f249e448"
         ],
         "x": 355,
         "y": 360,
         "wires": []
     },
     {
-        "id": "e69b6b108373644e",
+        "id": "f054aeb1df64682e",
         "type": "link out",
-        "z": "ac26701193bf90fc",
+        "z": "f3d84fa3b7dfd7c1",
         "name": "link out 4",
         "mode": "link",
         "links": [
-            "429fd2ffe312f1c6",
-            "7fb51c46ee1e1959"
+            "910bc160281bd42c",
+            "c3acf319416d5b5e"
         ],
         "x": 625,
         "y": 260,
         "wires": []
     },
     {
-        "id": "855c6119e9b2f908",
+        "id": "169e0805624b84bd",
         "type": "comment",
-        "z": "ac26701193bf90fc",
+        "z": "f3d84fa3b7dfd7c1",
         "name": "DROPS TABLE",
         "info": "",
         "x": 320,
@@ -283,9 +283,9 @@
         "wires": []
     },
     {
-        "id": "698cdd89bc574d43",
+        "id": "cca28b744295db95",
         "type": "comment",
-        "z": "ac26701193bf90fc",
+        "z": "f3d84fa3b7dfd7c1",
         "name": "CREATES TABLE",
         "info": "",
         "x": 670,
@@ -293,9 +293,9 @@
         "wires": []
     },
     {
-        "id": "580d6865fd434003",
+        "id": "e7c3e90aa185a11e",
         "type": "change",
-        "z": "ac26701193bf90fc",
+        "z": "f3d84fa3b7dfd7c1",
         "name": "GLOBAL USER CONFIG",
         "rules": [
             {
@@ -318,9 +318,9 @@
         ]
     },
     {
-        "id": "20400465a10fa73e",
+        "id": "952a49e1bfa17fdc",
         "type": "debug",
-        "z": "ac26701193bf90fc",
+        "z": "f3d84fa3b7dfd7c1",
         "name": "debug 41",
         "active": true,
         "tosidebar": true,
@@ -334,9 +334,9 @@
         "wires": []
     },
     {
-        "id": "ed1ae0b7a1dfc6b1",
+        "id": "6a3280bc8e117e96",
         "type": "function",
-        "z": "ac26701193bf90fc",
+        "z": "f3d84fa3b7dfd7c1",
         "name": "ALL COUNTRIES",
         "func": "var res = [];\nvar options = [{\"name\": \"Armenia\", \"code\": \"AM\"}, {\"name\": \"Aruba\", \"code\": \"AW\"}, {\"name\": \"Australia\", \"code\": \"AU\"}, {\"name\": \"Belarus\", \"code\": \"BY\"}, {\"name\": \"Belgium\", \"code\": \"BE\"}, {\"name\": \"Bosnia and Herzegovina\", \"code\": \"BA\"}, {\"name\": \"Brazil\", \"code\": \"BR\"}, {\"name\": \"Bulgaria\", \"code\": \"BG\"}, {\"name\": \"Cameroon\", \"code\": \"CM\"}, {\"name\": \"Canada\", \"code\": \"CA\"}, {\"name\": \"Cayman Islands\", \"code\": \"KY\"}, {\"name\": \"Chile\", \"code\": \"CL\"}, {\"name\": \"China\", \"code\": \"CN\"}, {\"name\": \"Colombia\", \"code\": \"CO\"}, {\"name\": \"Comoros\", \"code\": \"KM\"}, {\"name\": \"Croatia\", \"code\": \"HR\"}, {\"name\": \"Cuba\", \"code\": \"CU\"}, {\"name\": \"Cyprus\", \"code\": \"CY\"}, {\"name\": \"Czechia\", \"code\": \"CZ\"}, {\"name\": \"Denmark\", \"code\": \"DK\"}, {\"name\": \"Ecuador\", \"code\": \"EC\"}, {\"name\": \"Egypt\", \"code\": \"EG\"}, {\"name\": \"Estonia\", \"code\": \"EE\"}, {\"name\": \"Finland\", \"code\": \"FI\"}, {\"name\": \"France\", \"code\": \"FR\"}, {\"name\": \"French Southern Territories\", \"code\": \"TF\"}, {\"name\": \"Georgia\", \"code\": \"GE\"}, {\"name\": \"Germany\", \"code\": \"DE\"}, {\"name\": \"Gibraltar\", \"code\": \"GI\"}, {\"name\": \"Greece\", \"code\": \"GR\"}, {\"name\": \"Grenada\", \"code\": \"GD\"}, {\"name\": \"Guyana\", \"code\": \"GY\"}, {\"name\": \"Hungary\", \"code\": \"HU\"}, {\"name\": \"India\", \"code\": \"IN\"}, {\"name\": \"Indonesia\", \"code\": \"ID\"}, {\"name\": \"Iran\", \"code\": \"IR\"}, {\"name\": \"Ireland\", \"code\": \"IE\"}, {\"name\": \"Italy\", \"code\": \"IT\"}, {\"name\": \"Jamaica\", \"code\": \"JM\"}, {\"name\": \"Japan\", \"code\": \"JP\"}, {\"name\": \"Kazakhstan\", \"code\": \"KZ\"}, {\"name\": \"Kenya\", \"code\": \"KE\"}, {\"name\": \"Korea\", \"code\": \"KR\"}, {\"name\": \"Latvia\", \"code\": \"LV\"}, {\"name\": \"Lebanon\", \"code\": \"LB\"}, {\"name\": \"Lithuania\", \"code\": \"LT\"}, {\"name\": \"Luxembourg\", \"code\": \"LU\"}, {\"name\": \"Malta\", \"code\": \"MT\"}, {\"name\": \"Mexico\", \"code\": \"MX\"}, {\"name\": \"Moldova\", \"code\": \"MD\"}, {\"name\": \"Morocco\", \"code\": \"MA\"}, {\"name\": \"Nepal\", \"code\": \"NP\"}, {\"name\": \"Netherlands\", \"code\": \"NL\"}, {\"name\": \"New Zealand\", \"code\": \"NZ\"}, {\"name\": \"Nicaragua\", \"code\": \"NI\"}, {\"name\": \"Nigeria\", \"code\": \"NG\"}, {\"name\": \"Norfolk Island\", \"code\": \"NF\"}, {\"name\": \"Norway\", \"code\": \"NO\"}, {\"name\": \"Pakistan\", \"code\": \"PK\"}, {\"name\": \"Paraguay\", \"code\": \"PY\"}, {\"name\": \"Philippines\", \"code\": \"PH\"}, {\"name\": \"Poland\", \"code\": \"PL\"}, {\"name\": \"Portugal\", \"code\": \"PT\"}, {\"name\": \"Qatar\", \"code\": \"QA\"}, {\"name\": \"Republic of North Macedonia\", \"code\": \"MK\"}, {\"name\": \"Romania\", \"code\": \"RO\"}, {\"name\": \"Russian Federation\", \"code\": \"RU\"}, {\"name\": \"Saudi Arabia\", \"code\": \"SA\"}, {\"name\": \"Serbia\", \"code\": \"RS\"}, {\"name\": \"Seychelles\", \"code\": \"SC\"}, {\"name\": \"Singapore\", \"code\": \"SG\"}, {\"name\": \"Slovakia\", \"code\": \"SK\"}, {\"name\": \"Slovenia\", \"code\": \"SI\"}, {\"name\": \"South Africa\", \"code\": \"ZA\"}, {\"name\": \"Spain\", \"code\": \"ES\"}, {\"name\": \"Sweden\", \"code\": \"SE\"}, {\"name\": \"Switzerland\", \"code\": \"CH\"}, {\"name\": \"Thailand\", \"code\": \"TH\"}, {\"name\": \"Trinidad and Tobago\", \"code\": \"TT\"}, {\"name\": \"Tunisia\", \"code\": \"TN\"}, {\"name\": \"Turkey\", \"code\": \"TR\"}, {\"name\": \"Ukraine\", \"code\": \"UA\"}, {\"name\": \"United Arab Emirates\", \"code\": \"AE\"}, {\"name\": \"United Kingdom of Great Britain and Northern Ireland\", \"code\": \"GB\"}, {\"name\": \"United States of America\", \"code\": \"US\"}, {\"name\": \"Uruguay\", \"code\": \"UY\"}, {\"name\": \"Uzbekistan\", \"code\": \"UZ\"}, {\"name\": \"Venezuela\", \"code\": \"VE\"}];\nconsole.log(\"Countries List Size: \"+options.length);\nfor (var i = 0; i<options.length; i++){\n    var name = options[i][\"name\"];\n    var code = options[i][\"code\"];\n    var obj = {};\n    obj[name] = code;\n    res.push(obj);\n}\nmsg.options = res;\n// console.log(res);\nmsg.topic = \"Countries\";\nreturn msg;",
         "outputs": 1,
@@ -348,27 +348,28 @@
         "y": 200,
         "wires": [
             [
-                "580d6865fd434003",
-                "4bb1d90d782561b1"
+                "e7c3e90aa185a11e",
+                "fc74116f3214a6df"
             ]
         ]
     },
     {
-        "id": "07c2498f17a87e52",
+        "id": "41e6ce4d.27d9e4",
         "type": "ui_group",
-        "name": "Countries",
-        "tab": "827648a1f0835a07",
-        "order": 2,
+        "name": "Default",
+        "tab": "c42e270a.a23fe",
+        "order": 1,
         "disp": true,
         "width": "6",
         "collapse": false,
         "className": ""
     },
     {
-        "id": "827648a1f0835a07",
+        "id": "c42e270a.a23fe",
         "type": "ui_tab",
         "name": "Home",
         "icon": "dashboard",
+        "order": 1,
         "disabled": false,
         "hidden": false
     }

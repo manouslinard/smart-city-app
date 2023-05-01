@@ -1,0 +1,368 @@
+[
+    {
+        "id": "1118d6cb240f1d5d",
+        "type": "tab",
+        "label": "GUI City Results",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "16f88025b63dd8ef",
+        "type": "group",
+        "z": "1118d6cb240f1d5d",
+        "name": "Bar Chart",
+        "style": {
+            "label": false
+        },
+        "nodes": [
+            "41a56987ad99a59f",
+            "4da195ee24501131",
+            "b44af45c4bedc7b3"
+        ],
+        "x": 1254,
+        "y": 99,
+        "w": 572,
+        "h": 82
+    },
+    {
+        "id": "ae16c71f544a9be8",
+        "type": "link in",
+        "z": "1118d6cb240f1d5d",
+        "name": "GUI show cities",
+        "links": [
+            "5ecb13b7b13954ac"
+        ],
+        "x": 295,
+        "y": 200,
+        "wires": [
+            [
+                "eef6ffd7397ef311"
+            ]
+        ]
+    },
+    {
+        "id": "86a8ccbcdbf9f06b",
+        "type": "function",
+        "z": "1118d6cb240f1d5d",
+        "name": "filter",
+        "func": "var city = msg.city;\nvar select_query = `SELECT * FROM cities_table \nJOIN weather_table ON cities_table.geonameId = weather_table.geonameId \nJOIN image_table ON cities_table.geonameId = image_table.geonameId \nWHERE cities_table.geonameId = ${city.geonameId}\n`;\nmsg.topic = select_query;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 570,
+        "y": 200,
+        "wires": [
+            [
+                "7d4397840bca240c"
+            ]
+        ]
+    },
+    {
+        "id": "0606cff2f3608570",
+        "type": "debug",
+        "z": "1118d6cb240f1d5d",
+        "name": "debug 42",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 660,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "7d4397840bca240c",
+        "type": "sqlite",
+        "z": "1118d6cb240f1d5d",
+        "mydb": "e1b7d6f10fa6ce00",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "",
+        "x": 770,
+        "y": 220,
+        "wires": [
+            [
+                "fd812a55b2418ba0",
+                "c2c2b6f69a896768",
+                "fd0de71494ed1923"
+            ]
+        ]
+    },
+    {
+        "id": "fd812a55b2418ba0",
+        "type": "debug",
+        "z": "1118d6cb240f1d5d",
+        "name": "debug 43",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 900,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "6e307a9e82e9d8cb",
+        "type": "inject",
+        "z": "1118d6cb240f1d5d",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 420,
+        "y": 120,
+        "wires": [
+            [
+                "86a8ccbcdbf9f06b"
+            ]
+        ]
+    },
+    {
+        "id": "c2c2b6f69a896768",
+        "type": "function",
+        "z": "1118d6cb240f1d5d",
+        "name": "function 23",
+        "func": "var city = msg.payload[0]; //this has all the rankings\ncity.name = city.city_name.charAt(0).toUpperCase() + city.city_name.slice(1);\nmsg.payload[0].city_name = city.name;\nreturn msg;\n\n",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1050,
+        "y": 220,
+        "wires": [
+            [
+                "56852faa2d0857e6"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "56852faa2d0857e6",
+        "type": "ui_template",
+        "z": "1118d6cb240f1d5d",
+        "group": "41e6ce4d.27d9e4",
+        "name": "",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "format": "<div>\n    <h2>{{msg.payload[0].city_name}}</h2>\n    <img src=\"{{msg.payload[0].web_img_url}}\" width=\"100%\" >\n    <p>Housing: {{msg.payload[0].housing}}</p>\n    <p>Cost of Living: {{msg.payload[0].cost_of_living}}</p>\n    <!-- add more properties here -->\n</div>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 1160,
+        "y": 300,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "eef6ffd7397ef311",
+        "type": "delay",
+        "z": "1118d6cb240f1d5d",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "1",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 420,
+        "y": 200,
+        "wires": [
+            [
+                "86a8ccbcdbf9f06b"
+            ]
+        ]
+    },
+    {
+        "id": "41a56987ad99a59f",
+        "type": "ui_chart",
+        "z": "1118d6cb240f1d5d",
+        "g": "16f88025b63dd8ef",
+        "name": "",
+        "group": "41e6ce4d.27d9e4",
+        "order": 3,
+        "width": 10,
+        "height": 6,
+        "label": "",
+        "chartType": "horizontalBar",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "0",
+        "ymax": "50",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": true,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 1750,
+        "y": 140,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "4da195ee24501131",
+        "type": "split",
+        "z": "1118d6cb240f1d5d",
+        "g": "16f88025b63dd8ef",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 1330,
+        "y": 140,
+        "wires": [
+            [
+                "b44af45c4bedc7b3",
+                "f6990c3ab4a858b5"
+            ]
+        ]
+    },
+    {
+        "id": "b44af45c4bedc7b3",
+        "type": "change",
+        "z": "1118d6cb240f1d5d",
+        "g": "16f88025b63dd8ef",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "payload.month",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.temp",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1540,
+        "y": 140,
+        "wires": [
+            [
+                "41a56987ad99a59f"
+            ]
+        ]
+    },
+    {
+        "id": "fd0de71494ed1923",
+        "type": "function",
+        "z": "1118d6cb240f1d5d",
+        "name": "function 24",
+        "func": "/* const mon = [\n    \"housing\",\n    \"cost_of_living\",\n    \"startups\",\n    \"venture_capital\",\n    \"travel_connectivity\",\n    \"commute\",\n    \"business_freedom\",\n    \"safety\",\n    \"healthcare\",\n    \"education\",\n    \"environmental_quality\",\n    \"economy\",\n    \"taxation\",\n    \"internet_access\",\n    \"leisure_culture\", \n    \"tolerance\",\n    \"outdoors\"\n    \n]\n\nfor (var i = 0; i < msg.payload[0].length; i++) {\n    if(msg.payload[0][i].equals(mon[])){\n\n    }\n    const dataSet = {\n        \n    }\n    tempData.push(dataSet)\n} */\nconst mon = [\"housing\", \"cost_of_living\", \"startups\", \"venture_capital\", \"travel_connectivity\", \"commute\", \"business_freedom\", \"safety\", \"healthcare\", \"education\", \"environmental_quality\", \"economy\", \"taxation\", \"internet_access\", \"leisure_culture\", \"tolerance\", \"outdoors\"];\n\nconst tempData = [];\n\nfor (var i = 0; i < msg.payload[0].length; i++) {\n    const city = msg.payload[0][i];\n    const dataSet = {};\n    for (var j = 0; j < mon.length; j++) {\n        const key = mon[j];\n        if (city.hasOwnProperty(key)) {\n            dataSet[key] = city[key];\n        }\n    }\n    tempData.push(dataSet);\n}\n\nmsg.payload = tempData;\nreturn msg;\n\n\nmsg.payload = tempData\n\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1050,
+        "y": 140,
+        "wires": [
+            [
+                "4da195ee24501131"
+            ]
+        ]
+    },
+    {
+        "id": "f6990c3ab4a858b5",
+        "type": "debug",
+        "z": "1118d6cb240f1d5d",
+        "name": "debug 44",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1480,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "e1b7d6f10fa6ce00",
+        "type": "sqlitedb",
+        "db": "/tmp/cities.db",
+        "mode": "RWC"
+    },
+    {
+        "id": "41e6ce4d.27d9e4",
+        "type": "ui_group",
+        "name": "Default",
+        "tab": "c42e270a.a23fe",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "c42e270a.a23fe",
+        "type": "ui_tab",
+        "name": "Home",
+        "icon": "dashboard",
+        "order": 1,
+        "disabled": false,
+        "hidden": false
+    }
+]
