@@ -64,7 +64,7 @@
         "type": "debug",
         "z": "1895d526297b5449",
         "name": "debug 43",
-        "active": false,
+        "active": true,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -129,7 +129,7 @@
         "order": 4,
         "width": 0,
         "height": 0,
-        "format": "\n<h2>{{msg.payload[0].city_name}}</h2>\n<img src=\"{{msg.payload[0].web_img_url}}\" width=\"100%\" >\n    <!-- <p>Housing: {{msg.payload[0].housing}}</p>\n    <p>Cost of Living: {{msg.payload[0].cost_of_living}}</p>\n    <p>Startups: {{msg.payload[0].startups}}</p>\n    <p>Venture Capital: {{msg.payload[0].venture_capital}}</p>\n    <p>Travel Connectivity: {{msg.payload[0].travel_connectivity}}</p>\n    <p>Commute: {{msg.payload[0].commute}}</p>\n    <p>Business Freedom: {{msg.payload[0].business_freedom}}</p>\n    <p>Safety: {{msg.payload[0].safety}}</p>\n    <p>Healthcare: {{msg.payload[0].healthcare}}</p>\n    <p>Education: {{msg.payload[0].education}}</p>\n    <p>Environmental Quality: {{msg.payload[0].environmental_quality}}</p>\n    <p>Economy: {{msg.payload[0].economy}}</p>\n    <p>Taxation: {{msg.payload[0].taxation}}</p>\n    <p>Internet Access: {{msg.payload[0].internet_access}}</p>\n    <p>Leisure Culture: {{msg.payload[0].leisure_culture}}</p>\n    <p>Tolerance: {{msg.payload[0].tolerance}}</p>\n    <p>Outdoors: {{msg.payload[0].outdoors}}</p> -->\n    <!-- add more properties here -->\n",
+        "format": "\n<h2>{{msg.payload[0].city_name}}</h2>\n<img src=\"{{msg.payload[0].web_img_url}}\" width=\"100%\" >\n<br>\n<p>{{msg.payload[0].city_summary}}</p>\n    <!-- <p>Cost of Living: {{msg.payload[0].cost_of_living}}</p>\n    <p>Startups: {{msg.payload[0].startups}}</p>\n    <p>Venture Capital: {{msg.payload[0].venture_capital}}</p>\n    <p>Travel Connectivity: {{msg.payload[0].travel_connectivity}}</p>\n    <p>Commute: {{msg.payload[0].commute}}</p>\n    <p>Business Freedom: {{msg.payload[0].business_freedom}}</p>\n    <p>Safety: {{msg.payload[0].safety}}</p>\n    <p>Healthcare: {{msg.payload[0].healthcare}}</p>\n    <p>Education: {{msg.payload[0].education}}</p>\n    <p>Environmental Quality: {{msg.payload[0].environmental_quality}}</p>\n    <p>Economy: {{msg.payload[0].economy}}</p>\n    <p>Taxation: {{msg.payload[0].taxation}}</p>\n    <p>Internet Access: {{msg.payload[0].internet_access}}</p>\n    <p>Leisure Culture: {{msg.payload[0].leisure_culture}}</p>\n    <p>Tolerance: {{msg.payload[0].tolerance}}</p>\n    <p>Outdoors: {{msg.payload[0].outdoors}}</p> -->\n    <!-- add more properties here -->\n",
         "storeOutMessages": true,
         "fwdInMessages": true,
         "resendOnRefresh": true,
@@ -312,8 +312,8 @@
         "payloadType": "bool",
         "topic": "topic",
         "topicType": "msg",
-        "x": 320,
-        "y": 280,
+        "x": 400,
+        "y": 320,
         "wires": [
             [
                 "2650473b3c0ef6b5",
@@ -341,7 +341,7 @@
         "payloadType": "bool",
         "topic": "topic",
         "topicType": "msg",
-        "x": 330,
+        "x": 390,
         "y": 380,
         "wires": [
             [
@@ -354,7 +354,7 @@
         "type": "debug",
         "z": "1895d526297b5449",
         "name": "debug 44",
-        "active": true,
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -362,8 +362,8 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 780,
-        "y": 440,
+        "x": 800,
+        "y": 660,
         "wires": []
     },
     {
@@ -377,7 +377,7 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 950,
+        "x": 990,
         "y": 220,
         "wires": [
             [
@@ -390,7 +390,7 @@
         "type": "debug",
         "z": "1895d526297b5449",
         "name": "debug 45",
-        "active": true,
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -413,8 +413,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 530,
-        "y": 520,
+        "x": 310,
+        "y": 480,
         "wires": [
             [
                 "dd83cd64abd30d9b"
@@ -433,8 +433,8 @@
         "complete": "false",
         "statusVal": "",
         "statusType": "auto",
-        "x": 700,
-        "y": 520,
+        "x": 480,
+        "y": 480,
         "wires": []
     },
     {
@@ -458,8 +458,8 @@
         "topic": "",
         "payload": "",
         "payloadType": "date",
-        "x": 360,
-        "y": 520,
+        "x": 140,
+        "y": 480,
         "wires": [
             [
                 "2bb0bee77e7b13b5"
@@ -471,20 +471,22 @@
         "type": "function",
         "z": "1895d526297b5449",
         "name": "function 30",
-        "func": "var counter = global.get('current_counter');\n\n// console.log(msg.payload);\n\nif(msg.payload) {   // next\n    // console.log(\"Next\");\n    counter += 1;\n} else {    // previous\n    // console.log(\"Previous\");\n    counter -= 1;\n}\n\n\nglobal.set('current_counter', counter);\n// console.log(counter);\nvar myList = global.get('current_cities');\nvar index = (counter % myList.length + myList.length) % myList.length;\n// var index = counter % myList.length;\nmsg.payload = myList[index];\nreturn msg;",
-        "outputs": 1,
+        "func": "var counter = global.get('current_counter');\n\n// console.log(msg.payload);\n\nif(msg.payload) {   // next\n    // console.log(\"Next\");\n    counter += 1;\n} else {    // previous\n    // console.log(\"Previous\");\n    counter -= 1;\n}\n\n\nglobal.set('current_counter', counter);\n\nvar current_country = global.get(\"current_country\");\nif (current_country != \"0\") {\n    global.set(\"current_country\", \"0\");\n    msg.payload = current_country;\n    var select_query = `SELECT * FROM cities_table WHERE cities_table.country_code = \"${current_country}\"`;\n    msg.topic = select_query;\n    return [null, msg];\n}\n\n// console.log(counter);\nvar myList = global.get('current_cities');\nvar index = (counter % myList.length + myList.length) % myList.length;\n// var index = counter % myList.length;\nmsg.payload = myList[index];\nreturn [msg, null];",
+        "outputs": 2,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 690,
-        "y": 380,
+        "x": 650,
+        "y": 400,
         "wires": [
             [
-                "015941c431600923",
                 "20ff3f1456bdc172",
                 "9ebe471e3fd324b7",
                 "4011182243691c48"
+            ],
+            [
+                "fd05cccac6755b60"
             ]
         ]
     },
@@ -504,6 +506,112 @@
         "x": 620,
         "y": 280,
         "wires": []
+    },
+    {
+        "id": "fd05cccac6755b60",
+        "type": "sqlite",
+        "z": "1895d526297b5449",
+        "mydb": "e1b7d6f10fa6ce00",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "",
+        "x": 630,
+        "y": 560,
+        "wires": [
+            [
+                "09ad4b23d9503a1c"
+            ]
+        ]
+    },
+    {
+        "id": "09ad4b23d9503a1c",
+        "type": "split",
+        "z": "1895d526297b5449",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 790,
+        "y": 560,
+        "wires": [
+            [
+                "015941c431600923",
+                "f87e224d652d3c33"
+            ]
+        ]
+    },
+    {
+        "id": "f87e224d652d3c33",
+        "type": "function",
+        "z": "1895d526297b5449",
+        "name": "function 31",
+        "func": "var city = msg.payload;\nvar select_query = `SELECT * FROM cities_table \nJOIN weather_table ON cities_table.geonameId = weather_table.geonameId \nJOIN image_table ON cities_table.geonameId = image_table.geonameId \nWHERE cities_table.geonameId = ${city.geonameId}\n`;\nmsg.topic = select_query;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 970,
+        "y": 580,
+        "wires": [
+            [
+                "51660c09f714191a"
+            ]
+        ]
+    },
+    {
+        "id": "51660c09f714191a",
+        "type": "sqlite",
+        "z": "1895d526297b5449",
+        "mydb": "e1b7d6f10fa6ce00",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "",
+        "x": 1150,
+        "y": 580,
+        "wires": [
+            [
+                "48a3053e387f17cf",
+                "c3e675b89f37b0a8"
+            ]
+        ]
+    },
+    {
+        "id": "48a3053e387f17cf",
+        "type": "debug",
+        "z": "1895d526297b5449",
+        "name": "debug 48",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1240,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "c3e675b89f37b0a8",
+        "type": "function",
+        "z": "1895d526297b5449",
+        "name": "function 32",
+        "func": "// Get the value of the global context with the key 'current_cities'\nvar myList = global.get('current_cities');\n\n// If the value doesn't exist, create an empty array\nif (!myList) {\n    myList = [];\n}\n\n// Check if msg.payload[0].city_name already exists in myList\nvar cityExists = myList.some(function (cityObj) {\n    return cityObj.city_name === msg.payload[0].city_name;\n});\n\n// If the city does not exist, push msg.payload to myList\nif (!cityExists) {\n    myList.push(msg.payload);\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1350,
+        "y": 580,
+        "wires": [
+            []
+        ]
     },
     {
         "id": "e1b7d6f10fa6ce00",
