@@ -7,4 +7,8 @@ To configure the username, go to the gui diagram and set it in the "GLOBAL USER 
 
 ---
 ## How to use the app
-You can initialize the app GUI by pressing in the gui-dataflow the inject button (currently with name: "INITIALIZE DROPDOWN"). After injecting, go to http://localhost:1880/ui/ and select a country. All the wanted data of the available cities of the selected country should be saved inside an sqlite db in /tmp folder, called cities.db!
+You can initialize the app GUI by pressing in the gui-dataflow the inject button (currently with name: "INITIALIZE DROPDOWN") - if you have node-red installed and running (run node-red in terminal), you can view the dataflow diagrams at http://127.0.0.1:1880/
+<br>
+By initializing the dropdown this way, you also create the db and set the correct global variables (it is recommended if you want to restart the app). 
+<br>
+After injecting, go to http://127.0.0.1:1880/ui/ and select a country. All the wanted data of the available cities of the selected country should be saved inside an sqlite db in /tmp folder, called cities.db!
