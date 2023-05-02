@@ -389,7 +389,6 @@
         "z": "d6a7e45aa681ae66",
         "name": "drop_table_link",
         "links": [
-            "3077537ca0ec8996",
             "62567bd90e92df4e"
         ],
         "x": 1055,
@@ -407,7 +406,6 @@
         "z": "d6a7e45aa681ae66",
         "name": "create_table_link",
         "links": [
-            "a5802a5f4c966922",
             "6ea5837a8d2b1f18"
         ],
         "x": 1065,
@@ -469,8 +467,6 @@
         "name": "link out 5",
         "mode": "link",
         "links": [
-            "046de58eadd17e4b",
-            "bce05adb70a37cf0",
             "878c72244bc11f60",
             "e48582812174227c"
         ],
@@ -578,6 +574,46 @@
             [],
             []
         ]
+    },
+    {
+        "id": "b07a26cc588ca0a6",
+        "type": "comment",
+        "z": "d6a7e45aa681ae66",
+        "name": "Ergasia - GUI -> link out 2",
+        "info": "",
+        "x": 190,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "63d8e9b975209f22",
+        "type": "comment",
+        "z": "d6a7e45aa681ae66",
+        "name": "Weatherflow -> link out 7",
+        "info": "",
+        "x": 1110,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "678a4d0e1cee2641",
+        "type": "comment",
+        "z": "d6a7e45aa681ae66",
+        "name": "Weatherflow -> link out 6",
+        "info": "",
+        "x": 1010,
+        "y": 720,
+        "wires": []
+    },
+    {
+        "id": "06ccc79610f0a819",
+        "type": "comment",
+        "z": "d6a7e45aa681ae66",
+        "name": "ImageFlow + WeatherFlow -> city_weather",
+        "info": "",
+        "x": 1960,
+        "y": 540,
+        "wires": []
     },
     {
         "id": "e1b7d6f10fa6ce00",
