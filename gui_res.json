@@ -128,8 +128,8 @@
         "group": "07c2498f17a87e52",
         "name": "City Image",
         "order": 5,
-        "width": 0,
-        "height": 0,
+        "width": "6",
+        "height": "3",
         "format": "\n<h2>{{msg.payload[0].city_name}}</h2>\n<img src=\"{{msg.payload[0].web_img_url}}\" width=\"100%\" >\n<br>\n<p>{{msg.payload[0].city_summary}}</p>\n    <!-- <p>Cost of Living: {{msg.payload[0].cost_of_living}}</p>\n    <p>Startups: {{msg.payload[0].startups}}</p>\n    <p>Venture Capital: {{msg.payload[0].venture_capital}}</p>\n    <p>Travel Connectivity: {{msg.payload[0].travel_connectivity}}</p>\n    <p>Commute: {{msg.payload[0].commute}}</p>\n    <p>Business Freedom: {{msg.payload[0].business_freedom}}</p>\n    <p>Safety: {{msg.payload[0].safety}}</p>\n    <p>Healthcare: {{msg.payload[0].healthcare}}</p>\n    <p>Education: {{msg.payload[0].education}}</p>\n    <p>Environmental Quality: {{msg.payload[0].environmental_quality}}</p>\n    <p>Economy: {{msg.payload[0].economy}}</p>\n    <p>Taxation: {{msg.payload[0].taxation}}</p>\n    <p>Internet Access: {{msg.payload[0].internet_access}}</p>\n    <p>Leisure Culture: {{msg.payload[0].leisure_culture}}</p>\n    <p>Tolerance: {{msg.payload[0].tolerance}}</p>\n    <p>Outdoors: {{msg.payload[0].outdoors}}</p> -->\n    <!-- add more properties here -->\n",
         "storeOutMessages": true,
         "fwdInMessages": true,
@@ -179,7 +179,7 @@
         "finalize": "",
         "libs": [],
         "x": 1090,
-        "y": 420,
+        "y": 440,
         "wires": [
             [
                 "3399029783d95bc3"
@@ -225,8 +225,8 @@
         "outputs": 1,
         "useDifferentColor": false,
         "className": "",
-        "x": 1320,
-        "y": 420,
+        "x": 1300,
+        "y": 440,
         "wires": [
             []
         ]
@@ -269,8 +269,8 @@
         "outputs": 1,
         "useDifferentColor": false,
         "className": "",
-        "x": 1320,
-        "y": 320,
+        "x": 1300,
+        "y": 240,
         "wires": [
             []
         ]
@@ -287,7 +287,7 @@
         "finalize": "",
         "libs": [],
         "x": 1090,
-        "y": 320,
+        "y": 300,
         "wires": [
             [
                 "196f531677e848fd"
@@ -485,7 +485,8 @@
             [
                 "20ff3f1456bdc172",
                 "9ebe471e3fd324b7",
-                "4011182243691c48"
+                "4011182243691c48",
+                "8e48b84618b2f901"
             ],
             [
                 "fd05cccac6755b60"
@@ -614,6 +615,132 @@
         "wires": [
             []
         ]
+    },
+    {
+        "id": "8e48b84618b2f901",
+        "type": "function",
+        "z": "1895d526297b5449",
+        "name": "function 33",
+        "func": "var city = msg.payload[0];\n// console.log(city);\nmsg.payload = {};\nmsg.payload.name = city.city_name.charAt(0).toUpperCase() + city.city_name.slice(1);\nmsg.payload.lat = city.lat;\nmsg.payload.lon = city.lng;\nmsg.payload.iconColor = \"green\";\nmsg.payload.photoUrl = city.mob_img_url;\nmsg.payload.map_url = global.get(\"map_url\");\n// msg.map.map_url = global.get(\"map_url\");\n// console.log(global.get(\"map_url\"));\n// console.log(global.get(\"username\"));\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1090,
+        "y": 380,
+        "wires": [
+            [
+                "12fe40636a3398fb",
+                "76dbaabb54d5c4fd",
+                "6c2178f5a1421ecc"
+            ]
+        ]
+    },
+    {
+        "id": "5c2a1f485c73fd73",
+        "type": "worldmap",
+        "z": "1895d526297b5449",
+        "name": "",
+        "lat": "",
+        "lon": "",
+        "zoom": "",
+        "layer": "OSMG",
+        "cluster": "",
+        "maxage": "",
+        "usermenu": "show",
+        "layers": "show",
+        "panit": "false",
+        "panlock": "false",
+        "zoomlock": "false",
+        "hiderightclick": "false",
+        "coords": "none",
+        "showgrid": "false",
+        "showruler": "false",
+        "allowFileDrop": "false",
+        "path": "/worldmap",
+        "overlist": "DR,CO,RA,DN,HM",
+        "maplist": "OSMG,OSMC,EsriC,EsriS,EsriT,EsriDG,UKOS",
+        "mapname": "",
+        "mapurl": "",
+        "mapopt": "",
+        "mapwms": false,
+        "x": 1420,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "12fe40636a3398fb",
+        "type": "debug",
+        "z": "1895d526297b5449",
+        "name": "debug 49",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1400,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "76dbaabb54d5c4fd",
+        "type": "ui_template",
+        "z": "1895d526297b5449",
+        "group": "07c2498f17a87e52",
+        "name": "Map Url",
+        "order": 7,
+        "width": 0,
+        "height": 0,
+        "format": "<h3>Map Url</h3>\n<!-- <p><a href=\"{{msg.payload.map_url}}\">{{msg.payload.map_url}}</a></p> -->\n<!-- <p><a href=\"{{msg.payload.map_url}}\">View Map Here</a></p> -->\n<p><a href=\"{{msg.payload.map_url}}\" target=\"_blank\" style=\"color:orange;\">View Map Here</a></p>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 1320,
+        "y": 340,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6c2178f5a1421ecc",
+        "type": "change",
+        "z": "1895d526297b5449",
+        "name": "DEL URL",
+        "rules": [
+            {
+                "t": "delete",
+                "p": "payload.map_url",
+                "pt": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1280,
+        "y": 380,
+        "wires": [
+            [
+                "5c2a1f485c73fd73"
+            ]
+        ]
+    },
+    {
+        "id": "4b1e54d593413f11",
+        "type": "comment",
+        "z": "1895d526297b5449",
+        "name": "ImageFlow -> link out 8",
+        "info": "",
+        "x": 260,
+        "y": 240,
+        "wires": []
     },
     {
         "id": "e1b7d6f10fa6ce00",

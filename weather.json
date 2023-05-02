@@ -363,6 +363,56 @@
         "wires": []
     },
     {
+        "id": "fd41544c8a7c21d7",
+        "type": "comment",
+        "z": "be3235bbd9f94982",
+        "name": "Ergasia - Main Flow -> link out 5",
+        "info": "",
+        "x": 390,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "182cd69223ea28a5",
+        "type": "comment",
+        "z": "be3235bbd9f94982",
+        "name": "Ergasia - GUI -> link out 3",
+        "info": "",
+        "x": 1410,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "ec93f24b56808d58",
+        "type": "comment",
+        "z": "be3235bbd9f94982",
+        "name": "Ergasia - GUI -> link out 4",
+        "info": "",
+        "x": 1330,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "1f5bcfc3c0dee4d2",
+        "type": "comment",
+        "z": "be3235bbd9f94982",
+        "name": "Ergasia - Main Flow -> drop_table_link",
+        "info": "",
+        "x": 1750,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "3ba29f1a2f0bcf77",
+        "type": "comment",
+        "z": "be3235bbd9f94982",
+        "name": "Ergasia - Main Flow -> create_table_link",
+        "info": "",
+        "x": 1730,
+        "y": 160,
+        "wires": []
+    },
+    {
         "id": "e1b7d6f10fa6ce00",
         "type": "sqlitedb",
         "db": "/tmp/cities.db",

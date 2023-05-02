@@ -167,7 +167,6 @@
         "z": "fea5d235b75727a9",
         "name": "drop_table_link",
         "links": [
-            "0dd070ac78a0f7bb",
             "8a8ae5ae3bb86981"
         ],
         "x": 1085,
@@ -187,7 +186,7 @@
             "f054aeb1df64682e"
         ],
         "x": 1025,
-        "y": 140,
+        "y": 100,
         "wires": [
             [
                 "b695d7a67d207c60"
@@ -223,7 +222,7 @@
         "wires": [
             [
                 "dce4bc79c6d6c16e",
-                "1f4e3dea3c35b66d"
+                "ce03fe0cd934e64f"
             ]
         ]
     },
@@ -323,31 +322,51 @@
         "name": "link out 8",
         "mode": "link",
         "links": [
-            "ae16c71f544a9be8",
             "a7be88948bc45e8a"
         ],
-        "x": 1235,
+        "x": 1075,
         "y": 360,
         "wires": []
     },
     {
-        "id": "1f4e3dea3c35b66d",
-        "type": "function",
+        "id": "86db922c4d0e1a11",
+        "type": "comment",
         "z": "fea5d235b75727a9",
-        "name": "function 27",
-        "func": "// initializes the current_cities attr.\n// if (!msg.hasOwnProperty(\"current_cities\")) {\n//     msg.current_cities = [];\n// }\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 1070,
-        "y": 360,
-        "wires": [
-            [
-                "ce03fe0cd934e64f"
-            ]
-        ]
+        "name": "Ergasia - Main Flow -> link out 5",
+        "info": "",
+        "x": 150,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "ab0c4b55bf79fbe7",
+        "type": "comment",
+        "z": "fea5d235b75727a9",
+        "name": "GUI City Results -> GUI show cities",
+        "info": "",
+        "x": 1200,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "8f2f545afb1ec958",
+        "type": "comment",
+        "z": "fea5d235b75727a9",
+        "name": "Ergasia - GUI -> link out 3",
+        "info": "",
+        "x": 1230,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "7941e1d45c6fd192",
+        "type": "comment",
+        "z": "fea5d235b75727a9",
+        "name": "Ergasia - GUI -> link out 4",
+        "info": "",
+        "x": 1110,
+        "y": 60,
+        "wires": []
     },
     {
         "id": "e1b7d6f10fa6ce00",

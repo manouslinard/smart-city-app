@@ -96,7 +96,8 @@
             [
                 "b942134d05d093d2",
                 "f054aeb1df64682e",
-                "abb29c7122a0aaef"
+                "abb29c7122a0aaef",
+                "7238440a766d7ac6"
             ]
         ]
     },
@@ -269,17 +270,17 @@
             "7129cc6fa27d5dd4",
             "ce7bedd8bd8d7af3"
         ],
-        "x": 625,
-        "y": 260,
+        "x": 995,
+        "y": 300,
         "wires": []
     },
     {
         "id": "169e0805624b84bd",
         "type": "comment",
         "z": "f3d84fa3b7dfd7c1",
-        "name": "DROPS TABLE",
-        "info": "",
-        "x": 320,
+        "name": "WeatherFlow + ImageFlow -> drop_table_link",
+        "info": "Drops db table.",
+        "x": 270,
         "y": 400,
         "wires": []
     },
@@ -287,10 +288,10 @@
         "id": "cca28b744295db95",
         "type": "comment",
         "z": "f3d84fa3b7dfd7c1",
-        "name": "CREATES TABLE",
-        "info": "",
-        "x": 630,
-        "y": 420,
+        "name": "WeatherFlow + ImageFlow -> create_table_link",
+        "info": "Creates db tables.",
+        "x": 1140,
+        "y": 340,
         "wires": []
     },
     {
@@ -349,8 +350,8 @@
         "y": 200,
         "wires": [
             [
-                "e7c3e90aa185a11e",
-                "fc74116f3214a6df"
+                "fc74116f3214a6df",
+                "e7c3e90aa185a11e"
             ]
         ]
     },
@@ -365,8 +366,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 810,
-        "y": 320,
+        "x": 650,
+        "y": 260,
         "wires": []
     },
     {
@@ -396,6 +397,41 @@
                 "8a8ae5ae3bb86981",
                 "6a3280bc8e117e96"
             ]
+        ]
+    },
+    {
+        "id": "d0723f413a6a2a9d",
+        "type": "comment",
+        "z": "f3d84fa3b7dfd7c1",
+        "name": "Ergasia Main Flow -> Function Call Countries",
+        "info": "",
+        "x": 1290,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "7238440a766d7ac6",
+        "type": "change",
+        "z": "f3d84fa3b7dfd7c1",
+        "name": "CONFIG MAP URL",
+        "rules": [
+            {
+                "t": "set",
+                "p": "map_url",
+                "pt": "global",
+                "to": "http://127.0.0.1:1880/worldmap/",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 610,
+        "y": 320,
+        "wires": [
+            []
         ]
     },
     {
