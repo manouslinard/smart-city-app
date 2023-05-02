@@ -22,4 +22,5 @@ After injecting, go to http://127.0.0.1:1880/ui/ and select a country. All the w
 
 ---
 ## Other links:
-You can see the documentation of this project [here](https://docs.google.com/document/d/1qboEuLH-l-9isQfCn9RzCzkCyO4TYGtqEFc8UejJHHo/edit?usp=sharing).
+* [Project documentation](https://docs.google.com/document/d/1qboEuLH-l-9isQfCn9RzCzkCyO4TYGtqEFc8UejJHHo/edit?usp=sharing)
+* [Weather Code Website](https://www.nodc.noaa.gov/archive/arc0021/0002199/1.1/data/0-data/HTML/WMO-CODE/WMO4677.HTM)
