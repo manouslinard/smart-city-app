@@ -364,8 +364,8 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 800,
-        "y": 660,
+        "x": 660,
+        "y": 740,
         "wires": []
     },
     {
@@ -416,7 +416,7 @@
         "finalize": "",
         "libs": [],
         "x": 310,
-        "y": 480,
+        "y": 40,
         "wires": [
             [
                 "dd83cd64abd30d9b"
@@ -436,7 +436,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 480,
-        "y": 480,
+        "y": 40,
         "wires": []
     },
     {
@@ -461,7 +461,7 @@
         "payload": "",
         "payloadType": "date",
         "x": 140,
-        "y": 480,
+        "y": 40,
         "wires": [
             [
                 "2bb0bee77e7b13b5"
@@ -486,7 +486,9 @@
                 "20ff3f1456bdc172",
                 "9ebe471e3fd324b7",
                 "4011182243691c48",
-                "8e48b84618b2f901"
+                "8e48b84618b2f901",
+                "fb6ca5e80fab1ed7",
+                "0ee75d159e424eaf"
             ],
             [
                 "fd05cccac6755b60"
@@ -518,8 +520,8 @@
         "sqlquery": "msg.topic",
         "sql": "",
         "name": "",
-        "x": 630,
-        "y": 560,
+        "x": 490,
+        "y": 640,
         "wires": [
             [
                 "09ad4b23d9503a1c"
@@ -537,8 +539,8 @@
         "arraySpltType": "len",
         "stream": false,
         "addname": "",
-        "x": 790,
-        "y": 560,
+        "x": 650,
+        "y": 640,
         "wires": [
             [
                 "015941c431600923",
@@ -557,8 +559,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 970,
-        "y": 580,
+        "x": 830,
+        "y": 660,
         "wires": [
             [
                 "51660c09f714191a"
@@ -573,8 +575,8 @@
         "sqlquery": "msg.topic",
         "sql": "",
         "name": "",
-        "x": 1150,
-        "y": 580,
+        "x": 1010,
+        "y": 660,
         "wires": [
             [
                 "48a3053e387f17cf",
@@ -595,8 +597,8 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1240,
-        "y": 660,
+        "x": 1100,
+        "y": 740,
         "wires": []
     },
     {
@@ -610,8 +612,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1350,
-        "y": 580,
+        "x": 1210,
+        "y": 660,
         "wires": [
             []
         ]
@@ -674,7 +676,7 @@
         "type": "debug",
         "z": "1895d526297b5449",
         "name": "debug 49",
-        "active": true,
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -692,7 +694,7 @@
         "z": "1895d526297b5449",
         "group": "07c2498f17a87e52",
         "name": "Map Url",
-        "order": 7,
+        "order": 9,
         "width": 0,
         "height": 0,
         "format": "<h3>Map Url</h3>\n<!-- <p><a href=\"{{msg.payload.map_url}}\">{{msg.payload.map_url}}</a></p> -->\n<!-- <p><a href=\"{{msg.payload.map_url}}\">View Map Here</a></p> -->\n<p><a href=\"{{msg.payload.map_url}}\" target=\"_blank\" style=\"color:orange;\">View Map Here</a></p>",
@@ -741,6 +743,151 @@
         "x": 260,
         "y": 240,
         "wires": []
+    },
+    {
+        "id": "fb6ca5e80fab1ed7",
+        "type": "debug",
+        "z": "1895d526297b5449",
+        "name": "debug 50",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 740,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "0ee75d159e424eaf",
+        "type": "function",
+        "z": "1895d526297b5449",
+        "name": "function 34",
+        "func": "try {\n    var city = msg.payload[0]; //this has all the rankings\n    msg.city_temperature = city.temperature;\n    msg.continent_code = city.continent_code;\n    msg.topic = `SELECT AVG(temperature) as avg_continent_temp from weather_table WHERE continent_code = '${city.continent_code}'`;\n    return [msg, null];\n}\ncatch (error) {\n    return [null, msg];\n}\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1090,
+        "y": 560,
+        "wires": [
+            [
+                "f91ed8f0dd8a8469",
+                "7f8e3f11a34ff408"
+            ]
+        ]
+    },
+    {
+        "id": "f91ed8f0dd8a8469",
+        "type": "debug",
+        "z": "1895d526297b5449",
+        "name": "debug 51",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1300,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "7f8e3f11a34ff408",
+        "type": "sqlite",
+        "z": "1895d526297b5449",
+        "mydb": "e1b7d6f10fa6ce00",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "",
+        "x": 1310,
+        "y": 560,
+        "wires": [
+            [
+                "1e1798bb164fd4a1",
+                "05ac5692dd53b889"
+            ]
+        ]
+    },
+    {
+        "id": "1e1798bb164fd4a1",
+        "type": "debug",
+        "z": "1895d526297b5449",
+        "name": "debug 52",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1500,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "05ac5692dd53b889",
+        "type": "function",
+        "z": "1895d526297b5449",
+        "name": "function 35",
+        "func": "var continent_codes = { \"AF\": \"Africa\", \"NA\": \"North America\", \"OC\": \"Oceania\", \"AN\": \"Antarctica\", \"AS\": \"Asia\", \"EU\": \"Europe\", \"SA\": \"South America\" }\n\n// var avg_tmp = msg.payload[0].avg_continent_temp;\nvar avg_tmp = parseFloat(msg.payload[0].avg_continent_temp.toFixed(2));\nvar city_tmp = msg.city_temperature;\nvar continent = continent_codes[msg.continent_code];\n// console.log(avg_tmp+\" \"+city_tmp);\nvar s = \"\";\nif (city_tmp > avg_tmp){\n    s = \"higher\";\n    // console.log(s);\n} else if (city_tmp < avg_tmp){\n    s = \"lower\";\n    // console.log(s);\n} else {\n    s = \"same\";\n    // console.log(s);\n}\nmsg.payload = s;\nmsg.continent = continent;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1510,
+        "y": 560,
+        "wires": [
+            [
+                "3435a3110a8a6b16",
+                "8f46c10714a3a312"
+            ]
+        ]
+    },
+    {
+        "id": "3435a3110a8a6b16",
+        "type": "debug",
+        "z": "1895d526297b5449",
+        "name": "debug 53",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1700,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "8f46c10714a3a312",
+        "type": "ui_template",
+        "z": "1895d526297b5449",
+        "group": "07c2498f17a87e52",
+        "name": "City Temperature",
+        "order": 8,
+        "width": 0,
+        "height": 0,
+        "format": "<p>This city has <b>{{msg.payload}}</b> temperature than other cities in {{msg.continent}}.</p>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 1730,
+        "y": 560,
+        "wires": [
+            []
+        ]
     },
     {
         "id": "e1b7d6f10fa6ce00",
