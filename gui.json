@@ -1,6 +1,6 @@
 [
     {
-        "id": "f3d84fa3b7dfd7c1",
+        "id": "2092bc89c6908110",
         "type": "tab",
         "label": "Ergasia - GUI",
         "disabled": false,
@@ -8,9 +8,9 @@
         "env": []
     },
     {
-        "id": "861026f5f4bed466",
+        "id": "6de01ef7f8a02e28",
         "type": "http request",
-        "z": "f3d84fa3b7dfd7c1",
+        "z": "2092bc89c6908110",
         "name": "",
         "method": "GET",
         "ret": "obj",
@@ -27,17 +27,17 @@
         "y": 160,
         "wires": [
             [
-                "6553e010da64a3c6",
-                "89a342e523d01804"
+                "d13d9cb5a95f76ea",
+                "495aa7f05931e9e1"
             ]
         ]
     },
     {
-        "id": "b942134d05d093d2",
+        "id": "f712a212ae1c6dd7",
         "type": "function",
-        "z": "f3d84fa3b7dfd7c1",
+        "z": "2092bc89c6908110",
         "name": "USER CHOOSE COUNTRY",
-        "func": "var country_code = msg.payload; // user sets this.\n// sees if the country is already saved:\nif (global.keys().includes(country_code)) {\n    if(global.get(country_code)) {\n        msg.payload = \"Did not save country - it already exists.\"\n        global.set(\"current_country\", country_code);\n        return [null, msg];\n    }\n}\nglobal.set(country_code, 1);\nglobal.set(\"current_country\", \"0\");\nvar username = global.get(\"username\");\nmsg.url = \"http://api.geonames.org/searchJSON?country=\" + country_code + \"&username=\"+username;\nreturn [msg, null];",
+        "func": "var country_code = msg.payload; // user sets this.\n// sees if the country is already saved:\nif (global.keys().includes(country_code)) {\n    if(global.get(country_code)) {\n        msg.payload = \"Did not save country - it already exists.\"\n        global.set(\"current_country\", country_code);\n        return [null, msg];\n    }\n}\nglobal.set(country_code, 1);\nglobal.set(\"current_openweather\", 0);\nglobal.set(\"current_country\", \"0\");\nvar username = global.get(\"username\");\nmsg.url = \"http://api.geonames.org/searchJSON?country=\" + country_code + \"&username=\"+username;\nreturn [msg, null];",
         "outputs": 2,
         "noerr": 0,
         "initialize": "",
@@ -47,18 +47,18 @@
         "y": 80,
         "wires": [
             [
-                "dbc4743cc02887e6",
-                "861026f5f4bed466"
+                "e88ac374d2648bfe",
+                "6de01ef7f8a02e28"
             ],
             [
-                "952a49e1bfa17fdc"
+                "ad69a39a7d9ba218"
             ]
         ]
     },
     {
-        "id": "f639f14b2d585cab",
+        "id": "ead695621452114f",
         "type": "comment",
-        "z": "f3d84fa3b7dfd7c1",
+        "z": "2092bc89c6908110",
         "name": "Sends link for chosen country",
         "info": "Sends link for chosen country",
         "x": 660,
@@ -66,9 +66,9 @@
         "wires": []
     },
     {
-        "id": "fc74116f3214a6df",
+        "id": "e711835bd62caf88",
         "type": "ui_dropdown",
-        "z": "f3d84fa3b7dfd7c1",
+        "z": "2092bc89c6908110",
         "name": "",
         "label": "",
         "tooltip": "Select a country",
@@ -94,17 +94,17 @@
         "y": 200,
         "wires": [
             [
-                "b942134d05d093d2",
-                "f054aeb1df64682e",
-                "abb29c7122a0aaef",
-                "7238440a766d7ac6"
+                "f712a212ae1c6dd7",
+                "7b6a51fd13596c7f",
+                "d9596d545163902c",
+                "010290d637ee59a6"
             ]
         ]
     },
     {
-        "id": "64f2565e04f0ed55",
+        "id": "771ab09247a4687f",
         "type": "inject",
-        "z": "f3d84fa3b7dfd7c1",
+        "z": "2092bc89c6908110",
         "name": "INITIALIZE DROPDOWN",
         "props": [
             {
@@ -126,15 +126,15 @@
         "y": 300,
         "wires": [
             [
-                "8a8ae5ae3bb86981",
-                "6a3280bc8e117e96"
+                "d733e60c57dc3044",
+                "bf0bf5b56f53aed5"
             ]
         ]
     },
     {
-        "id": "dbc4743cc02887e6",
+        "id": "e88ac374d2648bfe",
         "type": "debug",
-        "z": "f3d84fa3b7dfd7c1",
+        "z": "2092bc89c6908110",
         "name": "debug 17",
         "active": false,
         "tosidebar": true,
@@ -149,9 +149,9 @@
         "wires": []
     },
     {
-        "id": "6246c8a03bcaaec2",
+        "id": "91e6f052d71b519a",
         "type": "inject",
-        "z": "f3d84fa3b7dfd7c1",
+        "z": "2092bc89c6908110",
         "name": "CLEAR",
         "props": [
             {
@@ -174,14 +174,14 @@
         "y": 140,
         "wires": [
             [
-                "fc74116f3214a6df"
+                "e711835bd62caf88"
             ]
         ]
     },
     {
-        "id": "6553e010da64a3c6",
+        "id": "d13d9cb5a95f76ea",
         "type": "debug",
-        "z": "f3d84fa3b7dfd7c1",
+        "z": "2092bc89c6908110",
         "name": "debug 15",
         "active": false,
         "tosidebar": true,
@@ -196,9 +196,9 @@
         "wires": []
     },
     {
-        "id": "89a342e523d01804",
+        "id": "495aa7f05931e9e1",
         "type": "function",
-        "z": "f3d84fa3b7dfd7c1",
+        "z": "2092bc89c6908110",
         "name": "CHECK EXISTS",
         "func": "if (msg.payload.totalResultsCount > 0) {\n    return [msg, null]\n} else {\n    msg.payload = \"Country does not exist.\"\n    return [null, msg]\n}\n",
         "outputs": 2,
@@ -210,16 +210,16 @@
         "y": 160,
         "wires": [
             [
-                "1d99cd278f72bdda",
-                "eb017252574aaa7e"
+                "1d18d09cb3aa1488",
+                "2ef665cbca2faa54"
             ],
             []
         ]
     },
     {
-        "id": "1d99cd278f72bdda",
+        "id": "1d18d09cb3aa1488",
         "type": "debug",
-        "z": "f3d84fa3b7dfd7c1",
+        "z": "2092bc89c6908110",
         "name": "Country exists",
         "active": false,
         "tosidebar": true,
@@ -234,50 +234,50 @@
         "wires": []
     },
     {
-        "id": "eb017252574aaa7e",
+        "id": "2ef665cbca2faa54",
         "type": "link out",
-        "z": "f3d84fa3b7dfd7c1",
+        "z": "2092bc89c6908110",
         "name": "link out 2",
         "mode": "link",
         "links": [
-            "be6c27ccdb2076dc"
+            "dbbf92fa82ac16b9"
         ],
         "x": 1145,
         "y": 160,
         "wires": []
     },
     {
-        "id": "8a8ae5ae3bb86981",
+        "id": "d733e60c57dc3044",
         "type": "link out",
-        "z": "f3d84fa3b7dfd7c1",
+        "z": "2092bc89c6908110",
         "name": "link out 3",
         "mode": "link",
         "links": [
-            "1da41e39899160d4",
-            "6d19e273c8e8dc82"
+            "11d6dfa4ece6b4ea",
+            "bf88a554d298dc27"
         ],
         "x": 355,
         "y": 360,
         "wires": []
     },
     {
-        "id": "f054aeb1df64682e",
+        "id": "7b6a51fd13596c7f",
         "type": "link out",
-        "z": "f3d84fa3b7dfd7c1",
+        "z": "2092bc89c6908110",
         "name": "link out 4",
         "mode": "link",
         "links": [
-            "7129cc6fa27d5dd4",
-            "ce7bedd8bd8d7af3"
+            "3bb69b406712d2fc",
+            "4f8ec7b59671a804"
         ],
         "x": 995,
         "y": 300,
         "wires": []
     },
     {
-        "id": "169e0805624b84bd",
+        "id": "f43dc6625fbfa58c",
         "type": "comment",
-        "z": "f3d84fa3b7dfd7c1",
+        "z": "2092bc89c6908110",
         "name": "WeatherFlow + ImageFlow -> drop_table_link",
         "info": "Drops db table.",
         "x": 270,
@@ -285,9 +285,9 @@
         "wires": []
     },
     {
-        "id": "cca28b744295db95",
+        "id": "64a882fcbe9d1c26",
         "type": "comment",
-        "z": "f3d84fa3b7dfd7c1",
+        "z": "2092bc89c6908110",
         "name": "WeatherFlow + ImageFlow -> create_table_link",
         "info": "Creates db tables.",
         "x": 1140,
@@ -295,9 +295,9 @@
         "wires": []
     },
     {
-        "id": "e7c3e90aa185a11e",
+        "id": "7a3e4078b252af28",
         "type": "change",
-        "z": "f3d84fa3b7dfd7c1",
+        "z": "2092bc89c6908110",
         "name": "GLOBAL USER CONFIG",
         "rules": [
             {
@@ -320,9 +320,9 @@
         ]
     },
     {
-        "id": "952a49e1bfa17fdc",
+        "id": "ad69a39a7d9ba218",
         "type": "debug",
-        "z": "f3d84fa3b7dfd7c1",
+        "z": "2092bc89c6908110",
         "name": "debug 41",
         "active": false,
         "tosidebar": true,
@@ -336,9 +336,9 @@
         "wires": []
     },
     {
-        "id": "6a3280bc8e117e96",
+        "id": "bf0bf5b56f53aed5",
         "type": "function",
-        "z": "f3d84fa3b7dfd7c1",
+        "z": "2092bc89c6908110",
         "name": "ALL COUNTRIES",
         "func": "var res = [];\nvar options = [{\"name\": \"Armenia\", \"code\": \"AM\"}, {\"name\": \"Aruba\", \"code\": \"AW\"}, {\"name\": \"Australia\", \"code\": \"AU\"}, {\"name\": \"Belarus\", \"code\": \"BY\"}, {\"name\": \"Belgium\", \"code\": \"BE\"}, {\"name\": \"Bosnia and Herzegovina\", \"code\": \"BA\"}, {\"name\": \"Brazil\", \"code\": \"BR\"}, {\"name\": \"Bulgaria\", \"code\": \"BG\"}, {\"name\": \"Cameroon\", \"code\": \"CM\"}, {\"name\": \"Canada\", \"code\": \"CA\"}, {\"name\": \"Cayman Islands\", \"code\": \"KY\"}, {\"name\": \"Chile\", \"code\": \"CL\"}, {\"name\": \"China\", \"code\": \"CN\"}, {\"name\": \"Colombia\", \"code\": \"CO\"}, {\"name\": \"Comoros\", \"code\": \"KM\"}, {\"name\": \"Croatia\", \"code\": \"HR\"}, {\"name\": \"Cuba\", \"code\": \"CU\"}, {\"name\": \"Cyprus\", \"code\": \"CY\"}, {\"name\": \"Czechia\", \"code\": \"CZ\"}, {\"name\": \"Denmark\", \"code\": \"DK\"}, {\"name\": \"Ecuador\", \"code\": \"EC\"}, {\"name\": \"Egypt\", \"code\": \"EG\"}, {\"name\": \"Estonia\", \"code\": \"EE\"}, {\"name\": \"Finland\", \"code\": \"FI\"}, {\"name\": \"France\", \"code\": \"FR\"}, {\"name\": \"French Southern Territories\", \"code\": \"TF\"}, {\"name\": \"Georgia\", \"code\": \"GE\"}, {\"name\": \"Germany\", \"code\": \"DE\"}, {\"name\": \"Gibraltar\", \"code\": \"GI\"}, {\"name\": \"Greece\", \"code\": \"GR\"}, {\"name\": \"Grenada\", \"code\": \"GD\"}, {\"name\": \"Guyana\", \"code\": \"GY\"}, {\"name\": \"Hungary\", \"code\": \"HU\"}, {\"name\": \"India\", \"code\": \"IN\"}, {\"name\": \"Indonesia\", \"code\": \"ID\"}, {\"name\": \"Iran\", \"code\": \"IR\"}, {\"name\": \"Ireland\", \"code\": \"IE\"}, {\"name\": \"Italy\", \"code\": \"IT\"}, {\"name\": \"Jamaica\", \"code\": \"JM\"}, {\"name\": \"Japan\", \"code\": \"JP\"}, {\"name\": \"Kazakhstan\", \"code\": \"KZ\"}, {\"name\": \"Kenya\", \"code\": \"KE\"}, {\"name\": \"Korea\", \"code\": \"KR\"}, {\"name\": \"Latvia\", \"code\": \"LV\"}, {\"name\": \"Lebanon\", \"code\": \"LB\"}, {\"name\": \"Lithuania\", \"code\": \"LT\"}, {\"name\": \"Luxembourg\", \"code\": \"LU\"}, {\"name\": \"Malta\", \"code\": \"MT\"}, {\"name\": \"Mexico\", \"code\": \"MX\"}, {\"name\": \"Moldova\", \"code\": \"MD\"}, {\"name\": \"Morocco\", \"code\": \"MA\"}, {\"name\": \"Nepal\", \"code\": \"NP\"}, {\"name\": \"Netherlands\", \"code\": \"NL\"}, {\"name\": \"New Zealand\", \"code\": \"NZ\"}, {\"name\": \"Nicaragua\", \"code\": \"NI\"}, {\"name\": \"Nigeria\", \"code\": \"NG\"}, {\"name\": \"Norfolk Island\", \"code\": \"NF\"}, {\"name\": \"Norway\", \"code\": \"NO\"}, {\"name\": \"Pakistan\", \"code\": \"PK\"}, {\"name\": \"Paraguay\", \"code\": \"PY\"}, {\"name\": \"Philippines\", \"code\": \"PH\"}, {\"name\": \"Poland\", \"code\": \"PL\"}, {\"name\": \"Portugal\", \"code\": \"PT\"}, {\"name\": \"Qatar\", \"code\": \"QA\"}, {\"name\": \"Republic of North Macedonia\", \"code\": \"MK\"}, {\"name\": \"Romania\", \"code\": \"RO\"}, {\"name\": \"Russian Federation\", \"code\": \"RU\"}, {\"name\": \"Saudi Arabia\", \"code\": \"SA\"}, {\"name\": \"Serbia\", \"code\": \"RS\"}, {\"name\": \"Seychelles\", \"code\": \"SC\"}, {\"name\": \"Singapore\", \"code\": \"SG\"}, {\"name\": \"Slovakia\", \"code\": \"SK\"}, {\"name\": \"Slovenia\", \"code\": \"SI\"}, {\"name\": \"South Africa\", \"code\": \"ZA\"}, {\"name\": \"Spain\", \"code\": \"ES\"}, {\"name\": \"Sweden\", \"code\": \"SE\"}, {\"name\": \"Switzerland\", \"code\": \"CH\"}, {\"name\": \"Thailand\", \"code\": \"TH\"}, {\"name\": \"Trinidad and Tobago\", \"code\": \"TT\"}, {\"name\": \"Tunisia\", \"code\": \"TN\"}, {\"name\": \"Turkey\", \"code\": \"TR\"}, {\"name\": \"Ukraine\", \"code\": \"UA\"}, {\"name\": \"United Arab Emirates\", \"code\": \"AE\"}, {\"name\": \"United Kingdom of Great Britain and Northern Ireland\", \"code\": \"GB\"}, {\"name\": \"United States of America\", \"code\": \"US\"}, {\"name\": \"Uruguay\", \"code\": \"UY\"}, {\"name\": \"Uzbekistan\", \"code\": \"UZ\"}, {\"name\": \"Venezuela\", \"code\": \"VE\"}];\nconsole.log(\"Countries List Size: \"+options.length);\nfor (var i = 0; i<options.length; i++){\n    var name = options[i][\"name\"];\n    var code = options[i][\"code\"];\n    var obj = {};\n    obj[name] = code;\n    res.push(obj);\n}\nmsg.options = res;\n// console.log(res);\nmsg.topic = \"Countries\";\nreturn msg;",
         "outputs": 1,
@@ -350,15 +350,15 @@
         "y": 200,
         "wires": [
             [
-                "fc74116f3214a6df",
-                "e7c3e90aa185a11e"
+                "e711835bd62caf88",
+                "7a3e4078b252af28"
             ]
         ]
     },
     {
-        "id": "abb29c7122a0aaef",
+        "id": "d9596d545163902c",
         "type": "function",
-        "z": "f3d84fa3b7dfd7c1",
+        "z": "2092bc89c6908110",
         "name": "function 28",
         "func": "// resets - initializes vars\nglobal.set('current_cities', []);\nglobal.set('current_counter', 0);\n",
         "outputs": 0,
@@ -371,9 +371,9 @@
         "wires": []
     },
     {
-        "id": "5758add2cc0d0aae",
+        "id": "59745a0ab2408971",
         "type": "ui_button",
-        "z": "f3d84fa3b7dfd7c1",
+        "z": "2092bc89c6908110",
         "name": "",
         "group": "07c2498f17a87e52",
         "order": 2,
@@ -390,19 +390,19 @@
         "payloadType": "str",
         "topic": "topic",
         "topicType": "msg",
-        "x": 50,
+        "x": 90,
         "y": 260,
         "wires": [
             [
-                "8a8ae5ae3bb86981",
-                "6a3280bc8e117e96"
+                "d733e60c57dc3044",
+                "bf0bf5b56f53aed5"
             ]
         ]
     },
     {
-        "id": "d0723f413a6a2a9d",
+        "id": "9879c70e0323e0dc",
         "type": "comment",
-        "z": "f3d84fa3b7dfd7c1",
+        "z": "2092bc89c6908110",
         "name": "Ergasia Main Flow -> Function Call Countries",
         "info": "",
         "x": 1290,
@@ -410,9 +410,9 @@
         "wires": []
     },
     {
-        "id": "7238440a766d7ac6",
+        "id": "010290d637ee59a6",
         "type": "change",
-        "z": "f3d84fa3b7dfd7c1",
+        "z": "2092bc89c6908110",
         "name": "CONFIG MAP URL",
         "rules": [
             {
@@ -420,6 +420,13 @@
                 "p": "map_url",
                 "pt": "global",
                 "to": "http://127.0.0.1:1880/worldmap/",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "open_weather_appid",
+                "pt": "global",
+                "to": "your_api_key",
                 "tot": "str"
             }
         ],
