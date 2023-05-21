@@ -7,27 +7,35 @@ This is a smart city app that saves many cities (and their rankings, weather and
 To configure the username, go to the gui diagram and set it in the "GLOBAL USER CONFIG" component (replace it where it says yourusername).
 
 * ### Map Url:
-In the first gui diagram at "CONFIG MAP URL" component you can also set the url of the worldmap in the attribute map_url. By default, this value is http://127.0.0.1:1880/worldmap/ 
+In the first gui diagram (Ergasia - GUI) at "RABBIT & MAP CONFIG" component you can also set the url of the worldmap in the attribute map_url. By default, this value is http://127.0.0.1:1880/worldmap/ 
 
 * ### Link Connections:
 Github repo does not save the connections (link in and outs) of this project. Once you cloned this repo, you should go to the dataflow in [node-red server](http://127.0.0.1:1880/) and connect the links according to the comments (they are right next to them). All the links should be configured correctly in order for the app to work.
 
 * ### OpenWeatherMap API key:
-You also have to set your openweathermap api key in the first gui diagram at "CONFIG MAP URL" component in the attribute open_weather_appid.
+You also have to set your openweathermap api key in the first gui diagram (Ergasia - GUI) at "RABBIT & MAP CONFIG" component in the attribute open_weather_appid.
 
-* ### RabbitMQ Installation and Config:
+* ### RabbitMQ Installation & Config:
+For these dataflow diagrams, this package is installed (from manage pallete):<br>
+<strong>@node-red-tools/node-red-contrib-amqp</strong>
+<br>
+Then, run the following in your terminal:
+
 ```
 sudo apt-get install rabbitmq-server
 sudo rabbitmq-plugins enable rabbitmq_management
 sudo rabbitmqctl add_user USERNAME PWD
 sudo rabbitmqctl set_user_tags USERNAME administrator
-Open firewall for admin panel
 sudo ufw allow 15672
 ```
+Then, you should create a vhost and give permissions (replace VHOST_NAME with "testing" or any other name you want, just keep in mind that you will also need to change it in the dataflow diagram):
+```
+sudo rabbitmqctl add_vhost VHOST_NAME
+sudo rabbitmqctl set_permissions -p VHOST_NAME USERNAME "." "." ".*"
+```
+Once you created the rabbitmq user and vhost (with correct permissions) go to the GUI City Results dataflow in the amqp server node (it is called amq.direct in the dataflow) and click on the edit button of the server (which should be localhost:5672). Then, set the username and password in the Security tab with the ones you put in the commands above. Also in the Connection tab, add the vhost name you specified in the commands above.
 <br>
-For these dataflow diagrams, the username for rabbitmq is "rabbit" and the password is "pass123" (so replace USERNAME with "rabbit" and PWD with "pass123").<br>
-If you want to change this user, you can create a new one by following the instructions (or use an existing one). Keep in mind that you also have to change the username and password in the Security tab of the amqp server node (it is called amq.direct in the dataflow) in the GUI City Results dataflow.
-
+Lastly, put the USERNAME and PASSWORD in every http request of "Create AMQP User" dataflow (in the username and password). You should also put the username in the "RABBIT & MAP CONFIG" component of the initial Ergasia - GUI diagram.
 
 ---
 ## How to use the app

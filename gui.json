@@ -1,6 +1,6 @@
 [
     {
-        "id": "2092bc89c6908110",
+        "id": "18d31d1c102a3749",
         "type": "tab",
         "label": "Ergasia - GUI",
         "disabled": false,
@@ -8,9 +8,9 @@
         "env": []
     },
     {
-        "id": "6de01ef7f8a02e28",
+        "id": "bd21a20e0acf14f9",
         "type": "http request",
-        "z": "2092bc89c6908110",
+        "z": "18d31d1c102a3749",
         "name": "",
         "method": "GET",
         "ret": "obj",
@@ -27,15 +27,15 @@
         "y": 160,
         "wires": [
             [
-                "d13d9cb5a95f76ea",
-                "495aa7f05931e9e1"
+                "e740f7c72bd15dd9",
+                "8715391625a0e940"
             ]
         ]
     },
     {
-        "id": "f712a212ae1c6dd7",
+        "id": "a3ab4f541a6366da",
         "type": "function",
-        "z": "2092bc89c6908110",
+        "z": "18d31d1c102a3749",
         "name": "USER CHOOSE COUNTRY",
         "func": "var country_code = msg.payload; // user sets this.\n// sees if the country is already saved:\nif (global.keys().includes(country_code)) {\n    if(global.get(country_code)) {\n        msg.payload = \"Did not save country - it already exists.\"\n        global.set(\"current_country\", country_code);\n        return [null, msg];\n    }\n}\nglobal.set(country_code, 1);\nglobal.set(\"current_openweather\", 0);\nglobal.set(\"current_country\", \"0\");\nvar username = global.get(\"username\");\nmsg.url = \"http://api.geonames.org/searchJSON?country=\" + country_code + \"&username=\"+username;\nreturn [msg, null];",
         "outputs": 2,
@@ -47,18 +47,18 @@
         "y": 80,
         "wires": [
             [
-                "e88ac374d2648bfe",
-                "6de01ef7f8a02e28"
+                "78e60073dccebe5b",
+                "bd21a20e0acf14f9"
             ],
             [
-                "ad69a39a7d9ba218"
+                "a41679349cc6cac4"
             ]
         ]
     },
     {
-        "id": "ead695621452114f",
+        "id": "0662f721df23b416",
         "type": "comment",
-        "z": "2092bc89c6908110",
+        "z": "18d31d1c102a3749",
         "name": "Sends link for chosen country",
         "info": "Sends link for chosen country",
         "x": 660,
@@ -66,9 +66,9 @@
         "wires": []
     },
     {
-        "id": "e711835bd62caf88",
+        "id": "50d93baa24d3d60e",
         "type": "ui_dropdown",
-        "z": "2092bc89c6908110",
+        "z": "18d31d1c102a3749",
         "name": "",
         "label": "",
         "tooltip": "Select a country",
@@ -94,17 +94,17 @@
         "y": 200,
         "wires": [
             [
-                "f712a212ae1c6dd7",
-                "7b6a51fd13596c7f",
-                "d9596d545163902c",
-                "010290d637ee59a6"
+                "a3ab4f541a6366da",
+                "6055323a9424b523",
+                "be2b608a8181d8ed",
+                "12b04e273d65c18c"
             ]
         ]
     },
     {
-        "id": "771ab09247a4687f",
+        "id": "ab85d9af04b2e756",
         "type": "inject",
-        "z": "2092bc89c6908110",
+        "z": "18d31d1c102a3749",
         "name": "INITIALIZE DROPDOWN",
         "props": [
             {
@@ -126,15 +126,15 @@
         "y": 300,
         "wires": [
             [
-                "d733e60c57dc3044",
-                "bf0bf5b56f53aed5"
+                "757cf2221969b73e",
+                "18dbb6f1ecd4b813"
             ]
         ]
     },
     {
-        "id": "e88ac374d2648bfe",
+        "id": "78e60073dccebe5b",
         "type": "debug",
-        "z": "2092bc89c6908110",
+        "z": "18d31d1c102a3749",
         "name": "debug 17",
         "active": false,
         "tosidebar": true,
@@ -149,9 +149,9 @@
         "wires": []
     },
     {
-        "id": "91e6f052d71b519a",
+        "id": "4a33dee0589d4c8f",
         "type": "inject",
-        "z": "2092bc89c6908110",
+        "z": "18d31d1c102a3749",
         "name": "CLEAR",
         "props": [
             {
@@ -174,14 +174,14 @@
         "y": 140,
         "wires": [
             [
-                "e711835bd62caf88"
+                "50d93baa24d3d60e"
             ]
         ]
     },
     {
-        "id": "d13d9cb5a95f76ea",
+        "id": "e740f7c72bd15dd9",
         "type": "debug",
-        "z": "2092bc89c6908110",
+        "z": "18d31d1c102a3749",
         "name": "debug 15",
         "active": false,
         "tosidebar": true,
@@ -196,9 +196,9 @@
         "wires": []
     },
     {
-        "id": "495aa7f05931e9e1",
+        "id": "8715391625a0e940",
         "type": "function",
-        "z": "2092bc89c6908110",
+        "z": "18d31d1c102a3749",
         "name": "CHECK EXISTS",
         "func": "if (msg.payload.totalResultsCount > 0) {\n    return [msg, null]\n} else {\n    msg.payload = \"Country does not exist.\"\n    return [null, msg]\n}\n",
         "outputs": 2,
@@ -210,16 +210,16 @@
         "y": 160,
         "wires": [
             [
-                "1d18d09cb3aa1488",
-                "2ef665cbca2faa54"
+                "26f4863dec2e323a",
+                "ee227931fc2ecec9"
             ],
             []
         ]
     },
     {
-        "id": "1d18d09cb3aa1488",
+        "id": "26f4863dec2e323a",
         "type": "debug",
-        "z": "2092bc89c6908110",
+        "z": "18d31d1c102a3749",
         "name": "Country exists",
         "active": false,
         "tosidebar": true,
@@ -234,50 +234,50 @@
         "wires": []
     },
     {
-        "id": "2ef665cbca2faa54",
+        "id": "ee227931fc2ecec9",
         "type": "link out",
-        "z": "2092bc89c6908110",
+        "z": "18d31d1c102a3749",
         "name": "link out 2",
         "mode": "link",
         "links": [
-            "dbbf92fa82ac16b9"
+            "3db01f1d118e51c8"
         ],
         "x": 1145,
         "y": 160,
         "wires": []
     },
     {
-        "id": "d733e60c57dc3044",
+        "id": "757cf2221969b73e",
         "type": "link out",
-        "z": "2092bc89c6908110",
+        "z": "18d31d1c102a3749",
         "name": "link out 3",
         "mode": "link",
         "links": [
-            "11d6dfa4ece6b4ea",
-            "bf88a554d298dc27"
+            "62db84a7b9dd05df",
+            "85d7bd86379ed8c3"
         ],
         "x": 355,
         "y": 360,
         "wires": []
     },
     {
-        "id": "7b6a51fd13596c7f",
+        "id": "6055323a9424b523",
         "type": "link out",
-        "z": "2092bc89c6908110",
+        "z": "18d31d1c102a3749",
         "name": "link out 4",
         "mode": "link",
         "links": [
-            "3bb69b406712d2fc",
-            "4f8ec7b59671a804"
+            "daa7f76f6190baef",
+            "dc80e1f0a9e19983"
         ],
         "x": 995,
         "y": 300,
         "wires": []
     },
     {
-        "id": "f43dc6625fbfa58c",
+        "id": "5e67da18c483a67e",
         "type": "comment",
-        "z": "2092bc89c6908110",
+        "z": "18d31d1c102a3749",
         "name": "WeatherFlow + ImageFlow -> drop_table_link",
         "info": "Drops db table.",
         "x": 270,
@@ -285,9 +285,9 @@
         "wires": []
     },
     {
-        "id": "64a882fcbe9d1c26",
+        "id": "9dc1d5a0640485e4",
         "type": "comment",
-        "z": "2092bc89c6908110",
+        "z": "18d31d1c102a3749",
         "name": "WeatherFlow + ImageFlow -> create_table_link",
         "info": "Creates db tables.",
         "x": 1140,
@@ -295,9 +295,9 @@
         "wires": []
     },
     {
-        "id": "7a3e4078b252af28",
+        "id": "7695afd2032e03e6",
         "type": "change",
-        "z": "2092bc89c6908110",
+        "z": "18d31d1c102a3749",
         "name": "GLOBAL USER CONFIG",
         "rules": [
             {
@@ -313,16 +313,16 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 590,
-        "y": 380,
+        "x": 630,
+        "y": 360,
         "wires": [
             []
         ]
     },
     {
-        "id": "ad69a39a7d9ba218",
+        "id": "a41679349cc6cac4",
         "type": "debug",
-        "z": "2092bc89c6908110",
+        "z": "18d31d1c102a3749",
         "name": "debug 41",
         "active": false,
         "tosidebar": true,
@@ -336,11 +336,11 @@
         "wires": []
     },
     {
-        "id": "bf0bf5b56f53aed5",
+        "id": "18dbb6f1ecd4b813",
         "type": "function",
-        "z": "2092bc89c6908110",
+        "z": "18d31d1c102a3749",
         "name": "ALL COUNTRIES",
-        "func": "var res = [];\nvar options = [{\"name\": \"Armenia\", \"code\": \"AM\"}, {\"name\": \"Aruba\", \"code\": \"AW\"}, {\"name\": \"Australia\", \"code\": \"AU\"}, {\"name\": \"Belarus\", \"code\": \"BY\"}, {\"name\": \"Belgium\", \"code\": \"BE\"}, {\"name\": \"Bosnia and Herzegovina\", \"code\": \"BA\"}, {\"name\": \"Brazil\", \"code\": \"BR\"}, {\"name\": \"Bulgaria\", \"code\": \"BG\"}, {\"name\": \"Cameroon\", \"code\": \"CM\"}, {\"name\": \"Canada\", \"code\": \"CA\"}, {\"name\": \"Cayman Islands\", \"code\": \"KY\"}, {\"name\": \"Chile\", \"code\": \"CL\"}, {\"name\": \"China\", \"code\": \"CN\"}, {\"name\": \"Colombia\", \"code\": \"CO\"}, {\"name\": \"Comoros\", \"code\": \"KM\"}, {\"name\": \"Croatia\", \"code\": \"HR\"}, {\"name\": \"Cuba\", \"code\": \"CU\"}, {\"name\": \"Cyprus\", \"code\": \"CY\"}, {\"name\": \"Czechia\", \"code\": \"CZ\"}, {\"name\": \"Denmark\", \"code\": \"DK\"}, {\"name\": \"Ecuador\", \"code\": \"EC\"}, {\"name\": \"Egypt\", \"code\": \"EG\"}, {\"name\": \"Estonia\", \"code\": \"EE\"}, {\"name\": \"Finland\", \"code\": \"FI\"}, {\"name\": \"France\", \"code\": \"FR\"}, {\"name\": \"French Southern Territories\", \"code\": \"TF\"}, {\"name\": \"Georgia\", \"code\": \"GE\"}, {\"name\": \"Germany\", \"code\": \"DE\"}, {\"name\": \"Gibraltar\", \"code\": \"GI\"}, {\"name\": \"Greece\", \"code\": \"GR\"}, {\"name\": \"Grenada\", \"code\": \"GD\"}, {\"name\": \"Guyana\", \"code\": \"GY\"}, {\"name\": \"Hungary\", \"code\": \"HU\"}, {\"name\": \"India\", \"code\": \"IN\"}, {\"name\": \"Indonesia\", \"code\": \"ID\"}, {\"name\": \"Iran\", \"code\": \"IR\"}, {\"name\": \"Ireland\", \"code\": \"IE\"}, {\"name\": \"Italy\", \"code\": \"IT\"}, {\"name\": \"Jamaica\", \"code\": \"JM\"}, {\"name\": \"Japan\", \"code\": \"JP\"}, {\"name\": \"Kazakhstan\", \"code\": \"KZ\"}, {\"name\": \"Kenya\", \"code\": \"KE\"}, {\"name\": \"Korea\", \"code\": \"KR\"}, {\"name\": \"Latvia\", \"code\": \"LV\"}, {\"name\": \"Lebanon\", \"code\": \"LB\"}, {\"name\": \"Lithuania\", \"code\": \"LT\"}, {\"name\": \"Luxembourg\", \"code\": \"LU\"}, {\"name\": \"Malta\", \"code\": \"MT\"}, {\"name\": \"Mexico\", \"code\": \"MX\"}, {\"name\": \"Moldova\", \"code\": \"MD\"}, {\"name\": \"Morocco\", \"code\": \"MA\"}, {\"name\": \"Nepal\", \"code\": \"NP\"}, {\"name\": \"Netherlands\", \"code\": \"NL\"}, {\"name\": \"New Zealand\", \"code\": \"NZ\"}, {\"name\": \"Nicaragua\", \"code\": \"NI\"}, {\"name\": \"Nigeria\", \"code\": \"NG\"}, {\"name\": \"Norfolk Island\", \"code\": \"NF\"}, {\"name\": \"Norway\", \"code\": \"NO\"}, {\"name\": \"Pakistan\", \"code\": \"PK\"}, {\"name\": \"Paraguay\", \"code\": \"PY\"}, {\"name\": \"Philippines\", \"code\": \"PH\"}, {\"name\": \"Poland\", \"code\": \"PL\"}, {\"name\": \"Portugal\", \"code\": \"PT\"}, {\"name\": \"Qatar\", \"code\": \"QA\"}, {\"name\": \"Republic of North Macedonia\", \"code\": \"MK\"}, {\"name\": \"Romania\", \"code\": \"RO\"}, {\"name\": \"Russian Federation\", \"code\": \"RU\"}, {\"name\": \"Saudi Arabia\", \"code\": \"SA\"}, {\"name\": \"Serbia\", \"code\": \"RS\"}, {\"name\": \"Seychelles\", \"code\": \"SC\"}, {\"name\": \"Singapore\", \"code\": \"SG\"}, {\"name\": \"Slovakia\", \"code\": \"SK\"}, {\"name\": \"Slovenia\", \"code\": \"SI\"}, {\"name\": \"South Africa\", \"code\": \"ZA\"}, {\"name\": \"Spain\", \"code\": \"ES\"}, {\"name\": \"Sweden\", \"code\": \"SE\"}, {\"name\": \"Switzerland\", \"code\": \"CH\"}, {\"name\": \"Thailand\", \"code\": \"TH\"}, {\"name\": \"Trinidad and Tobago\", \"code\": \"TT\"}, {\"name\": \"Tunisia\", \"code\": \"TN\"}, {\"name\": \"Turkey\", \"code\": \"TR\"}, {\"name\": \"Ukraine\", \"code\": \"UA\"}, {\"name\": \"United Arab Emirates\", \"code\": \"AE\"}, {\"name\": \"United Kingdom of Great Britain and Northern Ireland\", \"code\": \"GB\"}, {\"name\": \"United States of America\", \"code\": \"US\"}, {\"name\": \"Uruguay\", \"code\": \"UY\"}, {\"name\": \"Uzbekistan\", \"code\": \"UZ\"}, {\"name\": \"Venezuela\", \"code\": \"VE\"}];\nconsole.log(\"Countries List Size: \"+options.length);\nfor (var i = 0; i<options.length; i++){\n    var name = options[i][\"name\"];\n    var code = options[i][\"code\"];\n    var obj = {};\n    obj[name] = code;\n    res.push(obj);\n}\nmsg.options = res;\n// console.log(res);\nmsg.topic = \"Countries\";\nreturn msg;",
+        "func": "var res = [];\nvar options = [{\"name\": \"Armenia\", \"code\": \"AM\"}, {\"name\": \"Australia\", \"code\": \"AU\"}, {\"name\": \"Belarus\", \"code\": \"BY\"}, {\"name\": \"Belgium\", \"code\": \"BE\"}, {\"name\": \"Bosnia and Herzegovina\", \"code\": \"BA\"}, {\"name\": \"Brazil\", \"code\": \"BR\"}, {\"name\": \"Bulgaria\", \"code\": \"BG\"}, {\"name\": \"Canada\", \"code\": \"CA\"}, {\"name\": \"Chile\", \"code\": \"CL\"}, {\"name\": \"China\", \"code\": \"CN\"}, {\"name\": \"Croatia\", \"code\": \"HR\"}, {\"name\": \"Cuba\", \"code\": \"CU\"}, {\"name\": \"Cyprus\", \"code\": \"CY\"}, {\"name\": \"Czechia\", \"code\": \"CZ\"}, {\"name\": \"Denmark\", \"code\": \"DK\"}, {\"name\": \"Ecuador\", \"code\": \"EC\"}, {\"name\": \"Egypt\", \"code\": \"EG\"}, {\"name\": \"Estonia\", \"code\": \"EE\"}, {\"name\": \"Finland\", \"code\": \"FI\"}, {\"name\": \"France\", \"code\": \"FR\"}, {\"name\": \"Georgia\", \"code\": \"GE\"}, {\"name\": \"Germany\", \"code\": \"DE\"}, {\"name\": \"Gibraltar\", \"code\": \"GI\"}, {\"name\": \"Greece\", \"code\": \"GR\"}, {\"name\": \"Hungary\", \"code\": \"HU\"}, {\"name\": \"India\", \"code\": \"IN\"}, {\"name\": \"Indonesia\", \"code\": \"ID\"}, {\"name\": \"Iran\", \"code\": \"IR\"}, {\"name\": \"Ireland\", \"code\": \"IE\"}, {\"name\": \"Italy\", \"code\": \"IT\"}, {\"name\": \"Jamaica\", \"code\": \"JM\"}, {\"name\": \"Japan\", \"code\": \"JP\"}, {\"name\": \"Kazakhstan\", \"code\": \"KZ\"}, {\"name\": \"Kenya\", \"code\": \"KE\"}, {\"name\": \"Korea\", \"code\": \"KR\"}, {\"name\": \"Latvia\", \"code\": \"LV\"}, {\"name\": \"Lebanon\", \"code\": \"LB\"}, {\"name\": \"Lithuania\", \"code\": \"LT\"}, {\"name\": \"Luxembourg\", \"code\": \"LU\"}, {\"name\":\"Malta\", \"code\":\"MT\"}, {\"name\": \"Mexico\", \"code\": \"MX\"}, {\"name\": \"Moldova\", \"code\": \"MD\"}, {\"name\": \"Morocco\", \"code\": \"MA\"}, {\"name\": \"Nepal\", \"code\": \"NP\"}, {\"name\": \"Netherlands\", \"code\": \"NL\"}, {\"name\": \"New Zealand\", \"code\": \"NZ\"}, {\"name\": \"Nicaragua\", \"code\": \"NI\"}, {\"name\": \"Nigeria\", \"code\": \"NG\"}, {\"name\": \"Norway\", \"code\": \"NO\"}, {\"name\": \"Philippines\", \"code\": \"PH\"}, {\"name\": \"Poland\", \"code\": \"PL\"}, {\"name\": \"Portugal\", \"code\": \"PT\"}, {\"name\": \"Qatar\", \"code\": \"QA\"}, {\"name\": \"Republic of North Macedonia\", \"code\": \"MK\"}, {\"name\": \"Romania\", \"code\": \"RO\"}, {\"name\": \"Russia\", \"code\": \"RU\"}, {\"name\": \"Saudi Arabia\", \"code\": \"SA\"}, {\"name\": \"Serbia\", \"code\": \"RS\"}, {\"name\": \"Singapore\", \"code\": \"SG\"}, {\"name\": \"Slovakia\", \"code\": \"SK\"}, {\"name\": \"Slovenia\", \"code\": \"SI\"}, {\"name\": \"South Africa\", \"code\": \"ZA\"}, {\"name\": \"Spain\", \"code\": \"ES\"}, {\"name\": \"Sweden\", \"code\": \"SE\"}, {\"name\": \"Switzerland\", \"code\": \"CH\"}, {\"name\": \"Thailand\", \"code\": \"TH\"}, {\"name\": \"Tunisia\", \"code\": \"TN\"}, {\"name\": \"Turkey\", \"code\": \"TR\"}, {\"name\": \"Ukraine\", \"code\": \"UA\"}, {\"name\": \"United Arab Emirates\", \"code\": \"AE\"}, {\"name\": \"United Kingdom\", \"code\": \"GB\"}, {\"name\": \"United States of America\", \"code\": \"US\"}, {\"name\": \"Uruguay\", \"code\": \"UY\"}, {\"name\": \"Uzbekistan\", \"code\": \"UZ\"}, {\"name\": \"Venezuela\", \"code\": \"VE\"}];\nconsole.log(\"Countries List Size: \"+options.length);\nfor (var i = 0; i<options.length; i++){\n    var name = options[i][\"name\"];\n    var code = options[i][\"code\"];\n    var obj = {};\n    obj[name] = code;\n    res.push(obj);\n}\nmsg.options = res;\n// console.log(res);\nmsg.topic = \"Countries\";\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -350,15 +350,15 @@
         "y": 200,
         "wires": [
             [
-                "e711835bd62caf88",
-                "7a3e4078b252af28"
+                "50d93baa24d3d60e",
+                "7695afd2032e03e6"
             ]
         ]
     },
     {
-        "id": "d9596d545163902c",
+        "id": "be2b608a8181d8ed",
         "type": "function",
-        "z": "2092bc89c6908110",
+        "z": "18d31d1c102a3749",
         "name": "function 28",
         "func": "// resets - initializes vars\nglobal.set('current_cities', []);\nglobal.set('current_counter', 0);\n",
         "outputs": 0,
@@ -371,9 +371,9 @@
         "wires": []
     },
     {
-        "id": "59745a0ab2408971",
+        "id": "ae2411f72c981387",
         "type": "ui_button",
-        "z": "2092bc89c6908110",
+        "z": "18d31d1c102a3749",
         "name": "",
         "group": "07c2498f17a87e52",
         "order": 2,
@@ -394,15 +394,15 @@
         "y": 260,
         "wires": [
             [
-                "d733e60c57dc3044",
-                "bf0bf5b56f53aed5"
+                "757cf2221969b73e",
+                "18dbb6f1ecd4b813"
             ]
         ]
     },
     {
-        "id": "9879c70e0323e0dc",
+        "id": "62f45ddb8a08291f",
         "type": "comment",
-        "z": "2092bc89c6908110",
+        "z": "18d31d1c102a3749",
         "name": "Ergasia Main Flow -> Function Call Countries",
         "info": "",
         "x": 1290,
@@ -410,10 +410,10 @@
         "wires": []
     },
     {
-        "id": "010290d637ee59a6",
+        "id": "12b04e273d65c18c",
         "type": "change",
-        "z": "2092bc89c6908110",
-        "name": "CONFIG MAP URL",
+        "z": "18d31d1c102a3749",
+        "name": "RABBIT & MAP CONFIG",
         "rules": [
             {
                 "t": "set",
@@ -426,7 +426,28 @@
                 "t": "set",
                 "p": "open_weather_appid",
                 "pt": "global",
-                "to": "your_api_key",
+                "to": "youropenweatherapikey",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "rabbit_mq_username",
+                "pt": "global",
+                "to": "yourrabbitusername",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "rabbit_mq_password",
+                "pt": "global",
+                "to": "yourrabbitpassword",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "vhost_name",
+                "pt": "global",
+                "to": "yourrabbithost",
                 "tot": "str"
             }
         ],
@@ -435,11 +456,36 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 610,
-        "y": 320,
+        "x": 590,
+        "y": 440,
         "wires": [
-            []
+            [
+                "c632f49034d218e6"
+            ]
         ]
+    },
+    {
+        "id": "c632f49034d218e6",
+        "type": "link out",
+        "z": "18d31d1c102a3749",
+        "name": "link out 9",
+        "mode": "link",
+        "links": [
+            "dd2f0a4772205731"
+        ],
+        "x": 785,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "fa7133ddb15ce062",
+        "type": "comment",
+        "z": "18d31d1c102a3749",
+        "name": "Create AMQP User -> create_amqp_user_link",
+        "info": "",
+        "x": 920,
+        "y": 480,
+        "wires": []
     },
     {
         "id": "07c2498f17a87e52",
