@@ -15,11 +15,18 @@ Github repo does not save the connections (link in and outs) of this project. On
 * ### OpenWeatherMap API key:
 You also have to set your openweathermap api key in the first gui diagram (Ergasia - GUI) at "RABBIT & MAP CONFIG" component in the attribute open_weather_appid.
 
-* ### RabbitMQ Installation & Config:
+* ### RabbitMQ Config:
 For these dataflow diagrams, this package is installed (from manage pallete):<br>
 <strong>@node-red-tools/node-red-contrib-amqp</strong>
 <br>
-Then, run the following in your terminal:
+Once you created the rabbitmq user and vhost (with correct permissions - if you dont have any user ready, see RabbitMQ Installation section) go to the GUI City Results dataflow in the amqp server node (it is called amq.direct in the dataflow) and click on the edit button of the server (which should be localhost:5672). Then, set the username and password in the Security tab with the ones you put in the commands above. Also in the Connection tab, add the vhost name you specified in the commands above.
+<br>
+Lastly, put the USERNAME and PASSWORD in every http request of "Create AMQP User" dataflow (in the username and password). You should also put the username in the "RABBIT & MAP CONFIG" component of the initial Ergasia - GUI diagram.
+
+* ### RabbitMQ Installation:
+
+If you <strong>do not</strong> have RabbitMq Installed, follow these steps:
+First, run the following in your terminal:
 
 ```
 sudo apt-get install rabbitmq-server
@@ -33,9 +40,9 @@ Then, you should create a vhost and give permissions (replace VHOST_NAME with "t
 sudo rabbitmqctl add_vhost VHOST_NAME
 sudo rabbitmqctl set_permissions -p VHOST_NAME USERNAME "." "." ".*"
 ```
-Once you created the rabbitmq user and vhost (with correct permissions) go to the GUI City Results dataflow in the amqp server node (it is called amq.direct in the dataflow) and click on the edit button of the server (which should be localhost:5672). Then, set the username and password in the Security tab with the ones you put in the commands above. Also in the Connection tab, add the vhost name you specified in the commands above.
+Also you will need to <strong>bind</strong> a queue to the vhost in gui (go to http://localhost:15672 and login with the credentials you put earlier). To do that, go to queues section then click on your virtual host, go to bindings, "Add binding to this queue" and put amq.direct in "From exchange" label. Then click on bind.
 <br>
-Lastly, put the USERNAME and PASSWORD in every http request of "Create AMQP User" dataflow (in the username and password). You should also put the username in the "RABBIT & MAP CONFIG" component of the initial Ergasia - GUI diagram.
+Then to add this user to the dataflow you can follow the rest of the steps as shown in the RabbitMQ Config Section.
 
 ---
 ## How to use the app
