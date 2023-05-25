@@ -1,0 +1,82 @@
+[
+    {
+        "id": "2375b9c1115f352e",
+        "type": "tab",
+        "label": "Beginner_4",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "f0a623c8faaf3b5e",
+        "type": "http response",
+        "z": "2375b9c1115f352e",
+        "name": "",
+        "statusCode": "201",
+        "headers": {},
+        "x": 520,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "cc9524e0cc792f53",
+        "type": "http in",
+        "z": "2375b9c1115f352e",
+        "name": "",
+        "url": "/beginner/switch",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 150,
+        "y": 180,
+        "wires": [
+            [
+                "d3be3f55b4bdcef7"
+            ]
+        ]
+    },
+    {
+        "id": "d3be3f55b4bdcef7",
+        "type": "switch",
+        "z": "2375b9c1115f352e",
+        "name": "",
+        "property": "payload.color",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "blue",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "red",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 350,
+        "y": 180,
+        "wires": [
+            [
+                "f0a623c8faaf3b5e"
+            ],
+            [
+                "2edf810fd6d64639"
+            ]
+        ]
+    },
+    {
+        "id": "2edf810fd6d64639",
+        "type": "http response",
+        "z": "2375b9c1115f352e",
+        "name": "",
+        "statusCode": "200",
+        "headers": {},
+        "x": 520,
+        "y": 200,
+        "wires": []
+    }
+]

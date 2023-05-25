@@ -1,0 +1,79 @@
+[
+    {
+        "id": "ed01dda8aedeaf62",
+        "type": "tab",
+        "label": "PHYSICS_1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "3fb020854e49e1b8",
+        "type": "inject",
+        "z": "ed01dda8aedeaf62",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 220,
+        "y": 180,
+        "wires": [
+            [
+                "7593b4f1e5ebcbe1"
+            ]
+        ]
+    },
+    {
+        "id": "7593b4f1e5ebcbe1",
+        "type": "http request",
+        "z": "ed01dda8aedeaf62",
+        "name": "",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://localhost:3000/game/openwhisk/sliding_window.json",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 370,
+        "y": 180,
+        "wires": [
+            [
+                "b94fd4af1b1d6931"
+            ]
+        ]
+    },
+    {
+        "id": "b94fd4af1b1d6931",
+        "type": "debug",
+        "z": "ed01dda8aedeaf62",
+        "name": "debug 3",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 540,
+        "y": 180,
+        "wires": []
+    }
+]
