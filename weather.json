@@ -1,6 +1,6 @@
 [
     {
-        "id": "c0f09772396e8725",
+        "id": "760b7e977f32a772",
         "type": "tab",
         "label": "WeatherFlow",
         "disabled": false,
@@ -8,25 +8,25 @@
         "env": []
     },
     {
-        "id": "45b43a84b5a31d92",
+        "id": "5676a723d06b286c",
         "type": "link in",
-        "z": "c0f09772396e8725",
+        "z": "760b7e977f32a772",
         "name": "city_weather",
         "links": [
-            "de31cfd2f39b0109"
+            "141c964fb38798ba"
         ],
         "x": 405,
         "y": 380,
         "wires": [
             [
-                "53470773e4305974"
+                "7c57d158a580df13"
             ]
         ]
     },
     {
-        "id": "30a2dd93a21be503",
+        "id": "24fe6635ef571846",
         "type": "http request",
-        "z": "c0f09772396e8725",
+        "z": "760b7e977f32a772",
         "name": "",
         "method": "GET",
         "ret": "obj",
@@ -43,15 +43,15 @@
         "y": 380,
         "wires": [
             [
-                "f8c46cc83ddcfcbe",
-                "1a5fef718187b26f"
+                "20db206c40bf3039",
+                "83806f5af475d785"
             ]
         ]
     },
     {
-        "id": "f8c46cc83ddcfcbe",
+        "id": "20db206c40bf3039",
         "type": "debug",
-        "z": "c0f09772396e8725",
+        "z": "760b7e977f32a772",
         "name": "debug 30",
         "active": false,
         "tosidebar": true,
@@ -66,9 +66,9 @@
         "wires": []
     },
     {
-        "id": "f67ee1411678a830",
+        "id": "d282cb73366cb458",
         "type": "function",
-        "z": "c0f09772396e8725",
+        "z": "760b7e977f32a772",
         "name": "CREATE TABLE WEATHER",
         "func": "msg.topic = \"CREATE TABLE IF NOT EXISTS weather_table (time DATE, weathercode INTEGER, temperature REAL, uv_index_max REAL, uv_index_clear_sky_max REAL, rain_sum REAL, snowfall_sum REAL, windspeed_10m_max REAL, winddirection_10m_dominant REAL, shortwave_radiation_sum REAL, lat REAL, lng REAL, city_name TEXT, continent_code TEXT, geonameId INTEGER, CONSTRAINT unique_city_time UNIQUE (geonameId, time), FOREIGN KEY(geonameId) REFERENCES cities_table(geonameId))\";\nreturn msg;",
         "outputs": 1,
@@ -80,15 +80,15 @@
         "y": 260,
         "wires": [
             [
-                "0758e595e8a635fb",
-                "3b5e4cf0b719932c"
+                "45d9be4e0635f80c",
+                "a77f0f37aef556df"
             ]
         ]
     },
     {
-        "id": "495ed9bdf2897229",
+        "id": "4916151bc2d7f529",
         "type": "inject",
-        "z": "c0f09772396e8725",
+        "z": "760b7e977f32a772",
         "name": "",
         "props": [
             {
@@ -110,14 +110,14 @@
         "y": 320,
         "wires": [
             [
-                "f67ee1411678a830"
+                "d282cb73366cb458"
             ]
         ]
     },
     {
-        "id": "b442b176e10c7b01",
+        "id": "4bb26049a69d7ebe",
         "type": "inject",
-        "z": "c0f09772396e8725",
+        "z": "760b7e977f32a772",
         "name": "",
         "props": [
             {
@@ -139,14 +139,14 @@
         "y": 380,
         "wires": [
             [
-                "c376af868a5f6db9"
+                "e2fb374c845e4232"
             ]
         ]
     },
     {
-        "id": "c376af868a5f6db9",
+        "id": "e2fb374c845e4232",
         "type": "function",
-        "z": "c0f09772396e8725",
+        "z": "760b7e977f32a772",
         "name": "DROP TABLE WEATHER",
         "func": "msg.topic = \"drop table if exists weather_table\";\nreturn msg;\n",
         "outputs": 1,
@@ -158,47 +158,47 @@
         "y": 340,
         "wires": [
             [
-                "0758e595e8a635fb",
-                "e77681ecb5934956"
+                "45d9be4e0635f80c",
+                "3364c2fb7df86e29"
             ]
         ]
     },
     {
-        "id": "62db84a7b9dd05df",
+        "id": "0a36b7e5da3686ba",
         "type": "link in",
-        "z": "c0f09772396e8725",
+        "z": "760b7e977f32a772",
         "name": "drop_table_link",
         "links": [
-            "757cf2221969b73e"
+            "3c30d614912d208d"
         ],
         "x": 1385,
         "y": 400,
         "wires": [
             [
-                "c376af868a5f6db9"
+                "e2fb374c845e4232"
             ]
         ]
     },
     {
-        "id": "daa7f76f6190baef",
+        "id": "c12a0c1797638bac",
         "type": "link in",
-        "z": "c0f09772396e8725",
+        "z": "760b7e977f32a772",
         "name": "create_table_link",
         "links": [
-            "6055323a9424b523"
+            "d0071641d2391341"
         ],
         "x": 1325,
         "y": 260,
         "wires": [
             [
-                "f67ee1411678a830"
+                "d282cb73366cb458"
             ]
         ]
     },
     {
-        "id": "1a5fef718187b26f",
+        "id": "83806f5af475d785",
         "type": "function",
-        "z": "c0f09772396e8725",
+        "z": "760b7e977f32a772",
         "name": "function 16",
         "func": "var options = [];\n// console.log(msg.city_name);\ntry {\n    var payload = msg.payload;\n    //console.log('payload.daily.city:', payload.city);\n    for (var i = 0; i < payload.daily.time.length; i++) {\n        var obj = {};\n        obj.time = payload.daily.time[i];\n        obj.weathercode = payload.daily.weathercode[i];\n        obj.temperature = parseFloat((payload.daily.temperature_2m_max[i] + payload.daily.temperature_2m_min[i]) / 2).toFixed(2);\n        obj.uv_index_max = payload.daily.uv_index_max[i];\n        obj.uv_index_clear_sky_max = payload.daily.uv_index_clear_sky_max[i];\n        obj.rain_sum = payload.daily.rain_sum[i];\n        obj.snowfall_sum = payload.daily.snowfall_sum[i];\n        obj.windspeed_10m_max = payload.daily.windspeed_10m_max[i];\n        obj.winddirection_10m_dominant = payload.daily.winddirection_10m_dominant[i];\n        obj.shortwave_radiation_sum = payload.daily.shortwave_radiation_sum[i];\n        obj.city_name = msg.city_name;\n        obj.city_lat = msg.city_lat;\n        obj.city_lng = msg.city_lng;\n        obj.geonameId = msg.geonameId;\n        obj.continent_code = msg.continent_code;\n        //console.log(obj.city_name);\n        options.push(obj);\n    }\n\n    msg.payload = options;\n    return [msg, null];\n} catch (error) {\n    // does nothing\n    return [null, msg];\n}\n\n",
         "outputs": 2,
@@ -210,16 +210,16 @@
         "y": 440,
         "wires": [
             [
-                "568b25b154cc3119",
-                "ecb3b19b9a174f82"
+                "9f1ad571ce5ea965",
+                "0389036b1490bedd"
             ],
             []
         ]
     },
     {
-        "id": "0758e595e8a635fb",
+        "id": "45d9be4e0635f80c",
         "type": "sqlite",
-        "z": "c0f09772396e8725",
+        "z": "760b7e977f32a772",
         "mydb": "e1b7d6f10fa6ce00",
         "sqlquery": "msg.topic",
         "sql": "",
@@ -228,14 +228,14 @@
         "y": 300,
         "wires": [
             [
-                "f162258c7d94acea"
+                "eb0206e457ef874c"
             ]
         ]
     },
     {
-        "id": "ecb3b19b9a174f82",
+        "id": "0389036b1490bedd",
         "type": "function",
-        "z": "c0f09772396e8725",
+        "z": "760b7e977f32a772",
         "name": "INSERT DATABASE",
         "func": "var sql = \"\";\nconsole.log(msg.payload.length);\nfor (var i = 0; i < msg.payload.length; i++) {\n    var time = msg.payload[i].time;\n    console.log(time);\n    var weathercode = msg.payload[i].weathercode;\n    var temperature = msg.payload[i].temperature;\n    var uv_index_max = msg.payload[i].uv_index_max;\n    var uv_index_clear_sky_max = msg.payload[i].uv_index_clear_sky_max;\n    var rain_sum = msg.payload[i].rain_sum;\n    var snowfall_sum = msg.payload[i].snowfall_sum;\n    var windspeed_10m_max = msg.payload[i].windspeed_10m_max;\n    var winddirection_10m_dominant = msg.payload[i].winddirection_10m_dominant;\n    var shortwave_radiation_sum = msg.payload[i].shortwave_radiation_sum;\n    var city_name = msg.payload[i].city_name;\n    var lat = msg.payload[i].city_lat;\n    var lng = msg.payload[i].city_lng;\n    var geonameId = msg.payload[i].geonameId;\n    var continent_code = msg.payload[i].continent_code;\n    sql = `INSERT OR IGNORE INTO weather_table (time, weathercode, temperature, uv_index_max, uv_index_clear_sky_max, rain_sum, snowfall_sum, windspeed_10m_max, winddirection_10m_dominant, shortwave_radiation_sum, city_name, lat, lng, geonameId, continent_code) VALUES (strftime('%Y-%m-%d', '${time}'), ${weathercode}, ${temperature}, ${uv_index_max}, ${uv_index_clear_sky_max}, ${rain_sum}, ${snowfall_sum}, ${windspeed_10m_max}, ${winddirection_10m_dominant}, ${shortwave_radiation_sum}, '${city_name}', ${lat}, ${lng}, ${geonameId}, '${continent_code}')`;\n\n    node.send({ topic: sql }); // send the SQL statement to the next node\n}\n\n// msg.topic = sql;\n// return [null, msg];\n",
         "outputs": 2,
@@ -247,15 +247,15 @@
         "y": 560,
         "wires": [
             [
-                "b8d3571bb8aa10d2"
+                "a492b40e796131af"
             ],
             []
         ]
     },
     {
-        "id": "b8d3571bb8aa10d2",
+        "id": "a492b40e796131af",
         "type": "sqlite",
-        "z": "c0f09772396e8725",
+        "z": "760b7e977f32a772",
         "mydb": "e1b7d6f10fa6ce00",
         "sqlquery": "msg.topic",
         "sql": "",
@@ -264,14 +264,15 @@
         "y": 540,
         "wires": [
             [
-                "208c68cab3342e73"
+                "f6caaa771c2495ec",
+                "dadee184f6c49a4e"
             ]
         ]
     },
     {
-        "id": "208c68cab3342e73",
+        "id": "f6caaa771c2495ec",
         "type": "debug",
-        "z": "c0f09772396e8725",
+        "z": "760b7e977f32a772",
         "name": "debug 31",
         "active": false,
         "tosidebar": true,
@@ -286,9 +287,9 @@
         "wires": []
     },
     {
-        "id": "f162258c7d94acea",
+        "id": "eb0206e457ef874c",
         "type": "debug",
-        "z": "c0f09772396e8725",
+        "z": "760b7e977f32a772",
         "name": "debug 32",
         "active": false,
         "tosidebar": true,
@@ -302,9 +303,9 @@
         "wires": []
     },
     {
-        "id": "568b25b154cc3119",
+        "id": "9f1ad571ce5ea965",
         "type": "debug",
-        "z": "c0f09772396e8725",
+        "z": "760b7e977f32a772",
         "name": "debug 33",
         "active": false,
         "tosidebar": true,
@@ -318,9 +319,9 @@
         "wires": []
     },
     {
-        "id": "53470773e4305974",
+        "id": "7c57d158a580df13",
         "type": "function",
-        "z": "c0f09772396e8725",
+        "z": "760b7e977f32a772",
         "name": "function 17",
         "func": "var city = msg.payload;\nvar options = [];\nmsg.url = `https://api.open-meteo.com/v1/forecast?latitude=${city.lat}&longitude=${city.lng}&daily=weathercode,temperature_2m_max,temperature_2m_min,uv_index_max,uv_index_clear_sky_max,rain_sum,snowfall_sum,windspeed_10m_max,winddirection_10m_dominant,shortwave_radiation_sum&current_weather=true&timezone=auto`\nmsg.city_name = city.city_name;\nmsg.city_lat = city.lat;\nmsg.city_lng = city.lng;\nmsg.continent_code = city.continent_code;\nmsg.geonameId = city.geonameId;\n// console.log(city.city_name);\nreturn msg;\n",
         "outputs": 1,
@@ -332,40 +333,40 @@
         "y": 380,
         "wires": [
             [
-                "30a2dd93a21be503"
+                "24fe6635ef571846"
             ]
         ]
     },
     {
-        "id": "e77681ecb5934956",
+        "id": "3364c2fb7df86e29",
         "type": "link out",
-        "z": "c0f09772396e8725",
+        "z": "760b7e977f32a772",
         "name": "link out 6",
         "mode": "link",
         "links": [
-            "6c3f5b84ceb5e234"
+            "980c0d44548b7902"
         ],
         "x": 1655,
         "y": 380,
         "wires": []
     },
     {
-        "id": "3b5e4cf0b719932c",
+        "id": "a77f0f37aef556df",
         "type": "link out",
-        "z": "c0f09772396e8725",
+        "z": "760b7e977f32a772",
         "name": "link out 7",
         "mode": "link",
         "links": [
-            "2f65ee477dbcd0fb"
+            "5f13069549865f2f"
         ],
         "x": 1695,
         "y": 200,
         "wires": []
     },
     {
-        "id": "79427d0bda680c93",
+        "id": "2e7fe66944b29d87",
         "type": "comment",
-        "z": "c0f09772396e8725",
+        "z": "760b7e977f32a772",
         "name": "Ergasia - Main Flow -> link out 5",
         "info": "",
         "x": 390,
@@ -373,9 +374,9 @@
         "wires": []
     },
     {
-        "id": "937434c846734c65",
+        "id": "1b3193e4ada3e86e",
         "type": "comment",
-        "z": "c0f09772396e8725",
+        "z": "760b7e977f32a772",
         "name": "Ergasia - GUI -> link out 3",
         "info": "",
         "x": 1410,
@@ -383,9 +384,9 @@
         "wires": []
     },
     {
-        "id": "98d0f525b4f2eca8",
+        "id": "1e52815372d769ac",
         "type": "comment",
-        "z": "c0f09772396e8725",
+        "z": "760b7e977f32a772",
         "name": "Ergasia - GUI -> link out 4",
         "info": "",
         "x": 1330,
@@ -393,9 +394,9 @@
         "wires": []
     },
     {
-        "id": "a248963dc7918e03",
+        "id": "e2f21a0cf354ed29",
         "type": "comment",
-        "z": "c0f09772396e8725",
+        "z": "760b7e977f32a772",
         "name": "Ergasia - Main Flow -> drop_table_link",
         "info": "",
         "x": 1750,
@@ -403,13 +404,36 @@
         "wires": []
     },
     {
-        "id": "bee9945bc5e35959",
+        "id": "4413640b9ea1956d",
         "type": "comment",
-        "z": "c0f09772396e8725",
+        "z": "760b7e977f32a772",
         "name": "Ergasia - Main Flow -> create_table_link",
         "info": "",
         "x": 1730,
         "y": 160,
+        "wires": []
+    },
+    {
+        "id": "dadee184f6c49a4e",
+        "type": "link out",
+        "z": "760b7e977f32a772",
+        "name": "link out 10",
+        "mode": "link",
+        "links": [
+            "562bbf18aa20eee7"
+        ],
+        "x": 1615,
+        "y": 580,
+        "wires": []
+    },
+    {
+        "id": "2ee8c516ce096b71",
+        "type": "comment",
+        "z": "760b7e977f32a772",
+        "name": "Clusters -> K-Maker",
+        "info": "",
+        "x": 1710,
+        "y": 620,
         "wires": []
     },
     {
