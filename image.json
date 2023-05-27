@@ -1,6 +1,6 @@
 [
     {
-        "id": "053f5506d4b3b804",
+        "id": "cb4c0a310940d99f",
         "type": "tab",
         "label": "ImageFlow",
         "disabled": false,
@@ -8,25 +8,25 @@
         "env": []
     },
     {
-        "id": "b0c2a58d3f87561d",
+        "id": "a0b1f626a6bcd56f",
         "type": "link in",
-        "z": "053f5506d4b3b804",
+        "z": "cb4c0a310940d99f",
         "name": "city_weather",
         "links": [
-            "de31cfd2f39b0109"
+            "141c964fb38798ba"
         ],
         "x": 105,
         "y": 260,
         "wires": [
             [
-                "45735cba48575db8"
+                "9e7bd43862103a13"
             ]
         ]
     },
     {
-        "id": "4b8d38ee2a85feb4",
+        "id": "feaf28bf0536774c",
         "type": "http request",
-        "z": "053f5506d4b3b804",
+        "z": "cb4c0a310940d99f",
         "name": "",
         "method": "GET",
         "ret": "obj",
@@ -43,15 +43,15 @@
         "y": 260,
         "wires": [
             [
-                "14ecc84e80c3802f",
-                "e60093a935811bdb"
+                "94f84af8799b150c",
+                "2d31bf34b3e26826"
             ]
         ]
     },
     {
-        "id": "14ecc84e80c3802f",
+        "id": "94f84af8799b150c",
         "type": "debug",
-        "z": "053f5506d4b3b804",
+        "z": "cb4c0a310940d99f",
         "name": "debug 36",
         "active": false,
         "tosidebar": true,
@@ -66,9 +66,9 @@
         "wires": []
     },
     {
-        "id": "cb5d6b38eeeb68d5",
+        "id": "8fd521b5424a6173",
         "type": "function",
-        "z": "053f5506d4b3b804",
+        "z": "cb4c0a310940d99f",
         "name": "CREATE TABLE WEATHER",
         "func": "msg.topic = \"CREATE TABLE IF NOT EXISTS image_table (web_img_url TEXT, mob_img_url TEXT, city_name TEXT, lat REAL, lng REAL, geonameId INTEGER, CONSTRAINT unique_city_img UNIQUE(geonameId, mob_img_url, web_img_url), FOREIGN KEY(geonameId) REFERENCES cities_table(geonameId)) \";\nreturn msg;",
         "outputs": 1,
@@ -80,14 +80,14 @@
         "y": 140,
         "wires": [
             [
-                "2c54ed6ea15dad7b"
+                "764c51ada5d23e53"
             ]
         ]
     },
     {
-        "id": "d077e59e34fdddcb",
+        "id": "d7ab339c82b4877b",
         "type": "inject",
-        "z": "053f5506d4b3b804",
+        "z": "cb4c0a310940d99f",
         "name": "",
         "props": [
             {
@@ -109,14 +109,14 @@
         "y": 200,
         "wires": [
             [
-                "cb5d6b38eeeb68d5"
+                "8fd521b5424a6173"
             ]
         ]
     },
     {
-        "id": "9a71632e75e6faf2",
+        "id": "060c64075c4bfa1e",
         "type": "inject",
-        "z": "053f5506d4b3b804",
+        "z": "cb4c0a310940d99f",
         "name": "",
         "props": [
             {
@@ -138,14 +138,14 @@
         "y": 260,
         "wires": [
             [
-                "04de1634cd62ea85"
+                "b15a715b4056f9a6"
             ]
         ]
     },
     {
-        "id": "04de1634cd62ea85",
+        "id": "b15a715b4056f9a6",
         "type": "function",
-        "z": "053f5506d4b3b804",
+        "z": "cb4c0a310940d99f",
         "name": "DROP TABLE WEATHER",
         "func": "msg.topic = \"drop table if exists image_table\";\nreturn msg;\n",
         "outputs": 1,
@@ -157,47 +157,48 @@
         "y": 220,
         "wires": [
             [
-                "2c54ed6ea15dad7b"
+                "764c51ada5d23e53"
             ]
         ]
     },
     {
-        "id": "85d7bd86379ed8c3",
+        "id": "4c1a9ef84d40b28d",
         "type": "link in",
-        "z": "053f5506d4b3b804",
+        "z": "cb4c0a310940d99f",
         "name": "drop_table_link",
         "links": [
             "d733e60c57dc3044",
-            "757cf2221969b73e"
+            "757cf2221969b73e",
+            "3c30d614912d208d"
         ],
         "x": 1085,
         "y": 280,
         "wires": [
             [
-                "04de1634cd62ea85"
+                "b15a715b4056f9a6"
             ]
         ]
     },
     {
-        "id": "dc80e1f0a9e19983",
+        "id": "17ab192ed98a9138",
         "type": "link in",
-        "z": "053f5506d4b3b804",
+        "z": "cb4c0a310940d99f",
         "name": "create_table_link",
         "links": [
-            "6055323a9424b523"
+            "d0071641d2391341"
         ],
         "x": 1025,
         "y": 100,
         "wires": [
             [
-                "cb5d6b38eeeb68d5"
+                "8fd521b5424a6173"
             ]
         ]
     },
     {
-        "id": "2c54ed6ea15dad7b",
+        "id": "764c51ada5d23e53",
         "type": "sqlite",
-        "z": "053f5506d4b3b804",
+        "z": "cb4c0a310940d99f",
         "mydb": "e1b7d6f10fa6ce00",
         "sqlquery": "msg.topic",
         "sql": "",
@@ -206,14 +207,14 @@
         "y": 180,
         "wires": [
             [
-                "6718ada5a15b21f2"
+                "f47bd5de61750522"
             ]
         ]
     },
     {
-        "id": "c9cbaa4dc8b2c4cc",
+        "id": "1c255b8f8b3d33c7",
         "type": "sqlite",
-        "z": "053f5506d4b3b804",
+        "z": "cb4c0a310940d99f",
         "mydb": "e1b7d6f10fa6ce00",
         "sqlquery": "msg.topic",
         "sql": "",
@@ -222,15 +223,15 @@
         "y": 360,
         "wires": [
             [
-                "4f54e3c474a67253",
-                "10883a20c66933e5"
+                "3d75884ba0151455",
+                "83961056534492fb"
             ]
         ]
     },
     {
-        "id": "4f54e3c474a67253",
+        "id": "3d75884ba0151455",
         "type": "debug",
-        "z": "053f5506d4b3b804",
+        "z": "cb4c0a310940d99f",
         "name": "debug 37",
         "active": false,
         "tosidebar": true,
@@ -245,9 +246,9 @@
         "wires": []
     },
     {
-        "id": "6718ada5a15b21f2",
+        "id": "f47bd5de61750522",
         "type": "debug",
-        "z": "053f5506d4b3b804",
+        "z": "cb4c0a310940d99f",
         "name": "debug 38",
         "active": false,
         "tosidebar": true,
@@ -261,9 +262,9 @@
         "wires": []
     },
     {
-        "id": "45735cba48575db8",
+        "id": "9e7bd43862103a13",
         "type": "function",
-        "z": "053f5506d4b3b804",
+        "z": "cb4c0a310940d99f",
         "name": "function 19",
         "func": "var city = msg.payload;\nvar options = [];\nmsg.url = `https://api.teleport.org/api/urban_areas/slug:${city.city_name}/images/`\nmsg.city_name = city.city_name;\nmsg.city_lat = city.lat;\nmsg.city_lng = city.lng;\nmsg.geonameId = city.geonameId;\n// console.log(city.city_name);\n// global.set(\"city_name\", city.city_name);\nreturn msg;\n",
         "outputs": 1,
@@ -275,14 +276,14 @@
         "y": 260,
         "wires": [
             [
-                "4b8d38ee2a85feb4"
+                "feaf28bf0536774c"
             ]
         ]
     },
     {
-        "id": "e60093a935811bdb",
+        "id": "2d31bf34b3e26826",
         "type": "function",
-        "z": "053f5506d4b3b804",
+        "z": "cb4c0a310940d99f",
         "name": "function 20",
         "func": "var photos = msg.payload.photos;\nvar mobile_url = \"\";\nvar web_url = \"\";\nfor (var i = 0; i < photos.length; i ++) {\n    mobile_url = photos[i].image.mobile;\n    web_url = photos[i].image.web;\n}\n\nmsg.topic = `INSERT OR IGNORE INTO image_table (web_img_url, mob_img_url, city_name, lat, lng, geonameId) VALUES ('${web_url}', '${mobile_url}', '${msg.city_name}', ${msg.city_lat}, ${msg.city_lng}, ${msg.geonameId})`;\n\nreturn msg;",
         "outputs": 1,
@@ -294,15 +295,15 @@
         "y": 300,
         "wires": [
             [
-                "05d5045214f3d993",
-                "c9cbaa4dc8b2c4cc"
+                "8ebbd76f4cbb7c1d",
+                "1c255b8f8b3d33c7"
             ]
         ]
     },
     {
-        "id": "05d5045214f3d993",
+        "id": "8ebbd76f4cbb7c1d",
         "type": "debug",
-        "z": "053f5506d4b3b804",
+        "z": "cb4c0a310940d99f",
         "name": "debug 40",
         "active": false,
         "tosidebar": true,
@@ -317,23 +318,24 @@
         "wires": []
     },
     {
-        "id": "10883a20c66933e5",
+        "id": "83961056534492fb",
         "type": "link out",
-        "z": "053f5506d4b3b804",
+        "z": "cb4c0a310940d99f",
         "name": "link out 8",
         "mode": "link",
         "links": [
             "46a1769d38a875c1",
-            "5ec4ffd97486bed2"
+            "5ec4ffd97486bed2",
+            "62829886068359ea"
         ],
         "x": 1075,
         "y": 360,
         "wires": []
     },
     {
-        "id": "ac429ea9e9297afd",
+        "id": "f1b7aeae37a43df3",
         "type": "comment",
-        "z": "053f5506d4b3b804",
+        "z": "cb4c0a310940d99f",
         "name": "Ergasia - Main Flow -> link out 5",
         "info": "",
         "x": 150,
@@ -341,9 +343,9 @@
         "wires": []
     },
     {
-        "id": "00149080d2b6a54f",
+        "id": "71384e9628f057a3",
         "type": "comment",
-        "z": "053f5506d4b3b804",
+        "z": "cb4c0a310940d99f",
         "name": "GUI City Results -> GUI show cities",
         "info": "",
         "x": 1200,
@@ -351,9 +353,9 @@
         "wires": []
     },
     {
-        "id": "a749f3c43924c63a",
+        "id": "8fd94bc8ce51b2ed",
         "type": "comment",
-        "z": "053f5506d4b3b804",
+        "z": "cb4c0a310940d99f",
         "name": "Ergasia - GUI -> link out 3",
         "info": "",
         "x": 1230,
@@ -361,9 +363,9 @@
         "wires": []
     },
     {
-        "id": "79c4cbb217a01bb5",
+        "id": "864266370ff3fe9b",
         "type": "comment",
-        "z": "053f5506d4b3b804",
+        "z": "cb4c0a310940d99f",
         "name": "Ergasia - GUI -> link out 4",
         "info": "",
         "x": 1110,
