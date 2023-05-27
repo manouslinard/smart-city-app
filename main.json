@@ -1,6 +1,6 @@
 [
     {
-        "id": "46ef912d59b272ce",
+        "id": "87cfb420da0672dc",
         "type": "tab",
         "label": "Ergasia - Main Flow",
         "disabled": false,
@@ -8,9 +8,9 @@
         "env": []
     },
     {
-        "id": "d1d857ee1e0413f0",
+        "id": "7529b4f2acd02019",
         "type": "http request",
-        "z": "46ef912d59b272ce",
+        "z": "87cfb420da0672dc",
         "name": "",
         "method": "GET",
         "ret": "txt",
@@ -27,15 +27,15 @@
         "y": 320,
         "wires": [
             [
-                "6cdf7d7f8634eff0",
-                "5e19a27f0a55e04f"
+                "b83f3997779030a8",
+                "829a5c3e3e3f83c5"
             ]
         ]
     },
     {
-        "id": "6cdf7d7f8634eff0",
+        "id": "b83f3997779030a8",
         "type": "debug",
-        "z": "46ef912d59b272ce",
+        "z": "87cfb420da0672dc",
         "name": "",
         "active": false,
         "tosidebar": true,
@@ -50,9 +50,9 @@
         "wires": []
     },
     {
-        "id": "582cebda628cda63",
+        "id": "08b62ab2e654be6f",
         "type": "http request",
-        "z": "46ef912d59b272ce",
+        "z": "87cfb420da0672dc",
         "name": "",
         "method": "GET",
         "ret": "obj",
@@ -69,15 +69,15 @@
         "y": 340,
         "wires": [
             [
-                "bbe43e066337339e",
-                "6deec37e8d54b9c6"
+                "0093e0f4ad791f18",
+                "0430dcaae05bd50e"
             ]
         ]
     },
     {
-        "id": "bbe43e066337339e",
+        "id": "0093e0f4ad791f18",
         "type": "function",
-        "z": "46ef912d59b272ce",
+        "z": "87cfb420da0672dc",
         "name": "function 6",
         "func": "var country_continent = { \"MK\":\"EU\", \"KR\":\"AS\", \"AM\": \"AS\", \"AW\": \"NA\", \"AU\": \"OC\", \"BY\": \"EU\", \"BE\": \"EU\", \"BA\": \"EU\", \"BR\": \"SA\", \"BG\": \"EU\", \"CM\": \"AF\", \"CA\": \"NA\", \"KY\": \"NA\", \"CL\": \"SA\", \"CN\": \"AS\", \"CO\": \"SA\", \"KM\": \"AF\", \"HR\": \"EU\", \"CU\": \"NA\", \"CY\": \"AS\", \"DK\": \"EU\", \"EC\": \"SA\", \"EG\": \"AF\", \"EE\": \"EU\", \"FI\": \"EU\", \"FR\": \"EU\", \"GE\": \"AS\", \"DE\": \"EU\", \"GI\": \"EU\", \"GR\": \"EU\", \"GD\": \"NA\", \"GY\": \"SA\", \"HU\": \"EU\", \"IN\": \"AS\", \"ID\": \"AS\", \"IR\": \"AS\", \"IE\": \"EU\", \"IT\": \"EU\", \"JM\": \"NA\", \"JP\": \"AS\", \"KZ\": \"AS\", \"KE\": \"AF\", \"LV\": \"EU\", \"LB\": \"AS\", \"LT\": \"EU\", \"LU\": \"EU\", \"MT\": \"EU\", \"MX\": \"NA\", \"MD\": \"EU\", \"MA\": \"AF\", \"NP\": \"AS\", \"NL\": \"EU\", \"NZ\": \"OC\", \"NI\": \"NA\", \"NG\": \"AF\", \"NF\": \"OC\", \"NO\": \"EU\", \"PK\": \"AS\", \"PY\": \"SA\", \"PH\": \"AS\", \"PL\": \"EU\", \"PT\": \"EU\", \"QA\": \"AS\", \"RO\": \"EU\", \"RU\": \"EU\", \"SA\": \"AS\", \"RS\": \"EU\", \"SC\": \"AF\", \"SG\": \"AS\", \"SK\": \"EU\", \"SI\": \"EU\", \"ZA\": \"AF\", \"ES\": \"EU\", \"SE\": \"EU\", \"CH\": \"EU\", \"TH\": \"AS\", \"TT\": \"NA\", \"TN\": \"AF\", \"TR\": \"AS\", \"UA\": \"EU\", \"AE\": \"AS\", \"UY\": \"SA\", \"UZ\": \"AS\", \"VE\": \"SA\", \"CZ\":\"EU\", \"GB\":\"EU\", \"US\":\"NA\" };\n\nvar forbidden_cities_in_countries = { \"MT\": [\"Victoria\"], \"ES\": [\"Guadalajara\"], \"VE\": [\"Barcelona\", \"Valencia\"], \"NF\": [\"Kingston\"], \"CA\": [\"Sydney\", \"London\", \"Richmond\", \"Cambridge\", \"Kingston\"] };\n\nfunction check_forbidden_cities(city_name, country_code) {\n    var forbidd_list = forbidden_cities_in_countries[country_code];\n    if (forbidd_list) {\n        for (var i = 0; i < forbidd_list.length; i++) {\n            if (forbidd_list[i].toLowerCase() === \"\" + city_name) {\n                return true;\n            }\n        }\n    }\n    return false;\n}\n\n\nvar countries = msg.payload.geonames;\nvar options = [];\nfor (var i = 0; i < countries.length; i++) {\n    var city = countries[i];\n    // global.set(\"country_code\", city.countryCode);\n    var city_name = city.toponymName.toLowerCase();\n\n    if (city.fclName.includes(\"city\") && !check_forbidden_cities(city_name, city.countryCode)) {\n        // console.log(\"CITY CODE:\" + city.countryCode);\n        options.push({\n            city: city_name,\n            city_url: \"https://api.teleport.org/api/urban_areas/slug:\" + city.toponymName.toLowerCase() + \"/scores/\",\n            lat: city.lat,\n            lng: city.lng,\n            geonameId: city.geonameId,\n            country_code: city.countryCode,\n            continent_code: country_continent[city.countryCode]\n        });\n    }\n}\n// msg.url = \"https://api.teleport.org/api/urban_areas/slug:athens/scores/\";\n// msg.payload.url = \"https://api.teleport.org/api/urban_areas/slug:athens/scores/\"\nmsg.payload = options;\n// msg.options = options;\nreturn msg;\n\n\n",
         "outputs": 1,
@@ -89,14 +89,14 @@
         "y": 420,
         "wires": [
             [
-                "06edc950a5e676de"
+                "7523b379ae3d7dac"
             ]
         ]
     },
     {
-        "id": "06edc950a5e676de",
+        "id": "7523b379ae3d7dac",
         "type": "split",
-        "z": "46ef912d59b272ce",
+        "z": "87cfb420da0672dc",
         "name": "",
         "splt": "\\n",
         "spltType": "str",
@@ -108,15 +108,15 @@
         "y": 420,
         "wires": [
             [
-                "1321274049cdaeda",
-                "23f591f94908d7cf"
+                "bf2ea9cf12bca2e0",
+                "038ecea868671260"
             ]
         ]
     },
     {
-        "id": "1321274049cdaeda",
+        "id": "bf2ea9cf12bca2e0",
         "type": "debug",
-        "z": "46ef912d59b272ce",
+        "z": "87cfb420da0672dc",
         "name": "debug 11",
         "active": false,
         "tosidebar": true,
@@ -130,9 +130,9 @@
         "wires": []
     },
     {
-        "id": "5e19a27f0a55e04f",
+        "id": "829a5c3e3e3f83c5",
         "type": "function",
-        "z": "46ef912d59b272ce",
+        "z": "87cfb420da0672dc",
         "name": "function 7",
         "func": "var options = {};\n\ntry {\n    // console.log(msg.city);\n    var payload = JSON.parse(msg.payload);\n    // msg.payload = JSON.parse(msg.payload);\n    if (payload.status === 404) {\n        return [null, msg];\n    }\n    // console.log(payload);\n    var url = payload._links.self.href;\n\n    var start = url.indexOf(\"slug:\") + 5; // Get the index of \"slug:\" and add 5 to skip over it\n    var end = url.indexOf(\"/\", start); // Get the index of the next \"/\" after \"slug:\"\n    var citySlug = url.substring(start, end);\n\n    //console.log(citySlug);\n\n    options.city_name = citySlug;\n    //options.city_summary = payload.summary.replace(/(<([^>]+)>)/gi, \"\").trim();\n    options.city_summary = payload.summary  // Remove HTML tags using regex\n        .replace(/<\\/?[^>]+(>|$)/g, \"\")\n        // Replace newline characters with empty string\n        .replace(/\\n/g, \"\")\n        .replace(/['\"]/g, \"\")\n        // Trim any remaining whitespace from beginning and end\n        .trim();\n\n\n    for (var i = 0; i < payload.categories.length; i++) {\n        var categ = payload.categories[i];\n        var key = categ.name.replace(/[\\s&]+/g, '_').replace(/_{2,}/g, '_');\n        options[key.toLowerCase()] = categ.score_out_of_10;\n    }\n\n    var city_saved = msg.city;\n    options.lat = city_saved.lat;\n    options.lng = city_saved.lng;\n    options.geonameId = city_saved.geonameId;\n    options.country_code = city_saved.country_code;\n    options.continent_code = city_saved.continent_code;\n    msg.payload = options;\n    return [msg, null];\n} catch (error) {\n    // does nothing\n    return [null, msg];\n}\n",
         "outputs": 2,
@@ -144,16 +144,16 @@
         "y": 380,
         "wires": [
             [
-                "d77bbd7797f5ddb0",
-                "67f35907046b78c5"
+                "89ce475c4c0c1316",
+                "d31640290a76115d"
             ],
             []
         ]
     },
     {
-        "id": "d77bbd7797f5ddb0",
+        "id": "89ce475c4c0c1316",
         "type": "debug",
-        "z": "46ef912d59b272ce",
+        "z": "87cfb420da0672dc",
         "name": "debug 12",
         "active": false,
         "tosidebar": true,
@@ -168,9 +168,9 @@
         "wires": []
     },
     {
-        "id": "914361a2edce3ef6",
+        "id": "42178cfd22245644",
         "type": "sqlite",
-        "z": "46ef912d59b272ce",
+        "z": "87cfb420da0672dc",
         "mydb": "e1b7d6f10fa6ce00",
         "sqlquery": "msg.topic",
         "sql": "",
@@ -182,9 +182,9 @@
         ]
     },
     {
-        "id": "67f35907046b78c5",
+        "id": "d31640290a76115d",
         "type": "function",
-        "z": "46ef912d59b272ce",
+        "z": "87cfb420da0672dc",
         "name": "INSERT DATABASE",
         "func": "var keys = Object.keys(msg.payload);\n// console.log(keys);\n// Generate the SQL statement dynamically\n// var sql_create = 'CREATE TABLE IF NOT EXISTS cities_table (' + keys.join(', ') + ', PRIMARY KEY (city_name))';\nvar sql = 'INSERT OR IGNORE INTO cities_table (' + keys.join(', ') + ') VALUES (';\nsql += keys.map(function (key) { return \"'\" + msg.payload[key] + \"'\"; }).join(', ');\nsql += ')';\n//msg.topic = [sql_create, sql];\nvar create_msg = {};\n// create_msg.topic = sql_create;\nmsg.topic = sql;\nreturn [create_msg, msg];\n\n//msg.payload = options;\n//return [msg, null];",
         "outputs": 2,
@@ -196,18 +196,18 @@
         "y": 400,
         "wires": [
             [
-                "65750bb867ebdbae"
+                "1d2389ad35a2e888"
             ],
             [
-                "a3346993a7417e36",
-                "2e27409436eb202c"
+                "35fbe16614e11b04",
+                "6fe4f6d4bdd17d52"
             ]
         ]
     },
     {
-        "id": "66634e0e9e8bb81d",
+        "id": "86f48f834c2556e0",
         "type": "function",
-        "z": "46ef912d59b272ce",
+        "z": "87cfb420da0672dc",
         "name": "CREATE TABLE",
         "func": "msg.topic = 'CREATE TABLE IF NOT EXISTS cities_table (city_name TEXT, city_summary TEXT, housing REAL, cost_of_living REAL, startups REAL, venture_capital REAL, travel_connectivity REAL, commute REAL, business_freedom REAL, safety REAL, healthcare REAL, education REAL, environmental_quality REAL, economy REAL, taxation REAL, internet_access REAL, leisure_culture REAL, tolerance REAL, outdoors REAL, country_code TEXT, continent_code TEXT, lat REAL, lng REAL, geonameId INTEGER PRIMARY KEY)';\nreturn msg;",
         "outputs": 1,
@@ -219,14 +219,14 @@
         "y": 520,
         "wires": [
             [
-                "914361a2edce3ef6"
+                "42178cfd22245644"
             ]
         ]
     },
     {
-        "id": "8f787f251760c4d7",
+        "id": "801377e6f81c1fc5",
         "type": "inject",
-        "z": "46ef912d59b272ce",
+        "z": "87cfb420da0672dc",
         "name": "",
         "props": [
             {
@@ -248,14 +248,14 @@
         "y": 560,
         "wires": [
             [
-                "66634e0e9e8bb81d"
+                "86f48f834c2556e0"
             ]
         ]
     },
     {
-        "id": "0983df96e50da0a4",
+        "id": "d2ebe96cd1984d96",
         "type": "inject",
-        "z": "46ef912d59b272ce",
+        "z": "87cfb420da0672dc",
         "name": "",
         "props": [
             {
@@ -277,15 +277,15 @@
         "y": 620,
         "wires": [
             [
-                "57c3adc2f3fb7466",
-                "61b9a94ae34052b1"
+                "74427944f50d7154",
+                "3b0829fc2ea8cc99"
             ]
         ]
     },
     {
-        "id": "57c3adc2f3fb7466",
+        "id": "74427944f50d7154",
         "type": "function",
-        "z": "46ef912d59b272ce",
+        "z": "87cfb420da0672dc",
         "name": "DROP DATABASE",
         "func": "msg.topic = \"drop table if exists cities_table\";\nreturn msg;\n",
         "outputs": 1,
@@ -297,14 +297,14 @@
         "y": 580,
         "wires": [
             [
-                "914361a2edce3ef6"
+                "42178cfd22245644"
             ]
         ]
     },
     {
-        "id": "65750bb867ebdbae",
+        "id": "1d2389ad35a2e888",
         "type": "debug",
-        "z": "46ef912d59b272ce",
+        "z": "87cfb420da0672dc",
         "name": "debug 13",
         "active": false,
         "tosidebar": true,
@@ -319,9 +319,9 @@
         "wires": []
     },
     {
-        "id": "a3346993a7417e36",
+        "id": "35fbe16614e11b04",
         "type": "sqlite",
-        "z": "46ef912d59b272ce",
+        "z": "87cfb420da0672dc",
         "mydb": "e1b7d6f10fa6ce00",
         "sqlquery": "msg.topic",
         "sql": "",
@@ -330,14 +330,14 @@
         "y": 400,
         "wires": [
             [
-                "26553db0293223de"
+                "8b0a21a64d6cf627"
             ]
         ]
     },
     {
-        "id": "26553db0293223de",
+        "id": "8b0a21a64d6cf627",
         "type": "debug",
-        "z": "46ef912d59b272ce",
+        "z": "87cfb420da0672dc",
         "name": "debug 14",
         "active": false,
         "tosidebar": true,
@@ -352,25 +352,26 @@
         "wires": []
     },
     {
-        "id": "212fd4a3a5c2ed27",
+        "id": "f849fa70617d63f5",
         "type": "link in",
-        "z": "46ef912d59b272ce",
+        "z": "87cfb420da0672dc",
         "name": "Function Call Countries",
         "links": [
-            "c020d68c719047a1"
+            "c020d68c719047a1",
+            "2168f6ab0a9f6556"
         ],
         "x": 185,
         "y": 420,
         "wires": [
             [
-                "bbe43e066337339e"
+                "0093e0f4ad791f18"
             ]
         ]
     },
     {
-        "id": "6deec37e8d54b9c6",
+        "id": "0430dcaae05bd50e",
         "type": "debug",
-        "z": "46ef912d59b272ce",
+        "z": "87cfb420da0672dc",
         "name": "debug 18",
         "active": false,
         "tosidebar": true,
@@ -384,42 +385,42 @@
         "wires": []
     },
     {
-        "id": "980c0d44548b7902",
+        "id": "a2aaab46fbd13df0",
         "type": "link in",
-        "z": "46ef912d59b272ce",
+        "z": "87cfb420da0672dc",
         "name": "drop_table_link",
         "links": [
-            "3364c2fb7df86e29"
+            "228c39b26dbda822"
         ],
         "x": 1055,
         "y": 680,
         "wires": [
             [
-                "57c3adc2f3fb7466",
-                "61b9a94ae34052b1"
+                "74427944f50d7154",
+                "3b0829fc2ea8cc99"
             ]
         ]
     },
     {
-        "id": "5f13069549865f2f",
+        "id": "a990ed15590f0f60",
         "type": "link in",
-        "z": "46ef912d59b272ce",
+        "z": "87cfb420da0672dc",
         "name": "create_table_link",
         "links": [
-            "a77f0f37aef556df"
+            "a5f5b0330262851c"
         ],
         "x": 1065,
         "y": 500,
         "wires": [
             [
-                "66634e0e9e8bb81d"
+                "86f48f834c2556e0"
             ]
         ]
     },
     {
-        "id": "154985cc38f6495a",
+        "id": "06852b416dbfdd6d",
         "type": "debug",
-        "z": "46ef912d59b272ce",
+        "z": "87cfb420da0672dc",
         "name": "debug 35",
         "active": false,
         "tosidebar": true,
@@ -433,9 +434,9 @@
         "wires": []
     },
     {
-        "id": "2e27409436eb202c",
+        "id": "6fe4f6d4bdd17d52",
         "type": "change",
-        "z": "46ef912d59b272ce",
+        "z": "87cfb420da0672dc",
         "name": "GIVES CITY OBJ",
         "rules": [
             {
@@ -455,29 +456,29 @@
         "y": 500,
         "wires": [
             [
-                "154985cc38f6495a",
-                "141c964fb38798ba"
+                "06852b416dbfdd6d",
+                "8a5041354fd17b83"
             ]
         ]
     },
     {
-        "id": "141c964fb38798ba",
+        "id": "8a5041354fd17b83",
         "type": "link out",
-        "z": "46ef912d59b272ce",
+        "z": "87cfb420da0672dc",
         "name": "link out 5",
         "mode": "link",
         "links": [
-            "5676a723d06b286c",
-            "a0b1f626a6bcd56f"
+            "0950948674e29047",
+            "40975a27db9de81a"
         ],
         "x": 1895,
         "y": 500,
         "wires": []
     },
     {
-        "id": "23f591f94908d7cf",
+        "id": "038ecea868671260",
         "type": "change",
-        "z": "46ef912d59b272ce",
+        "z": "87cfb420da0672dc",
         "name": "",
         "rules": [
             {
@@ -505,14 +506,14 @@
         "y": 420,
         "wires": [
             [
-                "d1d857ee1e0413f0"
+                "7529b4f2acd02019"
             ]
         ]
     },
     {
-        "id": "e38fc529d4e2bce4",
+        "id": "081d1bca713f75e9",
         "type": "function",
-        "z": "46ef912d59b272ce",
+        "z": "87cfb420da0672dc",
         "name": "function 22",
         "func": "var username = global.get(\"username\");\nmsg.url = \"http://api.geonames.org/searchJSON?country=DE&username=\" + username;\nreturn msg;",
         "outputs": 1,
@@ -524,14 +525,14 @@
         "y": 280,
         "wires": [
             [
-                "582cebda628cda63"
+                "08b62ab2e654be6f"
             ]
         ]
     },
     {
-        "id": "3f59dd8dcf6384a1",
+        "id": "6173c4be42e194d0",
         "type": "inject",
-        "z": "46ef912d59b272ce",
+        "z": "87cfb420da0672dc",
         "name": "",
         "props": [
             {
@@ -553,14 +554,14 @@
         "y": 280,
         "wires": [
             [
-                "e38fc529d4e2bce4"
+                "081d1bca713f75e9"
             ]
         ]
     },
     {
-        "id": "61b9a94ae34052b1",
+        "id": "3b0829fc2ea8cc99",
         "type": "function",
-        "z": "46ef912d59b272ce",
+        "z": "87cfb420da0672dc",
         "name": "RESET GLOBAL KEYS",
         "func": "var globalKeys = global.keys();\n\nfor (var i = 0; i < globalKeys.length; i++) {\n    // global.delete(globalKeys[i]);\n    if (globalKeys[i] != \"username\") {\n        global.set(globalKeys[i], 0);\n    }\n}\n\nif (global.keys().length <= 0) {\n    msg.payload = \"All global keys deleted.\"\n    return [msg, null];\n}\nmsg.payload = \"All global keys NOT deleted.\"\nreturn [null, msg];",
         "outputs": 2,
@@ -576,9 +577,9 @@
         ]
     },
     {
-        "id": "2e7f05b443d2dc9f",
+        "id": "c6433dac936980fa",
         "type": "comment",
-        "z": "46ef912d59b272ce",
+        "z": "87cfb420da0672dc",
         "name": "Ergasia - GUI -> link out 2",
         "info": "",
         "x": 190,
@@ -586,9 +587,9 @@
         "wires": []
     },
     {
-        "id": "9d92166dc7f1e6db",
+        "id": "5932f8e0c7d052a7",
         "type": "comment",
-        "z": "46ef912d59b272ce",
+        "z": "87cfb420da0672dc",
         "name": "Weatherflow -> link out 7",
         "info": "",
         "x": 1110,
@@ -596,9 +597,9 @@
         "wires": []
     },
     {
-        "id": "e323704fe037804f",
+        "id": "a796a44f98f35949",
         "type": "comment",
-        "z": "46ef912d59b272ce",
+        "z": "87cfb420da0672dc",
         "name": "Weatherflow -> link out 6",
         "info": "",
         "x": 1010,
@@ -606,9 +607,9 @@
         "wires": []
     },
     {
-        "id": "f09c7aa85fd423e3",
+        "id": "720939ab6d0c84be",
         "type": "comment",
-        "z": "46ef912d59b272ce",
+        "z": "87cfb420da0672dc",
         "name": "ImageFlow + WeatherFlow -> city_weather",
         "info": "",
         "x": 1960,

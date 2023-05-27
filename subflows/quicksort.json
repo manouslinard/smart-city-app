@@ -1,0 +1,71 @@
+[
+    {
+        "id": "e3362431f3372381",
+        "type": "subflow",
+        "name": "QuickSort",
+        "info": "",
+        "category": "",
+        "in": [
+            {
+                "x": 140,
+                "y": 120,
+                "wires": [
+                    {
+                        "id": "36dec23814efedfb"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 580,
+                "y": 120,
+                "wires": [
+                    {
+                        "id": "aa7c06d534637cf0",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [],
+        "meta": {},
+        "color": "#DDAA99"
+    },
+    {
+        "id": "36dec23814efedfb",
+        "type": "function",
+        "z": "e3362431f3372381",
+        "name": "Quick Sort",
+        "func": "function quickSort(arr, left, right) {\n    if (left < right) {\n        const pivotIndex = partition(arr, left, right);\n        quickSort(arr, left, pivotIndex - 1);\n        quickSort(arr, pivotIndex + 1, right);\n    }\n    return arr;\n}\n\nfunction partition(arr, left, right) {\n    // const pivot = new Date(arr[right].date);\n    const pivot = arr[right].date;\n    let i = left - 1;\n\n    for (let j = left; j < right; j++) {\n        // const currentDate = new Date(arr[j].date);\n        const currentDate = arr[j].date;\n        if (currentDate < pivot) {\n            i++;\n            swap(arr, i, j);\n        }\n    }\n\n    swap(arr, i + 1, right);\n    return i + 1;\n}\n\nfunction swap(arr, i, j) {\n    const temp = arr[i];\n    arr[i] = arr[j];\n    arr[j] = temp;\n}\n\nvar list = msg.payload;\nfor (let key in list) {\n    list[key] = quickSort(list[key], 0, list[key].length - 1);\n}\nmsg.payload = list;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 270,
+        "y": 120,
+        "wires": [
+            [
+                "aa7c06d534637cf0"
+            ]
+        ]
+    },
+    {
+        "id": "aa7c06d534637cf0",
+        "type": "function",
+        "z": "e3362431f3372381",
+        "name": "Reverse Sort",
+        "func": "// Input: list - array of dictionaries [{ temperature: number, date: string }]\nif (!msg.reverse_sort){\n    return msg;\n}\n\nvar list = msg.payload;\nfor (let key in list) {\n    list[key] = list[key].reverse();\n}\nmsg.payload = list;\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 450,
+        "y": 120,
+        "wires": [
+            []
+        ]
+    }
+]

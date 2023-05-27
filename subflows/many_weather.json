@@ -1,0 +1,699 @@
+[
+    {
+        "id": "e3362431f3372381",
+        "type": "subflow",
+        "name": "QuickSort",
+        "info": "",
+        "category": "",
+        "in": [
+            {
+                "x": 140,
+                "y": 120,
+                "wires": [
+                    {
+                        "id": "36dec23814efedfb"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 580,
+                "y": 120,
+                "wires": [
+                    {
+                        "id": "aa7c06d534637cf0",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [],
+        "meta": {},
+        "color": "#DDAA99"
+    },
+    {
+        "id": "36dec23814efedfb",
+        "type": "function",
+        "z": "e3362431f3372381",
+        "name": "Quick Sort",
+        "func": "function quickSort(arr, left, right) {\n    if (left < right) {\n        const pivotIndex = partition(arr, left, right);\n        quickSort(arr, left, pivotIndex - 1);\n        quickSort(arr, pivotIndex + 1, right);\n    }\n    return arr;\n}\n\nfunction partition(arr, left, right) {\n    // const pivot = new Date(arr[right].date);\n    const pivot = arr[right].date;\n    let i = left - 1;\n\n    for (let j = left; j < right; j++) {\n        // const currentDate = new Date(arr[j].date);\n        const currentDate = arr[j].date;\n        if (currentDate < pivot) {\n            i++;\n            swap(arr, i, j);\n        }\n    }\n\n    swap(arr, i + 1, right);\n    return i + 1;\n}\n\nfunction swap(arr, i, j) {\n    const temp = arr[i];\n    arr[i] = arr[j];\n    arr[j] = temp;\n}\n\nvar list = msg.payload;\nfor (let key in list) {\n    list[key] = quickSort(list[key], 0, list[key].length - 1);\n}\nmsg.payload = list;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 270,
+        "y": 120,
+        "wires": [
+            [
+                "aa7c06d534637cf0"
+            ]
+        ]
+    },
+    {
+        "id": "aa7c06d534637cf0",
+        "type": "function",
+        "z": "e3362431f3372381",
+        "name": "Reverse Sort",
+        "func": "// Input: list - array of dictionaries [{ temperature: number, date: string }]\nif (!msg.reverse_sort){\n    return msg;\n}\n\nvar list = msg.payload;\nfor (let key in list) {\n    list[key] = list[key].reverse();\n}\nmsg.payload = list;\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 450,
+        "y": 120,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "0e5ee74342c0495d",
+        "type": "subflow",
+        "name": "Calculate Weighted Average",
+        "info": "",
+        "category": "",
+        "in": [
+            {
+                "x": 160,
+                "y": 240,
+                "wires": [
+                    {
+                        "id": "fee3903a5b91d9a4"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 580,
+                "y": 180,
+                "wires": [
+                    {
+                        "id": "9442ae94d5fbbe05",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [],
+        "meta": {},
+        "color": "#DDAA99"
+    },
+    {
+        "id": "9442ae94d5fbbe05",
+        "type": "function",
+        "z": "0e5ee74342c0495d",
+        "name": "Calculate Weighted Average",
+        "func": "function calc_weight_avg(list) {\n    // Calculate total weight and weighted sum\n    let totalWeight = 0;\n    let weightedSum = 0;\n\n    list.forEach((temperature, index) => {\n        const weight = index + 1;\n\n        weightedSum += temperature.value * weight;\n        totalWeight += weight;\n    });\n\n    const weightedAverage = weightedSum / totalWeight;\n    return weightedAverage;\n}\n\nconst list = msg.payload;\nfor (let key in list) {\n    list[key] = calc_weight_avg(list[key]);\n}\n\nmsg.payload = list;\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 180,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "3c2a8c86e72ab097",
+        "type": "subflow:e3362431f3372381",
+        "z": "0e5ee74342c0495d",
+        "name": "",
+        "x": 380,
+        "y": 240,
+        "wires": [
+            [
+                "9442ae94d5fbbe05"
+            ]
+        ]
+    },
+    {
+        "id": "fee3903a5b91d9a4",
+        "type": "change",
+        "z": "0e5ee74342c0495d",
+        "name": "REVERSE SORT TRUE",
+        "rules": [
+            {
+                "t": "set",
+                "p": "reverse_sort",
+                "pt": "msg",
+                "to": "true",
+                "tot": "bool"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 230,
+        "y": 320,
+        "wires": [
+            [
+                "3c2a8c86e72ab097"
+            ]
+        ]
+    },
+    {
+        "id": "1c1d09cb50197133",
+        "type": "subflow",
+        "name": "Get Many Weather API Data",
+        "info": "",
+        "category": "",
+        "in": [
+            {
+                "x": 160,
+                "y": 180,
+                "wires": [
+                    {
+                        "id": "f5e296816b0a808e"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 2140,
+                "y": 120,
+                "wires": [
+                    {
+                        "id": "445ca5f07bd03145",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [],
+        "meta": {},
+        "color": "#DDAA99"
+    },
+    {
+        "id": "870258360fc34f6f",
+        "type": "http request",
+        "z": "1c1d09cb50197133",
+        "name": "",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 530,
+        "y": 140,
+        "wires": [
+            [
+                "7f921967cd011a07"
+            ]
+        ]
+    },
+    {
+        "id": "f5e296816b0a808e",
+        "type": "function",
+        "z": "1c1d09cb50197133",
+        "name": "Weather APIs",
+        "func": "var lat = msg.city.lat;\nvar lng = msg.city.lng;\nvar weatherapi_key = msg.weatherapi_key;\nvar openweathermapapi_key = msg.openweathermapapi_key;\nvar tommorowapi_key = msg.tommorowapi_key;\nvar weatherapi = {topic:\"weatherapi\", url:`http://api.weatherapi.com/v1/current.json?key=${weatherapi_key}&q=${lat},${lng}&aqi=no`}\nvar openweather = { topic: \"openweather\",url: `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=${openweathermapapi_key}&units=metric`}\nvar tommorowapi = { topic: \"tommorowapi\",url: `https://api.tomorrow.io/v4/weather/realtime?location=${lat},${lng}&apikey=${tommorowapi_key}`}\nvar openmeteoapi = { topic: \"openmeteoapi\", url: `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current_weather=true&hourly=temperature_2m,relativehumidity_2m,surface_pressure,cloudcover,visibility&forecast_days=1`}\nreturn [weatherapi, openweather, tommorowapi, openmeteoapi];",
+        "outputs": 4,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 340,
+        "y": 200,
+        "wires": [
+            [
+                "870258360fc34f6f"
+            ],
+            [
+                "23da8d707aaaceef"
+            ],
+            [
+                "3fa7c5a192c04673"
+            ],
+            [
+                "fcbaf5c82897ce0b"
+            ]
+        ]
+    },
+    {
+        "id": "23da8d707aaaceef",
+        "type": "http request",
+        "z": "1c1d09cb50197133",
+        "name": "",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 530,
+        "y": 180,
+        "wires": [
+            [
+                "7f921967cd011a07"
+            ]
+        ]
+    },
+    {
+        "id": "3fa7c5a192c04673",
+        "type": "http request",
+        "z": "1c1d09cb50197133",
+        "name": "",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 530,
+        "y": 220,
+        "wires": [
+            [
+                "7f921967cd011a07"
+            ]
+        ]
+    },
+    {
+        "id": "fcbaf5c82897ce0b",
+        "type": "http request",
+        "z": "1c1d09cb50197133",
+        "name": "",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 530,
+        "y": 260,
+        "wires": [
+            [
+                "7f921967cd011a07"
+            ]
+        ]
+    },
+    {
+        "id": "7f921967cd011a07",
+        "type": "join",
+        "z": "1c1d09cb50197133",
+        "name": "",
+        "mode": "custom",
+        "build": "object",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": false,
+        "timeout": "",
+        "count": "4",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 710,
+        "y": 200,
+        "wires": [
+            [
+                "f343866b392379ef",
+                "fa70787883fe9b16",
+                "f0b3237d262551ce",
+                "d10e44f3bcdfb9f5",
+                "aee8abb6d40c18b4",
+                "0b21169bf4a24a6f",
+                "c1d8d69c093a01f1",
+                "0c475f2f2b341f84",
+                "5d34355f66dfb6a5"
+            ]
+        ]
+    },
+    {
+        "id": "f343866b392379ef",
+        "type": "debug",
+        "z": "1c1d09cb50197133",
+        "name": "debug 60",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 740,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "fa70787883fe9b16",
+        "type": "function",
+        "z": "1c1d09cb50197133",
+        "name": "Make list of temps & dates",
+        "func": "var weatherapi_dict = { \"date\": Date.parse(msg.payload['weatherapi']['current']['last_updated']), \"value\": msg.payload['weatherapi']['current']['temp_c']};\nvar openmeteoapi_dict = { \"date\": Date.parse(msg.payload['openmeteoapi']['current_weather']['time']), \"value\": msg.payload['openmeteoapi']['current_weather']['temperature']};\nvar tommorowapi_dict = { \"date\": Date.parse(msg.payload['tommorowapi']['data']['time']), \"value\": msg.payload['tommorowapi']['data']['values']['temperature'] };\nvar openweatherapi_dict = { \"date\": msg.payload['openweather']['dt'] * 1000, \"value\": msg.payload['openweather']['main']['temp']};\nmsg.payload = [weatherapi_dict,openmeteoapi_dict,openweatherapi_dict,tommorowapi_dict];\nmsg.topic = \"temperature\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 960,
+        "y": 240,
+        "wires": [
+            [
+                "8fce24e929f52d06"
+            ]
+        ]
+    },
+    {
+        "id": "f0b3237d262551ce",
+        "type": "function",
+        "z": "1c1d09cb50197133",
+        "name": "Make list of windsp & dates",
+        "func": "// wind speed is meters per second.\nvar weatherapi_dict = { \"date\": Date.parse(msg.payload['weatherapi']['current']['last_updated']), \"value\": msg.payload['weatherapi']['current']['wind_kph'] * 0.2778};\nvar openmeteoapi_dict = { \"date\": Date.parse(msg.payload['openmeteoapi']['current_weather']['time']), \"value\": msg.payload['openmeteoapi']['current_weather']['windspeed'] * 0.2778};\nvar tommorowapi_dict = { \"date\": Date.parse(msg.payload['tommorowapi']['data']['time']), \"value\": msg.payload['tommorowapi']['data']['values']['windSpeed'] };\nvar openweatherapi_dict = { \"date\": msg.payload['openweather']['dt'] * 1000, \"value\": msg.payload['openweather']['wind']['speed']};\nmsg.payload = [weatherapi_dict,openmeteoapi_dict,openweatherapi_dict,tommorowapi_dict];\nmsg.topic = \"wind_speed\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 960,
+        "y": 280,
+        "wires": [
+            [
+                "8fce24e929f52d06"
+            ]
+        ]
+    },
+    {
+        "id": "d10e44f3bcdfb9f5",
+        "type": "function",
+        "z": "1c1d09cb50197133",
+        "name": "Make list of pressure & dates",
+        "func": "// wind speed is meters per second.\nconst currentTimestamp = Date.now();\nconst time_of_day = msg.payload['openmeteoapi']['hourly']['time'];\nvar latest_time = 0;\n// console.log(currentTimestamp);\nvar index = 0;\nfor(var time of time_of_day){\n    const time_ml = Date.parse(time);    // converts seconds to miliseconds.\n    if (time_ml <= currentTimestamp){\n        latest_time = time_ml;\n        index += 1;\n        console.log(latest_time);\n    } else {\n        break;\n    }\n}\nindex -= 1;\n// msg.payload = latest_time;\nconsole.log(index);\nvar weatherapi_dict = { \"date\": Date.parse(msg.payload['weatherapi']['current']['last_updated']), \"value\": msg.payload['weatherapi']['current']['pressure_mb']};\nvar openmeteoapi_dict = { \"date\": latest_time, \"value\": msg.payload['openmeteoapi']['hourly']['surface_pressure'][index]};\nvar tommorowapi_dict = { \"date\": Date.parse(msg.payload['tommorowapi']['data']['time']), \"value\": msg.payload['tommorowapi']['data']['values']['pressureSurfaceLevel']};\nvar openweatherapi_dict = { \"date\": msg.payload['openweather']['dt'] * 1000, \"value\": msg.payload['openweather']['main']['pressure']};\nmsg.payload = [weatherapi_dict,openmeteoapi_dict,openweatherapi_dict,tommorowapi_dict];\nmsg.topic = \"pressure\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 960,
+        "y": 320,
+        "wires": [
+            [
+                "8fce24e929f52d06"
+            ]
+        ]
+    },
+    {
+        "id": "aee8abb6d40c18b4",
+        "type": "function",
+        "z": "1c1d09cb50197133",
+        "name": "Make list of visibility & dates",
+        "func": "// wind speed is meters per second.\nconst currentTimestamp = Date.now();\nconst time_of_day = msg.payload['openmeteoapi']['hourly']['time'];\nvar latest_time = 0;\n// console.log(currentTimestamp);\nvar index = 0;\nfor(var time of time_of_day){\n    const time_ml = Date.parse(time);    // converts seconds to miliseconds.\n    if (time_ml <= currentTimestamp){\n        latest_time = time_ml;\n        index += 1;\n        console.log(latest_time);\n    } else {\n        break;\n    }\n}\nindex -= 1;\n// msg.payload = latest_time;\nconsole.log(index);\nvar weatherapi_dict = { \"date\": Date.parse(msg.payload['weatherapi']['current']['last_updated']), \"value\": msg.payload['weatherapi']['current']['vis_km'] * 1000};\nvar openmeteoapi_dict = { \"date\": latest_time, \"value\": msg.payload['openmeteoapi']['hourly']['visibility'][index]};\nvar tommorowapi_dict = { \"date\": Date.parse(msg.payload['tommorowapi']['data']['time']), \"value\": msg.payload['tommorowapi']['data']['values']['visibility'] * 1000};\nvar openweatherapi_dict = { \"date\": msg.payload['openweather']['dt'] * 1000, \"value\": msg.payload['openweather']['visibility']};\nmsg.payload = [weatherapi_dict,openmeteoapi_dict,openweatherapi_dict,tommorowapi_dict];\nmsg.topic = \"visibility\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 960,
+        "y": 360,
+        "wires": [
+            [
+                "8fce24e929f52d06"
+            ]
+        ]
+    },
+    {
+        "id": "0b21169bf4a24a6f",
+        "type": "function",
+        "z": "1c1d09cb50197133",
+        "name": "Make list of humidity & dates",
+        "func": "// wind speed is meters per second.\nconst currentTimestamp = Date.now();\nconst time_of_day = msg.payload['openmeteoapi']['hourly']['time'];\nvar latest_time = 0;\n// console.log(currentTimestamp);\nvar index = 0;\nfor(var time of time_of_day){\n    const time_ml = Date.parse(time);    // converts seconds to miliseconds.\n    if (time_ml <= currentTimestamp){\n        latest_time = time_ml;\n        index += 1;\n        console.log(latest_time);\n    } else {\n        break;\n    }\n}\nindex -= 1;\n// msg.payload = latest_time;\nconsole.log(index);\nvar weatherapi_dict = { \"date\": Date.parse(msg.payload['weatherapi']['current']['last_updated']), \"value\": msg.payload['weatherapi']['current']['humidity']};\nvar openmeteoapi_dict = { \"date\": latest_time, \"value\": msg.payload['openmeteoapi']['hourly']['relativehumidity_2m'][index]};\nvar tommorowapi_dict = { \"date\": Date.parse(msg.payload['tommorowapi']['data']['time']), \"value\": msg.payload['tommorowapi']['data']['values']['humidity']};\nvar openweatherapi_dict = { \"date\": msg.payload['openweather']['dt'] * 1000, \"value\": msg.payload['openweather']['main']['humidity']};\nmsg.payload = [weatherapi_dict,openmeteoapi_dict,openweatherapi_dict,tommorowapi_dict];\nmsg.topic = \"humidity\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 960,
+        "y": 400,
+        "wires": [
+            [
+                "8fce24e929f52d06"
+            ]
+        ]
+    },
+    {
+        "id": "c1d8d69c093a01f1",
+        "type": "function",
+        "z": "1c1d09cb50197133",
+        "name": "Make list of cloud & dates",
+        "func": "// wind speed is meters per second.\nconst currentTimestamp = Date.now();\nconst time_of_day = msg.payload['openmeteoapi']['hourly']['time'];\nvar latest_time = 0;\n// console.log(currentTimestamp);\nvar index = 0;\nfor(var time of time_of_day){\n    const time_ml = Date.parse(time);    // converts seconds to miliseconds.\n    if (time_ml <= currentTimestamp){\n        latest_time = time_ml;\n        index += 1;\n        console.log(latest_time);\n    } else {\n        break;\n    }\n}\nindex -= 1;\n// msg.payload = latest_time;\nconsole.log(index);\nvar weatherapi_dict = { \"date\": Date.parse(msg.payload['weatherapi']['current']['last_updated']), \"value\": msg.payload['weatherapi']['current']['cloud']};\nvar openmeteoapi_dict = { \"date\": latest_time, \"value\": msg.payload['openmeteoapi']['hourly']['cloudcover'][index]};\nvar tommorowapi_dict = { \"date\": Date.parse(msg.payload['tommorowapi']['data']['time']), \"value\": msg.payload['tommorowapi']['data']['values']['cloudCover']};\nvar openweatherapi_dict = { \"date\": msg.payload['openweather']['dt'] * 1000, \"value\": msg.payload['openweather']['clouds']['all']};\nmsg.payload = [weatherapi_dict,openmeteoapi_dict,openweatherapi_dict,tommorowapi_dict];\nmsg.topic = \"cloud\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 950,
+        "y": 440,
+        "wires": [
+            [
+                "8fce24e929f52d06"
+            ]
+        ]
+    },
+    {
+        "id": "a44e81c24ab2ed83",
+        "type": "join",
+        "z": "1c1d09cb50197133",
+        "name": "",
+        "mode": "custom",
+        "build": "object",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": false,
+        "timeout": "",
+        "count": "2",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 1830,
+        "y": 320,
+        "wires": [
+            [
+                "445ca5f07bd03145",
+                "cbbf2eeb493ddddd"
+            ]
+        ]
+    },
+    {
+        "id": "0c475f2f2b341f84",
+        "type": "function",
+        "z": "1c1d09cb50197133",
+        "name": "Returns only openweathermap",
+        "func": "var max_date = Math.max(Date.parse(msg.payload['weatherapi']['current']['last_updated']), Date.parse(msg.payload['openmeteoapi']['current_weather']['time']), Date.parse(msg.payload['tommorowapi']['data']['time']), msg.payload['openweather']['dt'] * 1000);\n\nconsole.log(\"DATE DEBUGGING =================== \");\nconsole.log(\"WEATHER_API:\"+Date.parse(msg.payload['weatherapi']['current']['last_updated']));\nconsole.log(\"OPENMETEO_API:\"+Date.parse(msg.payload['openmeteoapi']['current_weather']['time']));\nconsole.log(\"TOMMOROW_API:\"+Date.parse(msg.payload['tommorowapi']['data']['time']));\nconsole.log(\"OPENWEATHERMAP:\"+msg.payload['openweather']['dt'] * 1000);\n\nvar open = msg.payload[\"openweather\"];\nopen['dt'] = max_date;\nmsg.payload = {};\nmsg.payload = open;\nmsg.topic = \"openweather\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1150,
+        "y": 100,
+        "wires": [
+            [
+                "a44e81c24ab2ed83"
+            ]
+        ]
+    },
+    {
+        "id": "445ca5f07bd03145",
+        "type": "function",
+        "z": "1c1d09cb50197133",
+        "name": "Puts avg data in Openweather map Template",
+        "func": "var payload = msg.payload['data'];\n// var openweathermap = msg.payload['openweather'];\nvar openweathermap = {};\nopenweathermap['main'] = {};\nopenweathermap['visibility'] = {};\nopenweathermap['wind'] = {};\nopenweathermap['clouds'] = {};\nopenweathermap['coord'] = msg.payload['openweather']['coord'];\nopenweathermap['weather'] = msg.payload['openweather']['weather'];\nopenweathermap['sys'] = msg.payload['openweather']['sys'];\nopenweathermap['name'] = msg.payload['openweather']['name'];\n// openweathermap['main']['temp'] = payload['temperature'];\n// openweathermap['main']['pressure'] = payload['pressure'];\n// openweathermap['main']['humidity'] = payload['humidity'];\n// openweathermap['visibility'] = payload['visibility'];\n// openweathermap['wind']['speed'] = payload['wind_speed'];\n// openweathermap['clouds']['all'] = payload['cloud'];\n// openweathermap['wind']['deg'] = payload['wind_dir'];\nopenweathermap['main']['temp'] = payload['temperature'].toFixed(2);\nopenweathermap['main']['pressure'] = payload['pressure'].toFixed(2);\nopenweathermap['main']['humidity'] = payload['humidity'].toFixed(2);\nopenweathermap['visibility'] = payload['visibility'].toFixed(2);\nopenweathermap['wind']['speed'] = payload['wind_speed'].toFixed(2);\nopenweathermap['clouds']['all'] = payload['cloud'].toFixed(2);\nopenweathermap['wind']['deg'] = payload['wind_dir'].toFixed(2);\nopenweathermap['dt'] = msg.payload['openweather']['dt'];\ndelete openweathermap.main.feels_like;\ndelete openweathermap.main.temp_min;\ndelete openweathermap.main.temp_max;\nmsg.payload = {};\nmsg.payload = openweathermap;\nmsg.topic=\"\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1850,
+        "y": 120,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "5d34355f66dfb6a5",
+        "type": "function",
+        "z": "1c1d09cb50197133",
+        "name": "Make list of winddir & dates",
+        "func": "var weatherapi_dict = { \"date\": Date.parse(msg.payload['weatherapi']['current']['last_updated']), \"value\": msg.payload['weatherapi']['current']['wind_degree']};\nvar openmeteoapi_dict = { \"date\": Date.parse(msg.payload['openmeteoapi']['current_weather']['time']), \"value\": msg.payload['openmeteoapi']['current_weather']['winddirection']};\nvar tommorowapi_dict = { \"date\": Date.parse(msg.payload['tommorowapi']['data']['time']), \"value\": msg.payload['tommorowapi']['data']['values']['windDirection'] };\nvar openweatherapi_dict = { \"date\": msg.payload['openweather']['dt'] * 1000, \"value\": msg.payload['openweather']['wind']['deg']};\nmsg.payload = [weatherapi_dict,openmeteoapi_dict,openweatherapi_dict,tommorowapi_dict];\nmsg.topic = \"wind_dir\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 960,
+        "y": 200,
+        "wires": [
+            [
+                "8fce24e929f52d06"
+            ]
+        ]
+    },
+    {
+        "id": "73328df888037b2c",
+        "type": "inject",
+        "z": "1c1d09cb50197133",
+        "name": "Test Inject",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "reverse_sort",
+                "v": "true",
+                "vt": "bool"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"temperature\":[{\"value\":20,\"date\":1664515200000},{\"value\":23,\"date\":1664774400000},{\"value\":18,\"date\":1664428800000},{\"value\":25,\"date\":1664601600000},{\"value\":22,\"date\":1664688000000}],\"humidity\":[{\"value\":20,\"date\":1664515200000},{\"value\":23,\"date\":1664774400000},{\"value\":18,\"date\":1664428800000},{\"value\":25,\"date\":1664601600000},{\"value\":22,\"date\":1664688000000}]}",
+        "payloadType": "json",
+        "x": 1240,
+        "y": 320,
+        "wires": [
+            [
+                "fc29061da49bb908"
+            ]
+        ]
+    },
+    {
+        "id": "8fce24e929f52d06",
+        "type": "join",
+        "z": "1c1d09cb50197133",
+        "name": "",
+        "mode": "custom",
+        "build": "object",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": false,
+        "timeout": "",
+        "count": "7",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 1230,
+        "y": 360,
+        "wires": [
+            [
+                "a566ad1ee0b041dd",
+                "fc29061da49bb908"
+            ]
+        ]
+    },
+    {
+        "id": "a566ad1ee0b041dd",
+        "type": "debug",
+        "z": "1c1d09cb50197133",
+        "name": "debug 65",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1360,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "fc29061da49bb908",
+        "type": "subflow:0e5ee74342c0495d",
+        "z": "1c1d09cb50197133",
+        "name": "",
+        "x": 1440,
+        "y": 360,
+        "wires": [
+            [
+                "b6f1d7bfaf0f6e98"
+            ]
+        ]
+    },
+    {
+        "id": "cbbf2eeb493ddddd",
+        "type": "debug",
+        "z": "1c1d09cb50197133",
+        "name": "debug 66",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1940,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "b6f1d7bfaf0f6e98",
+        "type": "change",
+        "z": "1c1d09cb50197133",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "data",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1650,
+        "y": 360,
+        "wires": [
+            [
+                "a44e81c24ab2ed83"
+            ]
+        ]
+    }
+]
