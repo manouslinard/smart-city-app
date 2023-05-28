@@ -1,5 +1,179 @@
 [
     {
+        "id": "4a19b4a0382b6741",
+        "type": "subflow",
+        "name": "READ DATA FROM URL OR LOCAL",
+        "info": "",
+        "category": "",
+        "in": [
+            {
+                "x": 40,
+                "y": 140,
+                "wires": [
+                    {
+                        "id": "6bdbb79045e34126"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 660,
+                "y": 200,
+                "wires": [
+                    {
+                        "id": "64f0f938de14c74f",
+                        "port": 0
+                    },
+                    {
+                        "id": "e056b791e83f857a",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [],
+        "meta": {},
+        "color": "#DDAA99"
+    },
+    {
+        "id": "dba32c62667a02b4",
+        "type": "debug",
+        "z": "4a19b4a0382b6741",
+        "name": "FILE FOUND",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "\"Local Data file found.\"",
+        "targetType": "jsonata",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 690,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "e056b791e83f857a",
+        "type": "switch",
+        "z": "4a19b4a0382b6741",
+        "name": "",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "nnull"
+            },
+            {
+                "t": "null"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 470,
+        "y": 260,
+        "wires": [
+            [
+                "dba32c62667a02b4"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "cd11529b361d8ffb",
+        "type": "file in",
+        "z": "4a19b4a0382b6741",
+        "name": "",
+        "filename": "fileNamePath",
+        "filenameType": "msg",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "none",
+        "allProps": false,
+        "x": 300,
+        "y": 260,
+        "wires": [
+            [
+                "e056b791e83f857a"
+            ]
+        ]
+    },
+    {
+        "id": "64f0f938de14c74f",
+        "type": "switch",
+        "z": "4a19b4a0382b6741",
+        "name": "",
+        "property": "statusCode",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "200",
+                "vt": "num"
+            },
+            {
+                "t": "neq",
+                "v": "200",
+                "vt": "num"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 350,
+        "y": 180,
+        "wires": [
+            [],
+            [
+                "cd11529b361d8ffb",
+                "76ff81e5b8e484f2"
+            ]
+        ]
+    },
+    {
+        "id": "6bdbb79045e34126",
+        "type": "http request",
+        "z": "4a19b4a0382b6741",
+        "name": "",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 190,
+        "y": 140,
+        "wires": [
+            [
+                "64f0f938de14c74f"
+            ]
+        ]
+    },
+    {
+        "id": "76ff81e5b8e484f2",
+        "type": "debug",
+        "z": "4a19b4a0382b6741",
+        "name": "NO INTERNET",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "\"Could not find Requested URL. Checking for file locally...\"",
+        "targetType": "jsonata",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 400,
+        "y": 80,
+        "wires": []
+    },
+    {
         "id": "a4d31c16de61e5f3",
         "type": "tab",
         "label": "Hackathon Data Visual",
@@ -25,51 +199,23 @@
         ]
     },
     {
-        "id": "fa025f7af0bf5167",
-        "type": "file in",
-        "z": "a4d31c16de61e5f3",
-        "name": "",
-        "filename": "/home/manousos/Documents/profile-data.json",
-        "filenameType": "str",
-        "format": "utf8",
-        "chunk": false,
-        "sendError": false,
-        "encoding": "none",
-        "allProps": false,
-        "x": 280,
-        "y": 340,
-        "wires": [
-            [
-                "664e11dec0c45708"
-            ]
-        ]
-    },
-    {
         "id": "50eacd1149ee8ef5",
         "type": "inject",
         "z": "a4d31c16de61e5f3",
         "name": "",
-        "props": [
-            {
-                "p": "payload"
-            },
-            {
-                "p": "topic",
-                "vt": "str"
-            }
-        ],
+        "props": [],
         "repeat": "",
         "crontab": "",
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "payload": "",
-        "payloadType": "date",
-        "x": 140,
-        "y": 220,
+        "x": 90,
+        "y": 520,
         "wires": [
             [
-                "fa025f7af0bf5167"
+                "5c2b16468715ab1f",
+                "d8726ab7f0deb8cb",
+                "51f1483babca3c87"
             ]
         ]
     },
@@ -96,8 +242,8 @@
         "name": "",
         "group": "8c9997051c45c40c",
         "order": 1,
-        "width": 0,
-        "height": 0,
+        "width": 6,
+        "height": 5,
         "label": "Profile Visualization: Low = 1, High = 2",
         "chartType": "horizontalBar",
         "legend": "false",
@@ -193,26 +339,6 @@
         "wires": []
     },
     {
-        "id": "cd11529b361d8ffb",
-        "type": "file in",
-        "z": "a4d31c16de61e5f3",
-        "name": "",
-        "filename": "/home/manousos/Documents/prometheus-data.json",
-        "filenameType": "str",
-        "format": "utf8",
-        "chunk": false,
-        "sendError": false,
-        "encoding": "none",
-        "allProps": false,
-        "x": 250,
-        "y": 600,
-        "wires": [
-            [
-                "c32347516c7f6ecf"
-            ]
-        ]
-    },
-    {
         "id": "2d56d49da05804d3",
         "type": "debug",
         "z": "a4d31c16de61e5f3",
@@ -225,8 +351,8 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 720,
-        "y": 660,
+        "x": 980,
+        "y": 680,
         "wires": []
     },
     {
@@ -234,10 +360,10 @@
         "type": "ui_chart",
         "z": "a4d31c16de61e5f3",
         "name": "",
-        "group": "8c9997051c45c40c",
-        "order": 4,
-        "width": "6",
-        "height": "7",
+        "group": "748a8f07a7873db1",
+        "order": 2,
+        "width": 6,
+        "height": 4,
         "label": "Prometheus Visualization",
         "chartType": "horizontalBar",
         "legend": "false",
@@ -267,8 +393,8 @@
         "outputs": 1,
         "useDifferentColor": false,
         "className": "",
-        "x": 1070,
-        "y": 360,
+        "x": 1190,
+        "y": 320,
         "wires": [
             []
         ]
@@ -278,14 +404,14 @@
         "type": "function",
         "z": "a4d31c16de61e5f3",
         "name": "Draw BarChart",
-        "func": "var dat = flow.get(\"prometheus_data\");\nvar sel_id = msg.payload;\nvar names = [];\nvar mem_arr = [];\nvar cpu_arr = [];\nvar netRec_arr = [];\nvar netTran_arr = [];\nvar fsR_arr = [];\nvar fsW_arr = [];\nvar info = {};\n// console.log(sel_id);\nfor (var d of dat){\n    if (sel_id === \"ALL\" || d[\"activationid\"] === sel_id){\n        names.push(d[\"activationid\"]);\n        mem_arr.push(d[\"memory\"] / 10000);\n        cpu_arr.push(d[\"cpu\"] * 10000);\n        netRec_arr.push(d[\"networkReceived\"]);\n        netTran_arr.push(d[\"networkTransmitted\"]);\n        fsR_arr.push(d[\"fsReads\"] / 10000);\n        fsW_arr.push(d[\"fsWrites\"] / 1000);\n        // count+=1;\n        info[\"testFunctionPayload\"] = d[\"testFunctionPayload\"];\n        info[\"actionname\"] = d[\"actionname\"];\n        info[\"owendpoint\"] = d[\"owendpoint\"];\n        info[\"branchname\"] = d[\"branchname\"];\n        info[\"flow\"] = d[\"flow\"];\n        info[\"activationid\"] = d[\"activationid\"];\n    }\n}\nif (sel_id !== \"ALL\"){\n    names = [\"\"];\n    msg.json = info;\n} else {\n    info[\"testFunctionPayload\"] = \"\";\n    info[\"actionname\"] = \"\";\n    info[\"owendpoint\"] = \"\";\n    info[\"branchname\"] = \"\";\n    info[\"flow\"] = \"\";\n    info[\"activationid\"] = \"\";\n    msg.json = info;\n}\n\nmsg.payload = [{\n    \"series\": [\"CPU (10^4)\", \"Memory (10^-4)\", \"Network Received\", \"Network Transmitted\", \"FsReads (10^-4)\", \"FsWrites (10^-3)\"],\n    \"data\": [cpu_arr, mem_arr, netRec_arr, netTran_arr, fsR_arr, fsW_arr],\n    \"labels\": names\n}];\nreturn msg;\n",
+        "func": "var dat = flow.get(\"prometheus_data\");\nvar sel_id = msg.payload;\nvar names = [];\nvar mem_arr = [];\nvar cpu_arr = [];\nvar netRec_arr = [];\nvar netTran_arr = [];\nvar fsR_arr = [];\nvar fsW_arr = [];\nvar info = {};\n// console.log(sel_id);\nvar keywords = ['ALL', 'MEMORY', 'CPU', 'NETWORK RECEIVED', 'NETWORK TRANSMITTED', 'FSREADS', 'FSWRITES'];\nfor (var d of dat){\n    if (keywords.indexOf(sel_id) !== -1 || d[\"activationid\"] === sel_id){\n        names.push(d[\"activationid\"]);\n        mem_arr.push(d[\"memory\"] / 10000);\n        cpu_arr.push(d[\"cpu\"] * 10000);\n        netRec_arr.push(d[\"networkReceived\"]);\n        netTran_arr.push(d[\"networkTransmitted\"]);\n        fsR_arr.push(d[\"fsReads\"] / 10000);\n        fsW_arr.push(d[\"fsWrites\"] / 1000);\n        // count+=1;\n        info[\"testFunctionPayload\"] = d[\"testFunctionPayload\"];\n        info[\"actionname\"] = d[\"actionname\"];\n        info[\"owendpoint\"] = d[\"owendpoint\"];\n        info[\"branchname\"] = d[\"branchname\"];\n        info[\"flow\"] = d[\"flow\"];\n        info[\"activationid\"] = d[\"activationid\"];\n    }\n}\n\n// if (sel_id !== \"ALL\" && sel_id !== \"MEMORY\" && sel_id !== \"CPU\" && sel_id !== \"NETWORK RECEIVED\" && sel_id !== \"NETWORK_TRANSMITTED\" && sel_id !== \"FSREADS\" && sel_id !== \"FSWRITES\"){\nif (keywords.indexOf(sel_id) === -1) {  // sel_id is not equal to words in list.\n    // console.log(\"IM HERE\");\n    names = [\"\"];\n    msg.json = info;\n} else {\n    info[\"testFunctionPayload\"] = \"\";\n    info[\"actionname\"] = \"\";\n    info[\"owendpoint\"] = \"\";\n    info[\"branchname\"] = \"\";\n    info[\"flow\"] = \"\";\n    info[\"activationid\"] = \"\";\n    msg.json = info;\n}\n\nif (sel_id === \"MEMORY\") {\n    msg.payload = [{\n        \"series\": [\"Memory (10^-4)\"],\n        \"data\": [mem_arr],\n        \"labels\": names\n    }];\n    return msg;\n}\n\nif (sel_id === \"CPU\") {\n    msg.payload = [{\n        \"series\": [\"CPU(10 ^ 4)\"],\n        \"data\": [cpu_arr],\n        \"labels\": names\n    }];\n    return msg;\n}\n\nif (sel_id === \"NETWORK RECEIVED\") {\n    msg.payload = [{\n        \"series\": [\"Network Received\"],\n        \"data\": [netRec_arr],\n        \"labels\": names\n    }];\n    return msg;\n}\n\nif (sel_id === \"NETWORK TRANSMITTED\") {\n    msg.payload = [{\n        \"series\": [\"Network Transmitted\"],\n        \"data\": [netTran_arr],\n        \"labels\": names\n    }];\n    return msg;\n}\n\nif (sel_id === \"FSREADS\") {\n    msg.payload = [{\n        \"series\": [\"FsReads (10^-4)\"],\n        \"data\": [fsR_arr],\n        \"labels\": names\n    }];\n    return msg;\n}\n\nif (sel_id === \"FSWRITES\") {\n    msg.payload = [{\n        \"series\": [\"FsWrites (10^-3)\"],\n        \"data\": [fsW_arr],\n        \"labels\": names\n    }];\n    return msg;\n}\n\n\nmsg.payload = [{\n    \"series\": [\"CPU (10^4)\", \"Memory (10^-4)\", \"Network Received\", \"Network Transmitted\", \"FsReads (10^-4)\", \"FsWrites (10^-3)\"],\n    \"data\": [cpu_arr, mem_arr, netRec_arr, netTran_arr, fsR_arr, fsW_arr],\n    \"labels\": names\n}];\nreturn msg;\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 840,
-        "y": 480,
+        "x": 900,
+        "y": 400,
         "wires": [
             [
                 "461cb8c2dcf42de7",
@@ -298,121 +424,19 @@
         "type": "function",
         "z": "a4d31c16de61e5f3",
         "name": "Convert JSON",
-        "func": "msg.payload = JSON.parse(msg.payload);\nvar data = msg.payload;\nflow.set(\"prometheus_data\", data);\nvar res = [];\nfor (var d of data){\n    var obj = {};\n    obj[d[\"activationid\"]] = d[\"activationid\"];\n    res.push(obj);\n}\nres.push({\"ALL\":\"ALL\"});\nmsg.options = res;\n// console.log(res);\nmsg.topic = \"data\";\nreturn msg;",
+        "func": "msg.payload = JSON.parse(msg.payload);\nconsole.log(msg.payload);\nvar data = msg.payload;\nflow.set(\"prometheus_data\", data);\nvar res = [];\nres.push({ \"ALL\": \"ALL\" });\nres.push({ \"MEMORY\": \"MEMORY\" });\nres.push({ \"CPU\": \"CPU\" });\nres.push({ \"NETWORK RECEIVED\": \"NETWORK RECEIVED\" });\nres.push({ \"NETWORK TRANSMITTED\": \"NETWORK TRANSMITTED\" });\nres.push({ \"FSREADS\": \"FSREADS\" });\nres.push({ \"FSWRITES\": \"FSWRITES\" });\nfor (var d of data){\n    var obj = {};\n    obj[d[\"activationid\"]] = d[\"activationid\"];\n    res.push(obj);\n}\nmsg.options = res;\n// console.log(res);\nmsg.topic = \"data\";\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 580,
-        "y": 600,
+        "x": 740,
+        "y": 620,
         "wires": [
             [
                 "2d56d49da05804d3",
                 "6d40f2c7f361a4fb"
             ]
-        ]
-    },
-    {
-        "id": "ccb88f1ad342199c",
-        "type": "file in",
-        "z": "a4d31c16de61e5f3",
-        "name": "",
-        "filename": "/home/manousos/Documents/prometheus-data.json",
-        "filenameType": "str",
-        "format": "utf8",
-        "chunk": false,
-        "sendError": false,
-        "encoding": "none",
-        "allProps": false,
-        "x": 310,
-        "y": 820,
-        "wires": [
-            [
-                "9e98b624395bb5d6"
-            ]
-        ]
-    },
-    {
-        "id": "81d9d141bd9995f2",
-        "type": "inject",
-        "z": "a4d31c16de61e5f3",
-        "name": "",
-        "props": [
-            {
-                "p": "payload"
-            },
-            {
-                "p": "topic",
-                "vt": "str"
-            }
-        ],
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "topic": "",
-        "payload": "",
-        "payloadType": "date",
-        "x": 360,
-        "y": 780,
-        "wires": [
-            [
-                "ccb88f1ad342199c"
-            ]
-        ]
-    },
-    {
-        "id": "b9bef1168282c7f9",
-        "type": "debug",
-        "z": "a4d31c16de61e5f3",
-        "name": "debug 77",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "false",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 820,
-        "y": 800,
-        "wires": []
-    },
-    {
-        "id": "9e98b624395bb5d6",
-        "type": "function",
-        "z": "a4d31c16de61e5f3",
-        "name": "Convert JSON",
-        "func": "msg.payload = JSON.parse(msg.payload);\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 620,
-        "y": 840,
-        "wires": [
-            [
-                "b9bef1168282c7f9",
-                "33acf72dd34979dd"
-            ]
-        ]
-    },
-    {
-        "id": "33acf72dd34979dd",
-        "type": "function",
-        "z": "a4d31c16de61e5f3",
-        "name": "function 39",
-        "func": "var mon = [\n    \"cpu\",\n    \"memory\",\n    \"networkReceived\",\n    \"networkTransmitted\",\n    \"fsReads\",\n    \"fsWrites\"\n]\ntry {\n    var data_res = msg.payload;\n    var data = {};\n    for (var i = 0; i < mon.length; i++) {\n        data[mon[i]] = [];\n        for (var j = 0; j < data_res.length; j++) {\n            data[mon[i]].push({ \"x\": mon[i], \"y\": data_res[j][mon[i]]});\n        }\n    }\n\n    console.log(data);\n    let labels = Object.keys(data);\n    let values = Object.values(data);\n    // console.log(values);\n\n    msg.payload = [{\n        // \"series\": [\"A\", \"B\", \"C\"], // names - labels\n        \"series\": labels,\n        // data -> the enviroment forecast. x = date and y = value -> should be in the same order as series.\n        // \"data\": [\n        //     [{ \"x\": \"2023-04-30\", \"y\": 5 }, { \"x\": \"2023-05-01\", \"y\": 4 }, { \"x\": \"2023-05-02\", \"y\": 2 }],\n        //     [{ \"x\": \"2023-04-30\", \"y\": 6 }, { \"x\": \"2023-05-01\", \"y\": 7 }, { \"x\": \"2023-05-02\", \"y\": 6 }],\n        //     [{ \"x\": \"2023-04-30\", \"y\": 7 }, { \"x\": \"2023-05-01\", \"y\": 7 }, { \"x\": \"2023-05-02\", \"y\": 7 }]\n        // ],\n        \"data\": values,\n        \"labels\": [\"\"]\n    }]\n    return [msg, null];\n} catch(error) {\n    // do nothing.\n    return [null, msg];\n}",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 670,
-        "y": 780,
-        "wires": [
-            []
         ]
     },
     {
@@ -433,35 +457,6 @@
         "wires": []
     },
     {
-        "id": "b63e4592247523ef",
-        "type": "inject",
-        "z": "a4d31c16de61e5f3",
-        "name": "",
-        "props": [
-            {
-                "p": "payload"
-            },
-            {
-                "p": "topic",
-                "vt": "str"
-            }
-        ],
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "topic": "",
-        "payload": "",
-        "payloadType": "date",
-        "x": 280,
-        "y": 480,
-        "wires": [
-            [
-                "cd11529b361d8ffb"
-            ]
-        ]
-    },
-    {
         "id": "6d40f2c7f361a4fb",
         "type": "ui_dropdown",
         "z": "a4d31c16de61e5f3",
@@ -469,10 +464,10 @@
         "label": "",
         "tooltip": "Select an ID",
         "place": "Select an ID",
-        "group": "8c9997051c45c40c",
-        "order": 3,
-        "width": "5",
-        "height": "1",
+        "group": "748a8f07a7873db1",
+        "order": 1,
+        "width": 0,
+        "height": 0,
         "passthru": true,
         "multiple": false,
         "options": [],
@@ -480,8 +475,8 @@
         "topic": "sel_id",
         "topicType": "str",
         "className": "",
-        "x": 660,
-        "y": 520,
+        "x": 840,
+        "y": 500,
         "wires": [
             [
                 "06237e5143cc87de",
@@ -493,9 +488,9 @@
         "id": "1a6fa2602f158a7e",
         "type": "ui_template",
         "z": "a4d31c16de61e5f3",
-        "group": "8c9997051c45c40c",
+        "group": "748a8f07a7873db1",
         "name": "",
-        "order": 4,
+        "order": 3,
         "width": 0,
         "height": 0,
         "format": "<p><strong>Activation ID:</strong> {{msg.json.activationid}}</p>\n<p><strong>Test Function Payload:</strong> {{msg.json.testFunctionPayload}}</p>\n<p><strong>Branchname:</strong> {{msg.json.branchname}}</p>\n<p><strong>Flow:</strong> {{msg.json.flow}}</p>\n<p><strong>Action:</strong> {{msg.json.actionname}}</p>\n<p><strong>Owendpoint:</strong> {{msg.json.owendpoint}}</p>\n<br>",
@@ -504,26 +499,493 @@
         "resendOnRefresh": true,
         "templateScope": "local",
         "className": "",
-        "x": 1060,
+        "x": 1160,
         "y": 480,
         "wires": [
             []
         ]
     },
     {
-        "id": "f7de499ed7038ce1",
+        "id": "56120ea284406883",
+        "type": "subflow:4a19b4a0382b6741",
+        "z": "a4d31c16de61e5f3",
+        "name": "READ DATA FROM URL OR LOCAL",
+        "x": 470,
+        "y": 620,
+        "wires": [
+            [
+                "c32347516c7f6ecf"
+            ]
+        ]
+    },
+    {
+        "id": "43f616901e21f22c",
+        "type": "subflow:4a19b4a0382b6741",
+        "z": "a4d31c16de61e5f3",
+        "name": "READ DATA FROM URL OR LOCAL",
+        "x": 450,
+        "y": 340,
+        "wires": [
+            [
+                "664e11dec0c45708"
+            ]
+        ]
+    },
+    {
+        "id": "ee4125b8fad4522b",
+        "type": "subflow:4a19b4a0382b6741",
+        "z": "a4d31c16de61e5f3",
+        "name": "READ DATA FROM URL OR LOCAL",
+        "x": 330,
+        "y": 840,
+        "wires": [
+            [
+                "03ecaee6b2599855"
+            ]
+        ]
+    },
+    {
+        "id": "d5449518a138e98f",
+        "type": "debug",
+        "z": "a4d31c16de61e5f3",
+        "name": "debug 79",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 780,
+        "y": 880,
+        "wires": []
+    },
+    {
+        "id": "03ecaee6b2599855",
+        "type": "function",
+        "z": "a4d31c16de61e5f3",
+        "name": "Convert JSON",
+        "func": "msg.payload = JSON.parse(msg.payload);\nfor(var i =0; i<msg.payload.length; i++){\n    msg.payload[i].output = JSON.parse(msg.payload[i].output);\n}\nvar data = msg.payload;\nflow.set(\"loadgen_data\", data);\nvar res = [];\nfor (var d of data) {\n    var obj = {};\n    obj[d[\"activationid\"]] = d[\"activationid\"];\n    res.push(obj);\n}\nmsg.options = res;\n// console.log(res);\nmsg.topic = \"data\";\nreturn msg;\n\n// var data = msg.payload;\n// flow.set(\"prometheus_data\", data);\n// var res = [];\n// res.push({ \"ALL\": \"ALL\" });\n// res.push({ \"MEMORY\": \"MEMORY\" });\n// res.push({ \"CPU\": \"CPU\" });\n// res.push({ \"NETWORK RECEIVED\": \"NETWORK RECEIVED\" });\n// res.push({ \"NETWORK TRANSMITTED\": \"NETWORK TRANSMITTED\" });\n// res.push({ \"FSREADS\": \"FSREADS\" });\n// res.push({ \"FSWRITES\": \"FSWRITES\" });\n// for (var d of data){\n//     var obj = {};\n//     obj[d[\"activationid\"]] = d[\"activationid\"];\n//     res.push(obj);\n// }\n// msg.options = res;\n// // console.log(res);\n// msg.topic = \"data\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 600,
+        "y": 840,
+        "wires": [
+            [
+                "d5449518a138e98f",
+                "19c14db811dc8023"
+            ]
+        ]
+    },
+    {
+        "id": "19c14db811dc8023",
+        "type": "ui_dropdown",
+        "z": "a4d31c16de61e5f3",
+        "name": "",
+        "label": "",
+        "tooltip": "Select an ID",
+        "place": "Select an ID",
+        "group": "e9d1620b93c3979f",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "multiple": false,
+        "options": [],
+        "payload": "",
+        "topic": "sel_id",
+        "topicType": "str",
+        "className": "",
+        "x": 820,
+        "y": 800,
+        "wires": [
+            [
+                "dfc4d255de85a26e"
+            ]
+        ]
+    },
+    {
+        "id": "dfc4d255de85a26e",
+        "type": "function",
+        "z": "a4d31c16de61e5f3",
+        "name": "Choose id",
+        "func": "var data = flow.get(\"loadgen_data\");\nvar sel_id = msg.payload;\nvar info = {};\nfor(var d of data){\n    if(d[\"activationid\"] === sel_id){\n        msg.payload = d;\n    }\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1000,
+        "y": 800,
+        "wires": [
+            [
+                "9f5aea7786e7667f",
+                "786a9526443f33c5",
+                "22b1318dd690172d"
+            ]
+        ]
+    },
+    {
+        "id": "9f5aea7786e7667f",
+        "type": "debug",
+        "z": "a4d31c16de61e5f3",
+        "name": "debug 80",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1160,
+        "y": 860,
+        "wires": []
+    },
+    {
+        "id": "786a9526443f33c5",
+        "type": "ui_template",
+        "z": "a4d31c16de61e5f3",
+        "group": "e9d1620b93c3979f",
+        "name": "",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "format": "<p><strong>Activation ID:</strong> {{msg.payload.activationid}}</p>\n<p><strong>Flow:</strong> {{msg.payload.flow}}</p>\n<!-- <p><strong>Output:</strong> {{msg.payload.output}}</p> -->\n<!-- <br> -->",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 1180,
+        "y": 760,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "22b1318dd690172d",
+        "type": "function",
+        "z": "a4d31c16de61e5f3",
+        "name": "BarChart Output",
+        "func": "function time_convert(time) {\n    var startDate = new Date(time);\n    var formattedDate = startDate.toLocaleDateString('en-GB');\n    var formattedTime = startDate.toLocaleTimeString('en-GB');\n    return formattedDate + ', ' + formattedTime;\n}\n\nvar output = msg.payload[\"output\"];\n// console.log(output.globalStartTime);\noutput.globalStartTime = time_convert(output.globalStartTime);\noutput.actualStartTime = time_convert(output.actualStartTime);\noutput.parentSampleTime = time_convert(output.parentSampleTime);\nmsg.input = output[\"inputData\"];\ndelete output.inputData;\nlet labels = Object.keys(output);\nvar names = [];\nvar res = [];\nvar string_values = [\"methodPayload\", \"action\", \"status\", \"testName\", \"actualStartTime\",\"globalStartTime\",\"clientNumber\",\"coldStarts\",\"launchGeneratorDelay\",\"memory\",\"otherInfo\",\"parentSampleTime\", \"sampleNumber\", \"status\",\"successPercentage\",\"testName\",\"testSetDuration\",\"totalClients\"];\nfor(var l of labels){\n    if (string_values.indexOf(l) === -1) {\n        names.push(l);\n        res.push(output[l]);\n    }\n}\n\nmsg.payload = [{\n    \"series\": [\"\"],\n    \"data\": [res],\n    \"labels\": names\n}];\nmsg.output=output;\n\n\nvar rawData = msg.input[\"rawData\"][0];\nmsg.rawData = {};\n// the following are the same for all rawdata objects:\nmsg.rawData.concurrency = rawData[\"concurrency\"]; \nmsg.rawData.namespace = rawData[\"namespace\"]; \n// msg.rawData.setRate = rawData[\"setRate\"];    // this is the same as barchart setRate.\nmsg.rawData.success = rawData[\"success\"];\nmsg.rawData.version = rawData[\"version\"];\n// console.log(msg.rawData);\n\n// var duration = [];\n// var startTime = [];\n// var waitTime = [];\n// var endTime = [];\n// var clientSample = [];\nvar res = [];\nvar rawData = msg.input[\"rawData\"];\nfor (var r of rawData) {\n    // waitTime.push(r[\"waitTime\"]);  \n    // duration.push(r[\"duration\"]);\n    // startTime.push(r[\"start\"]);\n    // endTime.push(r[\"end\"]);\n    // clientSample.push(r[\"clientSample\"]);\n    res.push({ \"waitTime\": r[\"waitTime\"], \"duration\": r[\"duration\"], \"start\": r[\"start\"], \"end\": r[\"end\"], \"clientSample\": r[\"clientSample\"] });\n}\nmsg.rawData.lineChart = res;\n// console.log(\"Duration length:\", duration.length);\n// console.log(\"Start Time length:\", startTime.length);\n// console.log(\"Wait Time length:\", waitTime.length);\n// console.log(\"End Time length:\", endTime.length);\n// console.log(\"Client Sample length:\", clientSample.length);\n// msg.rawData.lineChart = {\"waitTime\":waitTime, \"duration\":duration, \"startTime\":startTime, \"endTime\":endTime, \"clientSample\":clientSample};\n\n// var rawData = msg.input[\"rawData\"];\n// var d = {};\n// for (var r of rawData) {\n//     var keys = Object.keys(r);\n//     for (var key of keys) {\n//         if (!d[key]) {\n//             d[key] = new Set();\n//         }\n//         d[key].add(r[key]);\n//     }\n// }\n// var uniqueValues = {};\n// for (var key in d) {\n//     uniqueValues[key] = Array.from(d[key]);\n// }\n// console.log(uniqueValues);\n\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1320,
+        "y": 800,
+        "wires": [
+            [
+                "d6ee9f2fb3030a8a",
+                "f5cde208cf12e69c",
+                "e2017448de637cde",
+                "ae09318052f475a0"
+            ]
+        ]
+    },
+    {
+        "id": "d6ee9f2fb3030a8a",
+        "type": "ui_chart",
+        "z": "a4d31c16de61e5f3",
+        "name": "",
+        "group": "e9d1620b93c3979f",
+        "order": 2,
+        "width": 6,
+        "height": 4,
+        "label": "LoadGen Output Visualization",
+        "chartType": "horizontalBar",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 1570,
+        "y": 800,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f5cde208cf12e69c",
+        "type": "ui_template",
+        "z": "a4d31c16de61e5f3",
+        "group": "e9d1620b93c3979f",
+        "name": "",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "format": "<style>\n    .group {\n        margin-bottom: 20px;\n    }\n\n    h2,\n    h3 {\n        margin-top: 0;\n    }\n\n    p {\n        margin-bottom: 5px;\n    }\n</style>\n\n<div class=\"group\">\n    <h3>Action:</h3>\n    <p><strong>Method Payload:</strong> {{msg.output.methodPayload}}</p>\n    <p><strong>Action:</strong> {{msg.output.action}}</p>\n    <p><strong>Namespace:</strong> {{msg.rawData.namespace}}</p>\n    <p><strong>Version:</strong> {{msg.rawData.version}}</p>\n    <p><strong>Status:</strong> {{msg.output.status}}</p>\n    <p><strong>Test Name:</strong> {{msg.output.testName}}</p>\n    <p><strong>Creds:</strong> {{msg.input.creds}}</p>\n</div>\n\n<div class=\"group\">\n    <h3>Start Time:</h3>\n    <p><strong>Actual Start Time:</strong> {{msg.output.actualStartTime}}</p>\n    <p><strong>Global Start Time:</strong> {{msg.output.globalStartTime}}</p>\n</div>\n\n<div class=\"group\">\n    <h3>Client Information:</h3>\n    <p><strong>Node Type:</strong> {{msg.input.nodeType}}</p>\n    <p><strong>Endpoint Method:</strong> {{msg.input.endpointMethod}}</p>\n    <p><strong>Load Gen Endpoint:</strong> {{msg.input.loadGenEndpoint}}</p>\n    <p><strong>Delay:</strong> {{msg.input.delay}}</p>\n    <p><strong>Client Number:</strong> {{msg.output.clientNumber}}</p>\n    <p><strong>Cold Starts:</strong> {{msg.output.coldStarts}}</p>\n    <p><strong>Launch Generator Delay:</strong> {{msg.output.launchGeneratorDelay}}</p>\n</div>\n\n<div class=\"group\">\n    <h3>Additional Information:</h3>\n    <p><strong>Memory:</strong> {{msg.output.memory}}</p>\n    <p><strong>Other Info:</strong> {{msg.output.otherInfo}}</p>\n    <p><strong>Parent Sample Time:</strong> {{msg.output.parentSampleTime}}</p>\n    <p><strong>Sample Number:</strong> {{msg.output.sampleNumber}}</p>\n    <p><strong>Status:</strong> {{msg.output.status}}</p>\n    <p><strong>Status Endpoint:</strong> {{msg.input.statusEndpoint}}</p>\n    <p><strong>Target Endpoint:</strong> {{msg.input.targetEndpoint}}</p>\n    <p><strong>Success:</strong> {{msg.rawData.success}}</p>\n    <p><strong>Success Percentage:</strong> {{msg.output.successPercentage}}</p>\n    <p><strong>Concurrency:</strong> {{msg.rawData.concurrency}}</p>\n\n    <p><strong>Test Name:</strong> {{msg.output.testName}}</p>\n    <p><strong>Test Duration:</strong> {{msg.input.testDuration}}</p>\n    <p><strong>Test Set Duration:</strong> {{msg.output.testSetDuration}}</p>\n    <p><strong>Total Clients:</strong> {{msg.output.totalClients}}</p>\n</div>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 1500,
+        "y": 740,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e2017448de637cde",
+        "type": "debug",
+        "z": "a4d31c16de61e5f3",
+        "name": "debug 81",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1520,
+        "y": 840,
+        "wires": []
+    },
+    {
+        "id": "e02fdf919686fc1f",
+        "type": "debug",
+        "z": "a4d31c16de61e5f3",
+        "name": "debug 82",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "rawData.lineChart",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1600,
+        "y": 1020,
+        "wires": []
+    },
+    {
+        "id": "ae09318052f475a0",
+        "type": "function",
+        "z": "a4d31c16de61e5f3",
+        "name": "LineChart Output",
+        "func": "var rawData = msg.rawData.lineChart;\nvar startWaitTime = [];\nvar startDuration = [];\nvar endWaitTime = [];\nvar endDuration = [];\nvar clientWaitTime = [];\nvar clientDuration = [];\nfor (var r of rawData){\n    startWaitTime.push({ \"x\": r[\"start\"],\"y\" : r[\"waitTime\"] });\n    startDuration.push({ \"x\": r[\"start\"], \"y\": r[\"duration\"] });\n    endWaitTime.push({ \"x\": r[\"end\"], \"y\": r[\"waitTime\"] });\n    endDuration.push({ \"x\": r[\"end\"], \"y\": r[\"duration\"] });\n    clientWaitTime.push({ \"x\": r[\"clientSample\"], \"y\": r[\"waitTime\"] });\n    clientDuration.push({ \"x\": r[\"clientSample\"], \"y\": r[\"duration\"] });\n}\n\nvar values = [startWaitTime, startDuration, endWaitTime, endDuration, clientWaitTime, clientDuration];\n\nmsg.payload = [{\n    \"series\": [\"startWaitTime\", \"startDuration\", \"endWaitTime\", \"endDuration\", \"clientWaitTime\", \"clientDuration\"],\n    \"data\": values,\n    \"labels\": [\"start\", \"end\", \"clientSample\"]\n}];\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1470,
+        "y": 940,
+        "wires": [
+            [
+                "e02fdf919686fc1f",
+                "0a36828b7ab5de16"
+            ]
+        ]
+    },
+    {
+        "id": "0a36828b7ab5de16",
+        "type": "ui_chart",
+        "z": "a4d31c16de61e5f3",
+        "name": "",
+        "group": "e9d1620b93c3979f",
+        "order": 8,
+        "width": 0,
+        "height": 0,
+        "label": "Raw Data LineChart",
+        "chartType": "line",
+        "legend": "true",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "86400",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 1740,
+        "y": 940,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "5c2b16468715ab1f",
+        "type": "change",
+        "z": "a4d31c16de61e5f3",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "fileNamePath",
+                "pt": "msg",
+                "to": "/home/manousos/Documents/profile-data.json",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "url",
+                "pt": "msg",
+                "to": "https://raw.githubusercontent.com/gkousiouris/2ndPHYSICSHackathon/main/dataFilesForVisualization/profile-data.json",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 440,
+        "y": 400,
+        "wires": [
+            [
+                "43f616901e21f22c"
+            ]
+        ]
+    },
+    {
+        "id": "d8726ab7f0deb8cb",
+        "type": "change",
+        "z": "a4d31c16de61e5f3",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "url",
+                "pt": "msg",
+                "to": "https://raw.githubusercontent.com/gkousiouris/2ndPHYSICSHackathon/main/dataFilesForVisualization/prometheus-data.json",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "fileNamePath",
+                "pt": "msg",
+                "to": "/home/manousos/Documents/prometheus-data.json",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 400,
+        "y": 560,
+        "wires": [
+            [
+                "56120ea284406883"
+            ]
+        ]
+    },
+    {
+        "id": "51f1483babca3c87",
+        "type": "change",
+        "z": "a4d31c16de61e5f3",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "url",
+                "pt": "msg",
+                "to": "https://raw.githubusercontent.com/gkousiouris/2ndPHYSICSHackathon/main/dataFilesForVisualization/loadgen-data.json",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "fileNamePath",
+                "pt": "msg",
+                "to": "/home/manousos/Documents/loadgen-data.json",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 280,
+        "y": 760,
+        "wires": [
+            [
+                "ee4125b8fad4522b"
+            ]
+        ]
+    },
+    {
+        "id": "9a8c86b090955160",
         "type": "comment",
         "z": "a4d31c16de61e5f3",
-        "name": "Unused Function below:",
+        "name": "Prometheus",
         "info": "",
-        "x": 200,
-        "y": 740,
+        "x": 370,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "65adf54499ca6c33",
+        "type": "comment",
+        "z": "a4d31c16de61e5f3",
+        "name": "Profile",
+        "info": "",
+        "x": 590,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "712ee5b45fa694e4",
+        "type": "comment",
+        "z": "a4d31c16de61e5f3",
+        "name": "LoadGen",
+        "info": "",
+        "x": 260,
+        "y": 720,
         "wires": []
     },
     {
         "id": "8c9997051c45c40c",
         "type": "ui_group",
-        "name": "Hackathon Data",
+        "name": "Profile Visualization",
         "tab": "e532327510f60f27",
         "order": 1,
         "disp": true,
@@ -532,11 +994,51 @@
         "className": ""
     },
     {
+        "id": "748a8f07a7873db1",
+        "type": "ui_group",
+        "name": "Prometheus Visualization",
+        "tab": "489491011fa4b255",
+        "order": 2,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "e9d1620b93c3979f",
+        "type": "ui_group",
+        "name": "Loadgen Visualization",
+        "tab": "8c774d9b6f3388d1",
+        "order": 3,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
         "id": "e532327510f60f27",
         "type": "ui_tab",
-        "name": "Data Visualization",
+        "name": "Profile Visualization",
         "icon": "dashboard",
         "order": 2,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "489491011fa4b255",
+        "type": "ui_tab",
+        "name": "Prometheus Visualization",
+        "icon": "dashboard",
+        "order": 3,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "8c774d9b6f3388d1",
+        "type": "ui_tab",
+        "name": "Loadgen Visualization",
+        "icon": "dashboard",
+        "order": 4,
         "disabled": false,
         "hidden": false
     }
