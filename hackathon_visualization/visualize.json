@@ -3,7 +3,7 @@
         "id": "4a19b4a0382b6741",
         "type": "subflow",
         "name": "READ DATA FROM URL OR LOCAL",
-        "info": "",
+        "info": "<div>\n  <p>\n    This subflow is used in the data visualization challenges of the 2nd Hackathon 2023.\n    It specifically reads a JSON from a URL specified in the <code>msg.url</code> property.\n    If the URL is not available, it reads a JSON file downloaded on the PC. To specify the local JSON file path, provide it in the <code>msg.fileNamePath</code> property.\n  </p>\n  <p>\n    The subflow returns a string with the contents of the JSON, allowing further processing and visualization of the data.\n  </p>\n</div>\n",
         "category": "",
         "in": [
             {
