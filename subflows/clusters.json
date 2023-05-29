@@ -1,0 +1,101 @@
+[
+    {
+        "id": "63bb59d1bafe37e6",
+        "type": "subflow",
+        "name": "ClusterMaker",
+        "info": "",
+        "category": "",
+        "in": [
+            {
+                "x": 40,
+                "y": 80,
+                "wires": [
+                    {
+                        "id": "61a93c48d082973e"
+                    }
+                ]
+            }
+        ],
+        "out": [],
+        "env": [],
+        "meta": {},
+        "color": "#C0DEED"
+    },
+    {
+        "id": "61a93c48d082973e",
+        "type": "function",
+        "z": "63bb59d1bafe37e6",
+        "name": "function 38",
+        "func": "var currentDate = new Date().toISOString().split('T')[0];\n\nmsg.topic = `SELECT temperature\nFROM weather_table wt\nJOIN cities_table ct ON wt.city_name = ct.city_name\nWHERE wt.time = '${currentDate}'`;\n\nreturn msg;\n\n\n\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 190,
+        "y": 80,
+        "wires": [
+            [
+                "9f64f1984c4905f1"
+            ]
+        ]
+    },
+    {
+        "id": "9f64f1984c4905f1",
+        "type": "sqlite",
+        "z": "63bb59d1bafe37e6",
+        "mydb": "d9f236dca5911a50",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "",
+        "x": 430,
+        "y": 80,
+        "wires": [
+            [
+                "7d979072282a1010"
+            ]
+        ]
+    },
+    {
+        "id": "7d979072282a1010",
+        "type": "function",
+        "z": "63bb59d1bafe37e6",
+        "name": "clusterMaker",
+        "func": "var clusterMaker = context.global.clusters;\nvar temps = msg.payload;\nvar data = [];\nfor (var temp of temps) {\n    data.push([temp.temperature]);\n}\nconsole.log(data);\nclusterMaker.k(3);\nclusterMaker.iterations(750);\nclusterMaker.data(data);\nmsg.payload = clusterMaker.clusters();\nmsg.payload.sort(function(a, b) { return parseFloat(a.centroid) -\nparseFloat(b.centroid);}); //ensure that clusters are sorted on ascending speed\nglobal.set(\"foundclusters\",msg.payload);\nvar listing = global.get(\"foundclusters\");\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 670,
+        "y": 80,
+        "wires": [
+            [
+                "60218d97582ceb2a"
+            ]
+        ]
+    },
+    {
+        "id": "60218d97582ceb2a",
+        "type": "debug",
+        "z": "63bb59d1bafe37e6",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 930,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "d9f236dca5911a50",
+        "type": "sqlitedb",
+        "db": "/tmp/cities.db",
+        "mode": "RWC"
+    }
+]

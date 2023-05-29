@@ -1,0 +1,173 @@
+[
+    {
+        "id": "ef51d350e0e29109",
+        "type": "subflow",
+        "name": "Drop DB Tables",
+        "info": "The Drop DB Tables subflow is used to drop all the database tables and reset the global variables.",
+        "category": "",
+        "in": [
+            {
+                "x": 50,
+                "y": 30,
+                "wires": [
+                    {
+                        "id": "e3e2a5595d96054c"
+                    },
+                    {
+                        "id": "8836a4200fc3fd9c"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 720,
+                "y": 160,
+                "wires": [
+                    {
+                        "id": "b0133ad706f89c2c",
+                        "port": 0
+                    }
+                ]
+            },
+            {
+                "x": 660,
+                "y": 40,
+                "wires": [
+                    {
+                        "id": "79258a1b7647ed1d",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [],
+        "meta": {},
+        "color": "#C0DEED"
+    },
+    {
+        "id": "e3e2a5595d96054c",
+        "type": "function",
+        "z": "ef51d350e0e29109",
+        "name": "DROP TABLE WEATHER",
+        "func": "msg.topic = \"drop table if exists weather_table\";\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 190,
+        "y": 160,
+        "wires": [
+            [
+                "b0133ad706f89c2c",
+                "545311806049a963",
+                "6f76b8c4a05803ce"
+            ]
+        ]
+    },
+    {
+        "id": "b0133ad706f89c2c",
+        "type": "sqlite",
+        "z": "ef51d350e0e29109",
+        "mydb": "e1b7d6f10fa6ce00",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "",
+        "x": 470,
+        "y": 160,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "545311806049a963",
+        "type": "function",
+        "z": "ef51d350e0e29109",
+        "name": "DROP DATABASE",
+        "func": "msg.topic = \"drop table if exists cities_table\";\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 470,
+        "y": 220,
+        "wires": [
+            [
+                "7b5c361d5c10fb26"
+            ]
+        ]
+    },
+    {
+        "id": "6f76b8c4a05803ce",
+        "type": "function",
+        "z": "ef51d350e0e29109",
+        "name": "RESET GLOBAL KEYS",
+        "func": "var globalKeys = global.keys();\n\nfor (var i = 0; i < globalKeys.length; i++) {\n    // global.delete(globalKeys[i]);\n    if (globalKeys[i] != \"username\") {\n        global.set(globalKeys[i], 0);\n    }\n}\n\nif (global.keys().length <= 0) {\n    msg.payload = \"All global keys deleted.\"\n    return [msg, null];\n}\nmsg.payload = \"All global keys NOT deleted.\"\nreturn [null, msg];",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 490,
+        "y": 280,
+        "wires": [
+            [],
+            []
+        ]
+    },
+    {
+        "id": "7b5c361d5c10fb26",
+        "type": "sqlite",
+        "z": "ef51d350e0e29109",
+        "mydb": "e1b7d6f10fa6ce00",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "",
+        "x": 690,
+        "y": 220,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "8836a4200fc3fd9c",
+        "type": "function",
+        "z": "ef51d350e0e29109",
+        "name": "DROP TABLE IMAGE",
+        "func": "msg.topic = \"drop table if exists image_table\";\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 240,
+        "y": 60,
+        "wires": [
+            [
+                "79258a1b7647ed1d"
+            ]
+        ]
+    },
+    {
+        "id": "79258a1b7647ed1d",
+        "type": "sqlite",
+        "z": "ef51d350e0e29109",
+        "mydb": "e1b7d6f10fa6ce00",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "",
+        "x": 510,
+        "y": 40,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e1b7d6f10fa6ce00",
+        "type": "sqlitedb",
+        "db": "/tmp/cities.db",
+        "mode": "RWC"
+    }
+]

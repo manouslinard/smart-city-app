@@ -416,11 +416,11 @@
         "category": "",
         "in": [
             {
-                "x": 160,
-                "y": 180,
+                "x": 80,
+                "y": 140,
                 "wires": [
                     {
-                        "id": "f5e296816b0a808e"
+                        "id": "f1ae844bf041de78"
                     }
                 ]
             }
@@ -622,7 +622,7 @@
         "type": "function",
         "z": "1c1d09cb50197133",
         "name": "Make list of temps & dates",
-        "func": "var weatherapi_dict = { \"date\": msg.payload['weatherapi']['current']['last_updated_epoch'] * 1000, \"value\": msg.payload['weatherapi']['current']['temp_c']};\nvar openmeteoapi_dict = { \"date\": Date.parse(msg.payload['openmeteoapi']['current_weather']['time']), \"value\": msg.payload['openmeteoapi']['current_weather']['temperature']};\nvar tommorowapi_dict = { \"date\": Date.parse(msg.payload['tommorowapi']['data']['time']), \"value\": msg.payload['tommorowapi']['data']['values']['temperature'] };\nvar openweatherapi_dict = { \"date\": msg.payload['openweather']['dt'] * 1000, \"value\": msg.payload['openweather']['main']['temp']};\nmsg.payload = [weatherapi_dict,openmeteoapi_dict,openweatherapi_dict,tommorowapi_dict];\nmsg.topic = \"temperature\";\nreturn msg;",
+        "func": "var weatherapi_dict = {};\nvar openmeteoapi_dict = {};\nvar tommorowapi_dict = {};\nvar openweatherapi_dict = {};\nvar missing_keys = [];\nif (!msg.payload['weatherapi']['error']) {\n    weatherapi_dict = { \"date\": msg.payload['weatherapi']['current']['last_updated_epoch'] * 1000, \"value\": msg.payload['weatherapi']['current']['temp_c'] };\n} else {\n    missing_keys.push(\"weatherapi\");\n}\nif (!msg.payload['tommorowapi']['code']) {\n    tommorowapi_dict = { \"date\": Date.parse(msg.payload['tommorowapi']['data']['time']), \"value\": msg.payload['tommorowapi']['data']['values']['temperature'] };\n} else {\n    missing_keys.push(\"tommorowapi\");\n}\nif (msg.payload['openweather']['cod'] == 200) {\n    openweatherapi_dict = { \"date\": msg.payload['openweather']['dt'] * 1000, \"value\": msg.payload['openweather']['main']['temp'] };\n} else {\n    missing_keys.push(\"openweatherapi\");\n}\nopenmeteoapi_dict = { \"date\": Date.parse(msg.payload['openmeteoapi']['current_weather']['time']), \"value\": msg.payload['openmeteoapi']['current_weather']['temperature'] };\nmsg.payload = [weatherapi_dict, openmeteoapi_dict, openweatherapi_dict, tommorowapi_dict];\nmsg.missing_keys = missing_keys;\nmsg.topic = \"temperature\";\nreturn msg;\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -641,7 +641,7 @@
         "type": "function",
         "z": "1c1d09cb50197133",
         "name": "Make list of windsp & dates",
-        "func": "// wind speed is meters per second.\nvar weatherapi_dict = { \"date\": msg.payload['weatherapi']['current']['last_updated_epoch'] * 1000, \"value\": msg.payload['weatherapi']['current']['wind_kph'] * 0.2778};\nvar openmeteoapi_dict = { \"date\": Date.parse(msg.payload['openmeteoapi']['current_weather']['time']), \"value\": msg.payload['openmeteoapi']['current_weather']['windspeed'] * 0.2778};\nvar tommorowapi_dict = { \"date\": Date.parse(msg.payload['tommorowapi']['data']['time']), \"value\": msg.payload['tommorowapi']['data']['values']['windSpeed'] };\nvar openweatherapi_dict = { \"date\": msg.payload['openweather']['dt'] * 1000, \"value\": msg.payload['openweather']['wind']['speed']};\nmsg.payload = [weatherapi_dict,openmeteoapi_dict,openweatherapi_dict,tommorowapi_dict];\nmsg.topic = \"wind_speed\";\nreturn msg;",
+        "func": "// wind speed is meters per second.\nvar weatherapi_dict = {};\nvar openmeteoapi_dict = {};\nvar tommorowapi_dict = {};\nvar openweatherapi_dict = {};\nvar missing_keys= [];\nif (!msg.payload['weatherapi']['error']) {\n    weatherapi_dict = { \"date\": msg.payload['weatherapi']['current']['last_updated_epoch'] * 1000, \"value\": msg.payload['weatherapi']['current']['wind_kph'] * 0.2778 };\n} else {\n    missing_keys.push(\"weatherapi\");\n}\nif (!msg.payload['tommorowapi']['code']) {\n    tommorowapi_dict = { \"date\": Date.parse(msg.payload['tommorowapi']['data']['time']), \"value\": msg.payload['tommorowapi']['data']['values']['windSpeed'] };\n} else {\n    missing_keys.push(\"tommorowapi\");\n}\nif (msg.payload['openweather']['cod'] == 200) {\n    openweatherapi_dict = { \"date\": msg.payload['openweather']['dt'] * 1000, \"value\": msg.payload['openweather']['wind']['speed'] };\n} else {\n    missing_keys.push(\"openweatherapi\");\n}\nopenmeteoapi_dict = { \"date\": Date.parse(msg.payload['openmeteoapi']['current_weather']['time']), \"value\": msg.payload['openmeteoapi']['current_weather']['windspeed'] * 0.2778 };\nmsg.payload = [weatherapi_dict, openmeteoapi_dict, openweatherapi_dict, tommorowapi_dict];\nmsg.missing_keys = missing_keys;\nmsg.topic = \"wind_speed\";\nreturn msg;\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -660,7 +660,7 @@
         "type": "function",
         "z": "1c1d09cb50197133",
         "name": "Make list of pressure & dates",
-        "func": "// wind speed is meters per second.\nconst currentTimestamp = Date.now();\nconst time_of_day = msg.payload['openmeteoapi']['hourly']['time'];\nvar latest_time = 0;\n// console.log(currentTimestamp);\nvar index = 0;\nfor(var time of time_of_day){\n    const time_ml = Date.parse(time);    // converts seconds to miliseconds.\n    if (time_ml <= currentTimestamp){\n        latest_time = time_ml;\n        index += 1;\n        console.log(latest_time);\n    } else {\n        break;\n    }\n}\nindex -= 1;\n// msg.payload = latest_time;\nconsole.log(index);\nvar weatherapi_dict = { \"date\": msg.payload['weatherapi']['current']['last_updated_epoch'] * 1000, \"value\": msg.payload['weatherapi']['current']['pressure_mb']};\nvar openmeteoapi_dict = { \"date\": latest_time, \"value\": msg.payload['openmeteoapi']['hourly']['surface_pressure'][index]};\nvar tommorowapi_dict = { \"date\": Date.parse(msg.payload['tommorowapi']['data']['time']), \"value\": msg.payload['tommorowapi']['data']['values']['pressureSurfaceLevel']};\nvar openweatherapi_dict = { \"date\": msg.payload['openweather']['dt'] * 1000, \"value\": msg.payload['openweather']['main']['pressure']};\nmsg.payload = [weatherapi_dict,openmeteoapi_dict,openweatherapi_dict,tommorowapi_dict];\nmsg.topic = \"pressure\";\nreturn msg;",
+        "func": "// wind speed is meters per second.\nconst currentTimestamp = Date.now();\nconst time_of_day = msg.payload['openmeteoapi']['hourly']['time'];\nvar latest_time = 0;\n// console.log(currentTimestamp);\nvar index = 0;\nfor(var time of time_of_day){\n    const time_ml = Date.parse(time);    // converts seconds to miliseconds.\n    if (time_ml <= currentTimestamp){\n        latest_time = time_ml;\n        index += 1;\n        console.log(latest_time);\n    } else {\n        break;\n    }\n}\nindex -= 1;\n// msg.payload = latest_time;\n\nvar weatherapi_dict = {};\nvar tommorowapi_dict = {};\nvar openweatherapi_dict = {};\nvar missing_keys = [];\nif (!msg.payload['weatherapi']['error']) {\n    weatherapi_dict = { \"date\": msg.payload['weatherapi']['current']['last_updated_epoch'] * 1000, \"value\": msg.payload['weatherapi']['current']['pressure_mb'] };\n} else {\n    missing_keys.push(\"weatherapi\");\n}\nvar openmeteoapi_dict = { \"date\": latest_time, \"value\": msg.payload['openmeteoapi']['hourly']['surface_pressure'][index]};\nif (!msg.payload['tommorowapi']['code']) {\n    tommorowapi_dict = { \"date\": Date.parse(msg.payload['tommorowapi']['data']['time']), \"value\": msg.payload['tommorowapi']['data']['values']['pressureSurfaceLevel'] };\n} else {\n    missing_keys.push(\"tommorowapi\");\n}\nif (msg.payload['openweather']['cod'] == 200) {\n    openweatherapi_dict = { \"date\": msg.payload['openweather']['dt'] * 1000, \"value\": msg.payload['openweather']['main']['pressure'] };\n} else {\n    missing_keys.push(\"openweatherapi\");\n}\nmsg.payload = [weatherapi_dict, openmeteoapi_dict, openweatherapi_dict, tommorowapi_dict];\nmsg.missing_keys = missing_keys;\nmsg.topic = \"pressure\";\nreturn msg;\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -679,7 +679,7 @@
         "type": "function",
         "z": "1c1d09cb50197133",
         "name": "Make list of visibility & dates",
-        "func": "// wind speed is meters per second.\nconst currentTimestamp = Date.now();\nconst time_of_day = msg.payload['openmeteoapi']['hourly']['time'];\nvar latest_time = 0;\n// console.log(currentTimestamp);\nvar index = 0;\nfor(var time of time_of_day){\n    const time_ml = Date.parse(time);    // converts seconds to miliseconds.\n    if (time_ml <= currentTimestamp){\n        latest_time = time_ml;\n        index += 1;\n        console.log(latest_time);\n    } else {\n        break;\n    }\n}\nindex -= 1;\n// msg.payload = latest_time;\nconsole.log(index);\nvar weatherapi_dict = { \"date\": msg.payload['weatherapi']['current']['last_updated_epoch'] * 1000, \"value\": msg.payload['weatherapi']['current']['vis_km'] * 1000};\nvar openmeteoapi_dict = { \"date\": latest_time, \"value\": msg.payload['openmeteoapi']['hourly']['visibility'][index]};\nvar tommorowapi_dict = { \"date\": Date.parse(msg.payload['tommorowapi']['data']['time']), \"value\": msg.payload['tommorowapi']['data']['values']['visibility'] * 1000};\nvar openweatherapi_dict = { \"date\": msg.payload['openweather']['dt'] * 1000, \"value\": msg.payload['openweather']['visibility']};\nmsg.payload = [weatherapi_dict,openmeteoapi_dict,openweatherapi_dict,tommorowapi_dict];\nmsg.topic = \"visibility\";\nreturn msg;",
+        "func": "// wind speed is meters per second.\nconst currentTimestamp = Date.now();\nconst time_of_day = msg.payload['openmeteoapi']['hourly']['time'];\nvar latest_time = 0;\n// console.log(currentTimestamp);\nvar index = 0;\nfor(var time of time_of_day){\n    const time_ml = Date.parse(time);    // converts seconds to miliseconds.\n    if (time_ml <= currentTimestamp){\n        latest_time = time_ml;\n        index += 1;\n        console.log(latest_time);\n    } else {\n        break;\n    }\n}\nindex -= 1;\n// msg.payload = latest_time;\nvar weatherapi_dict = {};\nvar tommorowapi_dict = {};\nvar openweatherapi_dict = {};\nvar missing_keys = [];\nif (!msg.payload['weatherapi']['error']) {\n    weatherapi_dict = { \"date\": msg.payload['weatherapi']['current']['last_updated_epoch'] * 1000, \"value\": msg.payload['weatherapi']['current']['vis_km'] * 1000 };\n} else {\n    missing_keys.push(\"weatherapi\");\n}\nvar openmeteoapi_dict = { \"date\": latest_time, \"value\": msg.payload['openmeteoapi']['hourly']['visibility'][index]};\nif (!msg.payload['tommorowapi']['code']) {\n    tommorowapi_dict = { \"date\": Date.parse(msg.payload['tommorowapi']['data']['time']), \"value\": msg.payload['tommorowapi']['data']['values']['visibility'] * 1000 };\n} else {\n    missing_keys.push(\"tommorowapi\");\n}\nif (msg.payload['openweather']['cod'] == 200) {\n    openweatherapi_dict = { \"date\": msg.payload['openweather']['dt'] * 1000, \"value\": msg.payload['openweather']['visibility'] };\n} else {\n    missing_keys.push(\"openweatherapi\");\n}\nmsg.payload = [weatherapi_dict, openmeteoapi_dict, openweatherapi_dict, tommorowapi_dict];\nmsg.missing_keys=missing_keys;\nmsg.topic = \"visibility\";\nreturn msg;\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -698,7 +698,7 @@
         "type": "function",
         "z": "1c1d09cb50197133",
         "name": "Make list of humidity & dates",
-        "func": "// wind speed is meters per second.\nconst currentTimestamp = Date.now();\nconst time_of_day = msg.payload['openmeteoapi']['hourly']['time'];\nvar latest_time = 0;\n// console.log(currentTimestamp);\nvar index = 0;\nfor(var time of time_of_day){\n    const time_ml = Date.parse(time);    // converts seconds to miliseconds.\n    if (time_ml <= currentTimestamp){\n        latest_time = time_ml;\n        index += 1;\n        console.log(latest_time);\n    } else {\n        break;\n    }\n}\nindex -= 1;\n// msg.payload = latest_time;\nconsole.log(index);\nvar weatherapi_dict = { \"date\": msg.payload['weatherapi']['current']['last_updated_epoch'] * 1000, \"value\": msg.payload['weatherapi']['current']['humidity']};\nvar openmeteoapi_dict = { \"date\": latest_time, \"value\": msg.payload['openmeteoapi']['hourly']['relativehumidity_2m'][index]};\nvar tommorowapi_dict = { \"date\": Date.parse(msg.payload['tommorowapi']['data']['time']), \"value\": msg.payload['tommorowapi']['data']['values']['humidity']};\nvar openweatherapi_dict = { \"date\": msg.payload['openweather']['dt'] * 1000, \"value\": msg.payload['openweather']['main']['humidity']};\nmsg.payload = [weatherapi_dict,openmeteoapi_dict,openweatherapi_dict,tommorowapi_dict];\nmsg.topic = \"humidity\";\nreturn msg;",
+        "func": "// wind speed is meters per second.\nconst currentTimestamp = Date.now();\nconst time_of_day = msg.payload['openmeteoapi']['hourly']['time'];\nvar latest_time = 0;\n// console.log(currentTimestamp);\nvar index = 0;\nfor(var time of time_of_day){\n    const time_ml = Date.parse(time);    // converts seconds to miliseconds.\n    if (time_ml <= currentTimestamp){\n        latest_time = time_ml;\n        index += 1;\n        console.log(latest_time);\n    } else {\n        break;\n    }\n}\nindex -= 1;\n\nvar weatherapi_dict = {};\nvar tommorowapi_dict = {};\nvar openweatherapi_dict = {};\nvar missing_keys = [];\nif (!msg.payload['weatherapi']['error']) {\n    weatherapi_dict = { \"date\": msg.payload['weatherapi']['current']['last_updated_epoch'] * 1000, \"value\": msg.payload['weatherapi']['current']['humidity'] };\n} else {\n    missing_keys.push(\"weatherapi\");\n}\nvar openmeteoapi_dict = { \"date\": latest_time, \"value\": msg.payload['openmeteoapi']['hourly']['relativehumidity_2m'][index]};\nif (!msg.payload['tommorowapi']['code']) {\n    tommorowapi_dict = { \"date\": Date.parse(msg.payload['tommorowapi']['data']['time']), \"value\": msg.payload['tommorowapi']['data']['values']['humidity'] };\n} else {\n    missing_keys.push(\"tommorowapi\");\n}\nif (msg.payload['openweather']['cod'] == 200) {\n    openweatherapi_dict = { \"date\": msg.payload['openweather']['dt'] * 1000, \"value\": msg.payload['openweather']['main']['humidity'] };\n} else {\n    missing_keys.push(\"openweatherapi\");\n}\nmsg.payload = [weatherapi_dict, openmeteoapi_dict, openweatherapi_dict, tommorowapi_dict];\nmsg.missing_keys =missing_keys;\nmsg.topic = \"humidity\";\nreturn msg;\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -717,7 +717,7 @@
         "type": "function",
         "z": "1c1d09cb50197133",
         "name": "Make list of cloud & dates",
-        "func": "// wind speed is meters per second.\nconst currentTimestamp = Date.now();\nconst time_of_day = msg.payload['openmeteoapi']['hourly']['time'];\nvar latest_time = 0;\n// console.log(currentTimestamp);\nvar index = 0;\nfor(var time of time_of_day){\n    const time_ml = Date.parse(time);    // converts seconds to miliseconds.\n    if (time_ml <= currentTimestamp){\n        latest_time = time_ml;\n        index += 1;\n        console.log(latest_time);\n    } else {\n        break;\n    }\n}\nindex -= 1;\n// msg.payload = latest_time;\nconsole.log(index);\nvar weatherapi_dict = { \"date\": msg.payload['weatherapi']['current']['last_updated_epoch'] * 1000, \"value\": msg.payload['weatherapi']['current']['cloud']};\nvar openmeteoapi_dict = { \"date\": latest_time, \"value\": msg.payload['openmeteoapi']['hourly']['cloudcover'][index]};\nvar tommorowapi_dict = { \"date\": Date.parse(msg.payload['tommorowapi']['data']['time']), \"value\": msg.payload['tommorowapi']['data']['values']['cloudCover']};\nvar openweatherapi_dict = { \"date\": msg.payload['openweather']['dt'] * 1000, \"value\": msg.payload['openweather']['clouds']['all']};\nmsg.payload = [weatherapi_dict,openmeteoapi_dict,openweatherapi_dict,tommorowapi_dict];\nmsg.topic = \"cloud\";\nreturn msg;",
+        "func": "// wind speed is meters per second.\nconst currentTimestamp = Date.now();\nconst time_of_day = msg.payload['openmeteoapi']['hourly']['time'];\nvar latest_time = 0;\n// console.log(currentTimestamp);\nvar index = 0;\nfor(var time of time_of_day){\n    const time_ml = Date.parse(time);    // converts seconds to miliseconds.\n    if (time_ml <= currentTimestamp){\n        latest_time = time_ml;\n        index += 1;\n        console.log(latest_time);\n    } else {\n        break;\n    }\n}\nindex -= 1;\n// msg.payload = latest_time;\nconsole.log(index);\n// var weatherapi_dict = { \"date\": msg.payload['weatherapi']['current']['last_updated_epoch'] * 1000, \"value\": msg.payload['weatherapi']['current']['cloud']};\n// var openmeteoapi_dict = { \"date\": latest_time, \"value\": msg.payload['openmeteoapi']['hourly']['cloudcover'][index]};\n// var tommorowapi_dict = { \"date\": Date.parse(msg.payload['tommorowapi']['data']['time']), \"value\": msg.payload['tommorowapi']['data']['values']['cloudCover']};\n// var openweatherapi_dict = { \"date\": msg.payload['openweather']['dt'] * 1000, \"value\": msg.payload['openweather']['clouds']['all']};\n// msg.payload = [weatherapi_dict,openmeteoapi_dict,openweatherapi_dict,tommorowapi_dict];\n// msg.topic = \"cloud\";\n// return msg;\n\nvar weatherapi_dict = {};\nvar tommorowapi_dict = {};\nvar openweatherapi_dict = {};\nvar missing_keys = [];\nif (!msg.payload['weatherapi']['error']) {\n    weatherapi_dict = { \"date\": msg.payload['weatherapi']['current']['last_updated_epoch'] * 1000, \"value\": msg.payload['weatherapi']['current']['cloud'] };\n} else {\n    missing_keys.push(\"weatherapi\");\n}\nvar openmeteoapi_dict = { \"date\": latest_time, \"value\": msg.payload['openmeteoapi']['hourly']['cloudcover'][index]};\nif (!msg.payload['tommorowapi']['code']) {\n    tommorowapi_dict = { \"date\": Date.parse(msg.payload['tommorowapi']['data']['time']), \"value\": msg.payload['tommorowapi']['data']['values']['cloudCover'] };\n} else {\n    missing_keys.push(\"tommorowapi\");\n}\nif (msg.payload['openweather']['cod'] == 200) {\n    openweatherapi_dict = { \"date\": msg.payload['openweather']['dt'] * 1000, \"value\": msg.payload['openweather']['clouds']['all'] };\n} else {\n    missing_keys.push(\"openweatherapi\");\n}\nmsg.payload = [weatherapi_dict, openmeteoapi_dict, openweatherapi_dict, tommorowapi_dict];\nmsg.missing_keys = missing_keys;\nmsg.topic = \"cloud\";\nreturn msg;\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -765,7 +765,7 @@
         "type": "function",
         "z": "1c1d09cb50197133",
         "name": "Returns only openweathermap",
-        "func": "var max_date = Math.max(msg.payload['weatherapi']['current']['last_updated_epoch'] * 1000, Date.parse(msg.payload['openmeteoapi']['current_weather']['time']), Date.parse(msg.payload['tommorowapi']['data']['time']), msg.payload['openweather']['dt'] * 1000);\n\nconsole.log(\"DATE DEBUGGING =================== \");\nconsole.log(\"WEATHER_API:\"+Date.parse(msg.payload['weatherapi']['current']['last_updated']));\nconsole.log(\"OPENMETEO_API:\"+Date.parse(msg.payload['openmeteoapi']['current_weather']['time']));\nconsole.log(\"TOMMOROW_API:\"+Date.parse(msg.payload['tommorowapi']['data']['time']));\nconsole.log(\"OPENWEATHERMAP:\"+msg.payload['openweather']['dt'] * 1000);\n\nvar open = msg.payload[\"openweather\"];\nopen['dt'] = max_date;\nmsg.payload = {};\nmsg.payload = open;\nmsg.topic = \"openweather\";\nreturn msg;",
+        "func": "var value_weatherapi;\nvar value_tommorow;\nvar value_openweather;\nvar missing_keys = [];\nif (!msg.payload['weatherapi']['error']) {\n    value_weatherapi = msg.payload['weatherapi']['current']['last_updated_epoch'] * 1000;\n} else {\n    missing_keys.push(\"weatherapi\");\n}\nif (!msg.payload['tommorowapi']['code']) {\n    value_tommorow = Date.parse(msg.payload['tommorowapi']['data']['time']);\n} else {\n    missing_keys.push(\"tommorowapi\");\n}\nif (msg.payload['openweather']['cod'] == 200) {\n    value_openweather = msg.payload['openweather']['dt'] * 1000;\n} else {\n    missing_keys.push(\"openweatherapi\");\n}\nvar max_date = Math.max(value_weatherapi, value_tommorow, Date.parse(msg.payload['openmeteoapi']['current_weather']['time']), value_openweather);\n\nconsole.log(\"DATE DEBUGGING =================== \");\nconsole.log(\"WEATHER_API:\"+Date.parse(msg.payload['weatherapi']['current']['last_updated']));\nconsole.log(\"OPENMETEO_API:\"+Date.parse(msg.payload['openmeteoapi']['current_weather']['time']));\nconsole.log(\"TOMMOROW_API:\"+Date.parse(msg.payload['tommorowapi']['data']['time']));\nconsole.log(\"OPENWEATHERMAP:\"+msg.payload['openweather']['dt'] * 1000);\n\nvar open = msg.payload[\"openweather\"];\nopen['dt'] = max_date;\nmsg.payload = {};\nmsg.payload = open;\nmsg.missing_keys = missing_keys;\nmsg.topic = \"openweather\";\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -801,7 +801,7 @@
         "type": "function",
         "z": "1c1d09cb50197133",
         "name": "Make list of winddir & dates",
-        "func": "var weatherapi_dict = { \"date\": msg.payload['weatherapi']['current']['last_updated_epoch']*1000, \"value\": msg.payload['weatherapi']['current']['wind_degree']};\nvar openmeteoapi_dict = { \"date\": Date.parse(msg.payload['openmeteoapi']['current_weather']['time']), \"value\": msg.payload['openmeteoapi']['current_weather']['winddirection']};\nvar tommorowapi_dict = { \"date\": Date.parse(msg.payload['tommorowapi']['data']['time']), \"value\": msg.payload['tommorowapi']['data']['values']['windDirection'] };\nvar openweatherapi_dict = { \"date\": msg.payload['openweather']['dt'] * 1000, \"value\": msg.payload['openweather']['wind']['deg']};\nmsg.payload = [weatherapi_dict,openmeteoapi_dict,openweatherapi_dict,tommorowapi_dict];\nmsg.topic = \"wind_dir\";\nreturn msg;",
+        "func": "// var weatherapi_dict = { \"date\": msg.payload['weatherapi']['current']['last_updated_epoch']*1000, \"value\": msg.payload['weatherapi']['current']['wind_degree']};\n// var openmeteoapi_dict = { \"date\": Date.parse(msg.payload['openmeteoapi']['current_weather']['time']), \"value\": msg.payload['openmeteoapi']['current_weather']['winddirection']};\n// var tommorowapi_dict = { \"date\": Date.parse(msg.payload['tommorowapi']['data']['time']), \"value\": msg.payload['tommorowapi']['data']['values']['windDirection'] };\n// var openweatherapi_dict = { \"date\": msg.payload['openweather']['dt'] * 1000, \"value\": msg.payload['openweather']['wind']['deg']};\n// msg.payload = [weatherapi_dict,openmeteoapi_dict,openweatherapi_dict,tommorowapi_dict];\n// msg.topic = \"wind_dir\";\n// return msg;\nvar weatherapi_dict = {};\nvar openmeteoapi_dict = {};\nvar tommorowapi_dict = {};\nvar openweatherapi_dict = {};\nvar missing_keys=[];\nif (!msg.payload['weatherapi']['error']) {\n    weatherapi_dict = { \"date\": msg.payload['weatherapi']['current']['last_updated_epoch'] * 1000, \"value\": msg.payload['weatherapi']['current']['wind_degree'] };\n} else {\n    missing_keys.push(\"weatherapi\");\n}\nif (!msg.payload['tommorowapi']['code']) {\n    tommorowapi_dict = { \"date\": Date.parse(msg.payload['tommorowapi']['data']['time']), \"value\": msg.payload['tommorowapi']['data']['values']['windDirection'] };\n} else {\n    missing_keys.push(\"tommorowapi\");\n}\nif (msg.payload['openweather']['cod'] == 200) {\n    openweatherapi_dict = { \"date\": msg.payload['openweather']['dt'] * 1000, \"value\": msg.payload['openweather']['wind']['deg'] };\n} else {\n    missing_keys.push(\"openweatherapi\");\n}\nopenmeteoapi_dict = { \"date\": Date.parse(msg.payload['openmeteoapi']['current_weather']['time']), \"value\": msg.payload['openmeteoapi']['current_weather']['winddirection'] };\nmsg.payload = [weatherapi_dict, openmeteoapi_dict, openweatherapi_dict, tommorowapi_dict];\nmsg.missing_keys = missing_keys;\nmsg.topic = \"wind_dir\";\nreturn msg;\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -870,7 +870,8 @@
         "wires": [
             [
                 "a566ad1ee0b041dd",
-                "a10ab78339067de8"
+                "a10ab78339067de8",
+                "73a123e4aaae656a"
             ]
         ]
     },
@@ -902,8 +903,8 @@
         "complete": "false",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1940,
-        "y": 460,
+        "x": 2000,
+        "y": 320,
         "wires": []
     },
     {
@@ -964,14 +965,14 @@
         "id": "a10ab78339067de8",
         "type": "function",
         "z": "1c1d09cb50197133",
-        "name": "function 39",
+        "name": "Correct data set",
         "func": "var data = msg.payload;\nmsg.payload = {};\nmsg.payload[\"data\"] = data;\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1310,
+        "x": 1320,
         "y": 520,
         "wires": [
             [
@@ -984,8 +985,8 @@
         "type": "subflow:668a9e3b55094c55",
         "z": "1c1d09cb50197133",
         "name": "",
-        "x": 1680,
-        "y": 620,
+        "x": 1660,
+        "y": 600,
         "wires": [
             [
                 "51a9326395a34bc4"
@@ -997,12 +998,53 @@
         "type": "subflow:a833c5f1efa92886",
         "z": "1c1d09cb50197133",
         "name": "",
-        "x": 1810,
-        "y": 520,
+        "x": 1750,
+        "y": 480,
         "wires": [
             [
                 "b6f1d7bfaf0f6e98"
             ]
         ]
+    },
+    {
+        "id": "f1ae844bf041de78",
+        "type": "delay",
+        "z": "1c1d09cb50197133",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "2",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 160,
+        "y": 200,
+        "wires": [
+            [
+                "f5e296816b0a808e"
+            ]
+        ]
+    },
+    {
+        "id": "73a123e4aaae656a",
+        "type": "debug",
+        "z": "1c1d09cb50197133",
+        "name": "debug 83",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1400,
+        "y": 320,
+        "wires": []
     }
 ]
