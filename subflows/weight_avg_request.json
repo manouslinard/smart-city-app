@@ -1,0 +1,197 @@
+[
+    {
+        "id": "5f294e422cb57a8d",
+        "type": "subflow",
+        "name": "Calculate Weighted Average",
+        "info": "<div>\n  <p>\n    This subflow calculates the weighted average of given values, considering the date of each value.\n    The more recent the date, the higher the value will be weighted in the average calculation.\n  </p>\n  <p>\n    It takes as input a list with the following structure (put this in the <code>msg.payload.data</code>):\n    <code>\n      {\n        \"attr_name1\": [\n          {\"value\": x, \"date\": y},\n          {\"value\": z, \"date\": e}\n        ],\n        \"attr_name2\": [\n          {\"value\": q, \"date\": w},\n          ...\n        ]\n      }\n    </code>\n  </p>\n  <p>\n    In the input list, each attribute (<em>attr_name1</em>, <em>attr_name2</em>, etc.) is associated with a list of dictionaries.\n    Each dictionary represents a value entry and contains two keys that should remain as is:\n  </p>\n  <ul>\n    <li><strong>\"value\"</strong>: Specifies the value of the attribute for a specific date.</li>\n    <li><strong>\"date\"</strong>: Specifies the date of the value entry. The date should be in UNIX timestamp format.</li>\n  </ul>\n  <p>\n    The subflow returns an object with keys corresponding to the attribute names specified in the input list, along with their respective weighted averages. The output can be found in <code>msg.payload.data</code>.\n  </p>\n  <p>\n    It is important to note that the list of dictionaries should be sorted in reverse order based on the date.\n    To achieve this, you can use the quicksort algorithm implemented in another flow, which provides sorting options in either ascending or descending order, based on user preferences.\n  </p>\n</div>\n",
+        "category": "",
+        "in": [
+            {
+                "x": 140,
+                "y": 180,
+                "wires": [
+                    {
+                        "id": "4d0a70163a88c0dd"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 580,
+                "y": 180,
+                "wires": [
+                    {
+                        "id": "4d0a70163a88c0dd",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [],
+        "meta": {},
+        "color": "#DDAA99"
+    },
+    {
+        "id": "4d0a70163a88c0dd",
+        "type": "function",
+        "z": "5f294e422cb57a8d",
+        "name": "Calculate Weighted Average",
+        "func": "function calc_weight_avg(list) {\n    // Calculate total weight and weighted sum\n    let totalWeight = 0;\n    let weightedSum = 0;\n\n    list.forEach((temperature, index) => {\n        const weight = index + 1;\n\n        weightedSum += temperature.value * weight;\n        totalWeight += weight;\n    });\n\n    const weightedAverage = weightedSum / totalWeight;\n    return weightedAverage;\n}\n\nconst list = msg.payload.data;\nfor (let key in list) {\n    list[key] = calc_weight_avg(list[key]);\n}\n\nmsg.payload.data = list;\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 180,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "a833c5f1efa92886",
+        "type": "subflow",
+        "name": "Weighted Average Req Docker",
+        "info": "<div>\n  <p>\n    This subflow communicates with a Docker container running on your PC and runs the Weighted Average Common Function.\n    It uses the Docker image available on Docker Hub:\n    <a href=\"https://hub.docker.com/r/kazakos13/common-functions\">kazakos13/common-functions</a>.\n    If the Docker endpoint is not available, it falls back to running the local build of the Weighted Average subflow.\n  </p>\n  <h3>Input Structure</h3>\n  <p>\n    The subflow takes as input a list with the following structure, which should be placed in the <code>msg.payload.data</code> property:\n  </p>\n  <pre>\n    <code>\n{\n  \"attr_name1\": [\n    {\"value\": x, \"date\": y},\n    {\"value\": z, \"date\": e}\n  ],\n  \"attr_name2\": [\n    {\"value\": q, \"date\": w},\n    ...\n  ]\n}\n    </code>\n  </pre>\n  <p>\n    In the input list, each attribute (<em>attr_name1</em>, <em>attr_name2</em>, etc.) is associated with a list of dictionaries.\n    Each dictionary represents a value entry and contains two keys that should remain as is:\n  </p>\n  <ul>\n    <li><strong>\"value\"</strong>: Specifies the value of the attribute for a specific date.</li>\n    <li><strong>\"date\"</strong>: Specifies the date of the value entry. The date should be in UNIX timestamp format.</li>\n  </ul>\n  <h3>Output Structure</h3>\n  <p>\n    The subflow returns an object with keys corresponding to the attribute names specified in the input list, along with their respective weighted averages. The output can be found in the <code>msg.payload.data</code> property.\n  </p>\n  <p>\n    It is important to note that the list of dictionaries should be sorted in reverse order based on the date.\n    To achieve this, you can use the Quicksort algorithm implemented in another flow, which provides sorting options in either ascending or descending order, based on user preferences.\n  </p>\n</div>\n",
+        "category": "",
+        "in": [
+            {
+                "x": 40,
+                "y": 80,
+                "wires": [
+                    {
+                        "id": "428194049d20af93"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 840,
+                "y": 140,
+                "wires": [
+                    {
+                        "id": "0f077dbe1e98e210",
+                        "port": 0
+                    },
+                    {
+                        "id": "7406314592d9e8cb",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [],
+        "meta": {},
+        "color": "#E2D96E"
+    },
+    {
+        "id": "428194049d20af93",
+        "type": "change",
+        "z": "a833c5f1efa92886",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "copy_input",
+                "pt": "msg",
+                "to": "payload",
+                "tot": "msg",
+                "dc": true
+            },
+            {
+                "t": "set",
+                "p": "payload.function",
+                "pt": "msg",
+                "to": "wavg",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 200,
+        "y": 80,
+        "wires": [
+            [
+                "8c7228e2f5cf8f0e"
+            ]
+        ]
+    },
+    {
+        "id": "8c7228e2f5cf8f0e",
+        "type": "http request",
+        "z": "a833c5f1efa92886",
+        "name": "Weight Avg Docker",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://127.0.0.1:8080/run",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 290,
+        "y": 160,
+        "wires": [
+            [
+                "0f077dbe1e98e210"
+            ]
+        ]
+    },
+    {
+        "id": "0f077dbe1e98e210",
+        "type": "function",
+        "z": "a833c5f1efa92886",
+        "name": "Error Handler",
+        "func": "if (msg.statusCode != 200) {\n    msg.payload = msg.copy_input;\n    return [null,msg];\n}\nreturn[msg,null];",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 420,
+        "y": 240,
+        "wires": [
+            [],
+            [
+                "006c55d0127faa6a",
+                "7406314592d9e8cb"
+            ]
+        ]
+    },
+    {
+        "id": "7406314592d9e8cb",
+        "type": "subflow:5f294e422cb57a8d",
+        "z": "a833c5f1efa92886",
+        "name": "",
+        "x": 720,
+        "y": 240,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "006c55d0127faa6a",
+        "type": "debug",
+        "z": "a833c5f1efa92886",
+        "name": "Error Docker Debug",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "\"Could not find docker quicksort algorithm. Executing local quicksort subflow.\"",
+        "targetType": "jsonata",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 640,
+        "y": 300,
+        "wires": []
+    }
+]

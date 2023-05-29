@@ -17,13 +17,13 @@ sudo systemctl status docker
 ```
 Then to run the container you have to follow these steps:
 ```
-docker pull kazakos13/quicksort
-docker run -p 8080:8080 -it kazakos13/quicksort
+docker pull kazakos13/common-functions
+docker run -p 8080:8080 -it kazakos13/common-functions
 "
 ```
-If you want to push a new container first you have to go inside the smart-city-app/subflows/quicksort folder, then open the terminal and finally follow these steps:
+If you want to push a new container first you have to go inside the smart-city-app/subflows/common-functions folder, then open the terminal and finally follow these steps:
 ```
-docker build -t kazakos13/quicksort .
-docker push kazakos13/quicksort:latest
+docker build -t kazakos13/common-functions .
+docker push kazakos13/common-functions:latest
 ```
 

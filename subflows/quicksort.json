@@ -1,6 +1,6 @@
 [
     {
-        "id": "e3362431f3372381",
+        "id": "6fd479bb119a914b",
         "type": "subflow",
         "name": "QuickSort",
         "info": "<div>\n  <p>\n    This is the implementation of the Quick Sort algorithm, which can also perform a reverse sort if desired.\n    To choose reverse sort, put <code>msg.payload.reverse_sort</code> to True, else put it False.\n  </p>\n  <p>\n    It takes as input a list with the following structure (put this in the <code>msg.payload.data</code>):\n    <code>\n      {\n        \"attr_name1\": [\n          {\"value\": x, \"date\": y},\n          {\"value\": z, \"date\": e}\n        ],\n        \"attr_name2\": [\n          {\"value\": q, \"date\": w},\n          ...\n        ]\n      }\n    </code>\n  </p>\n  <p>\n    In the input list, each attribute (<em>attr_name1</em>, <em>attr_name2</em>, etc.) is associated with a list of dictionaries.\n    Each dictionary represents a value entry and contains two keys that should remain as is:\n  </p>\n  <ul>\n    <li><strong>\"value\"</strong>: Specifies the value of the attribute for a specific date.</li>\n    <li><strong>\"date\"</strong>: Specifies the date of the value entry. The date should be in UNIX timestamp format.</li>\n  </ul>\n  <p>\n    The subflow returns the same structure as the input list, but with the lists of each attribute key sorted either normally or in reverse order, based on the chosen option. The output can be found in <code>msg.payload.data</code>.\n  </p>\n</div>\n",
@@ -11,7 +11,7 @@
                 "y": 120,
                 "wires": [
                     {
-                        "id": "36dec23814efedfb"
+                        "id": "8a975444807b5c68"
                     }
                 ]
             }
@@ -22,7 +22,7 @@
                 "y": 120,
                 "wires": [
                     {
-                        "id": "aa7c06d534637cf0",
+                        "id": "6fef86d08511923a",
                         "port": 0
                     }
                 ]
@@ -33,9 +33,9 @@
         "color": "#DDAA99"
     },
     {
-        "id": "36dec23814efedfb",
+        "id": "8a975444807b5c68",
         "type": "function",
-        "z": "e3362431f3372381",
+        "z": "6fd479bb119a914b",
         "name": "Quick Sort",
         "func": "function quickSort(arr, left, right) {\n    if (left < right) {\n        const pivotIndex = partition(arr, left, right);\n        quickSort(arr, left, pivotIndex - 1);\n        quickSort(arr, pivotIndex + 1, right);\n    }\n    return arr;\n}\n\nfunction partition(arr, left, right) {\n    // const pivot = new Date(arr[right].date);\n    const pivot = arr[right].date;\n    let i = left - 1;\n\n    for (let j = left; j < right; j++) {\n        // const currentDate = new Date(arr[j].date);\n        const currentDate = arr[j].date;\n        if (currentDate < pivot) {\n            i++;\n            swap(arr, i, j);\n        }\n    }\n\n    swap(arr, i + 1, right);\n    return i + 1;\n}\n\nfunction swap(arr, i, j) {\n    const temp = arr[i];\n    arr[i] = arr[j];\n    arr[j] = temp;\n}\n\nvar list = msg.payload.data;\nfor (let key in list) {\n    list[key] = quickSort(list[key], 0, list[key].length - 1);\n}\nmsg.payload.data = list;\nreturn msg;",
         "outputs": 1,
@@ -47,14 +47,14 @@
         "y": 120,
         "wires": [
             [
-                "aa7c06d534637cf0"
+                "6fef86d08511923a"
             ]
         ]
     },
     {
-        "id": "aa7c06d534637cf0",
+        "id": "6fef86d08511923a",
         "type": "function",
-        "z": "e3362431f3372381",
+        "z": "6fd479bb119a914b",
         "name": "Reverse Sort",
         "func": "// Input: list - array of dictionaries [{ temperature: number, date: string }]\nif (!msg.payload.reverse_sort) {\n    return msg;\n}\n\nvar list = msg.payload.data;\nconsole.log(list);\nfor (let key in list) {\n    list[key] = list[key].reverse();\n}\nmsg.payload.data = list;\nreturn msg;\n\n",
         "outputs": 1,
