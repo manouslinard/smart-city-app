@@ -1946,7 +1946,7 @@
         "in": [
             {
                 "x": 80,
-                "y": 140,
+                "y": 60,
                 "wires": [
                     {
                         "id": "f1ae844bf041de78"
@@ -1986,7 +1986,7 @@
         "authType": "",
         "senderr": false,
         "headers": [],
-        "x": 530,
+        "x": 410,
         "y": 140,
         "wires": [
             [
@@ -1999,13 +1999,13 @@
         "type": "function",
         "z": "1c1d09cb50197133",
         "name": "Weather APIs",
-        "func": "var lat = msg.city.lat;\nvar lng = msg.city.lng;\nvar weatherapi_key = msg.weatherapi_key;\nvar openweathermapapi_key = msg.openweathermapapi_key;\nvar tommorowapi_key = msg.tommorowapi_key;\nvar weatherapi = {topic:\"weatherapi\", url:`http://api.weatherapi.com/v1/current.json?key=${weatherapi_key}&q=${lat},${lng}&aqi=no`}\nvar openweather = { topic: \"openweather\",url: `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=${openweathermapapi_key}&units=metric`}\nvar tommorowapi = { topic: \"tommorowapi\",url: `https://api.tomorrow.io/v4/weather/realtime?location=${lat},${lng}&apikey=${tommorowapi_key}`}\nvar openmeteoapi = { topic: \"openmeteoapi\", url: `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current_weather=true&hourly=temperature_2m,relativehumidity_2m,surface_pressure,cloudcover,visibility&forecast_days=1`}\nreturn [weatherapi, openweather, tommorowapi, openmeteoapi];",
+        "func": "var lat = msg.city.lat;\nvar lng = msg.city.lng;\nflow.set(\"lat\", lat);\nflow.set(\"lng\", lng);\nvar weatherapi_key = msg.weatherapi_key;\nvar openweathermapapi_key = msg.openweathermapapi_key;\nvar tommorowapi_key = msg.tommorowapi_key;\nvar weatherapi = {topic:\"weatherapi\", url:`http://api.weatherapi.com/v1/current.json?key=${weatherapi_key}&q=${lat},${lng}&aqi=no`}\nvar openweather = { topic: \"openweather\",url: `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=${openweathermapapi_key}&units=metric`}\nvar tommorowapi = { topic: \"tommorowapi\",url: `https://api.tomorrow.io/v4/weather/realtime?location=${lat},${lng}&apikey=${tommorowapi_key}`}\nvar openmeteoapi = { topic: \"openmeteoapi\", url: `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current_weather=true&hourly=temperature_2m,relativehumidity_2m,surface_pressure,cloudcover,visibility&forecast_days=1`}\nreturn [weatherapi, openweather, tommorowapi, openmeteoapi];",
         "outputs": 4,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 340,
+        "x": 200,
         "y": 200,
         "wires": [
             [
@@ -2038,7 +2038,7 @@
         "authType": "",
         "senderr": false,
         "headers": [],
-        "x": 530,
+        "x": 410,
         "y": 180,
         "wires": [
             [
@@ -2062,7 +2062,7 @@
         "authType": "",
         "senderr": false,
         "headers": [],
-        "x": 530,
+        "x": 410,
         "y": 220,
         "wires": [
             [
@@ -2086,7 +2086,7 @@
         "authType": "",
         "senderr": false,
         "headers": [],
-        "x": 530,
+        "x": 410,
         "y": 260,
         "wires": [
             [
@@ -2114,7 +2114,7 @@
         "reduceInit": "",
         "reduceInitType": "",
         "reduceFixup": "",
-        "x": 710,
+        "x": 590,
         "y": 200,
         "wires": [
             [
@@ -2280,7 +2280,7 @@
         "reduceInit": "",
         "reduceInitType": "",
         "reduceFixup": "",
-        "x": 1830,
+        "x": 1790,
         "y": 320,
         "wires": [
             [
@@ -2294,17 +2294,18 @@
         "type": "function",
         "z": "1c1d09cb50197133",
         "name": "Returns only openweathermap",
-        "func": "var value_weatherapi;\nvar value_tommorow;\nvar value_openweather;\nvar missing_keys = [];\nif (!msg.payload['weatherapi']['error']) {\n    value_weatherapi = msg.payload['weatherapi']['current']['last_updated_epoch'] * 1000;\n} else {\n    missing_keys.push(\"weatherapi\");\n}\nif (!msg.payload['tommorowapi']['code']) {\n    value_tommorow = Date.parse(msg.payload['tommorowapi']['data']['time']);\n} else {\n    missing_keys.push(\"tommorowapi\");\n}\nif (msg.payload['openweather']['cod'] == 200) {\n    value_openweather = msg.payload['openweather']['dt'] * 1000;\n} else {\n    missing_keys.push(\"openweatherapi\");\n}\nvar max_date = Math.max(value_weatherapi, value_tommorow, Date.parse(msg.payload['openmeteoapi']['current_weather']['time']), value_openweather);\n\nconsole.log(\"DATE DEBUGGING =================== \");\nconsole.log(\"WEATHER_API:\"+Date.parse(msg.payload['weatherapi']['current']['last_updated']));\nconsole.log(\"OPENMETEO_API:\"+Date.parse(msg.payload['openmeteoapi']['current_weather']['time']));\nconsole.log(\"TOMMOROW_API:\"+Date.parse(msg.payload['tommorowapi']['data']['time']));\nconsole.log(\"OPENWEATHERMAP:\"+msg.payload['openweather']['dt'] * 1000);\n\nvar open = msg.payload[\"openweather\"];\nopen['dt'] = max_date;\nmsg.payload = {};\nmsg.payload = open;\nmsg.missing_keys = missing_keys;\nmsg.topic = \"openweather\";\nreturn msg;",
+        "func": "var value_weatherapi=0;\nvar value_tommorow=0;\nvar value_openweather=0;\nvar missing_keys = [];\nif (!msg.payload['weatherapi']['error']) {\n    value_weatherapi = msg.payload['weatherapi']['current']['last_updated_epoch'] * 1000;\n} else {\n    missing_keys.push(\"weatherapi\");\n}\nif (!msg.payload['tommorowapi']['code']) {\n    value_tommorow = Date.parse(msg.payload['tommorowapi']['data']['time']);\n} else {\n    missing_keys.push(\"tommorowapi\");\n}\nif (msg.payload['openweather']['cod'] == 200) {\n    value_openweather = msg.payload['openweather']['dt'] * 1000;\n} else {\n    missing_keys.push(\"openweatherapi\");\n}\nvar max_date = Math.max(value_weatherapi, value_tommorow, Date.parse(msg.payload['openmeteoapi']['current_weather']['time']), value_openweather);\nconsole.log(\"MAXDATE:\"+max_date);\n// console.log(\"DATE DEBUGGING =================== \");\n// console.log(\"WEATHER_API:\"+Date.parse(msg.payload['weatherapi']['current']['last_updated']));\n// console.log(\"OPENMETEO_API:\"+Date.parse(msg.payload['openmeteoapi']['current_weather']['time']));\n// console.log(\"TOMMOROW_API:\"+Date.parse(msg.payload['tommorowapi']['data']['time']));\n// console.log(\"OPENWEATHERMAP:\"+msg.payload['openweather']['dt'] * 1000);\n\n// var open = msg.payload[\"openweather\"];\n// open['dt'] = max_date;\n// msg.payload = {};\n// msg.payload = open;\n// msg.missing_keys = missing_keys;\n// msg.topic = \"openweather\";\n// return msg;\n\nif (msg.payload['openweather']['cod'] == 200) {\n    let open = msg.payload[\"openweather\"];\n    open['dt'] = max_date;\n    msg.payload = open;\n    msg.missing_keys = missing_keys;\n    msg.topic = \"openweather\";\n    return msg;\n\n}\nmsg.payload = {};\nlet open = {};\nlet lat = parseFloat(flow.get(\"lat\"));\nlet lng = parseFloat(flow.get(\"lng\"));\n// openweathermap['coord'] = msg.payload['openweather']['coord'];\n// openweathermap['weather'] = msg.payload['openweather']['weather'];\n// openweathermap['sys'] = msg.payload['openweather']['sys'];\n// openweathermap['name'] = msg.payload['openweather']['name'];\nopen[\"coord\"] = {\"lon\":lng,\"lat\":lat};\nopen[\"weather\"] = [{ \"id\": 0, \"main\": \"Unknown\", \"description\": \"unknown\", \"icon\":\"50d\"}];\nopen[\"name\"] = \"unknown\";\nopen[\"sys\"] = {\"country\":\"unknown\",\"sunrise\":\"unknown\",\"sunset\":\"unknown\"};\nopen['dt'] = max_date;\nmsg.payload = open;\nmsg.missing_keys = missing_keys;\nmsg.topic = \"openweather\";\n\nreturn msg;\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1150,
-        "y": 100,
+        "x": 1070,
+        "y": 140,
         "wires": [
             [
-                "a44e81c24ab2ed83"
+                "a44e81c24ab2ed83",
+                "00c555a10f6dd30b"
             ]
         ]
     },
@@ -2366,8 +2367,8 @@
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "x": 1240,
-        "y": 640,
+        "x": 1160,
+        "y": 620,
         "wires": [
             [
                 "fee3903a5b91d9a4"
@@ -2399,8 +2400,7 @@
         "wires": [
             [
                 "a566ad1ee0b041dd",
-                "a10ab78339067de8",
-                "73a123e4aaae656a"
+                "a10ab78339067de8"
             ]
         ]
     },
@@ -2495,7 +2495,7 @@
         "type": "function",
         "z": "1c1d09cb50197133",
         "name": "Correct data set",
-        "func": "var data = msg.payload;\nmsg.payload = {};\nmsg.payload[\"data\"] = data;\nreturn msg;",
+        "func": "var data = msg.payload;\n// Remove empty values for each key\nfor (const key in data) {\n    if (Array.isArray(data[key])) {\n        data[key] = data[key].filter(item => Object.keys(item).length !== 0);\n    }\n}\nmsg.payload = {};\nmsg.payload[\"data\"] = data;\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -2552,8 +2552,8 @@
         "drop": false,
         "allowrate": false,
         "outputs": 1,
-        "x": 160,
-        "y": 200,
+        "x": 200,
+        "y": 60,
         "wires": [
             [
                 "f5e296816b0a808e"
@@ -2561,19 +2561,40 @@
         ]
     },
     {
-        "id": "73a123e4aaae656a",
+        "id": "00c555a10f6dd30b",
+        "type": "function",
+        "z": "1c1d09cb50197133",
+        "name": "Alert Missing API_Keys",
+        "func": "const missing_keys = msg.missing_keys;\nif (missing_keys && missing_keys.length == 0) {\n    return [null, msg];\n}\nlet s = \"The Following Keys are not valid or not properly configured: \";\nfor (let mk of missing_keys) {\n    if (mk === \"openweatherapi\") {\n        s += mk + \" (openweatherapi key loss will result in data-loss in gui), \";\n    } else {\n        s += mk + \", \";\n    }\n}\ns = s.slice(0, -2) + \".\";\nif (missing_keys.length == 3) {\n    s += \" The only accessible api is openmeteo (collecting data only from there).\"\n}\nmsg.payload = s;\nreturn [msg, null];",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1370,
+        "y": 40,
+        "wires": [
+            [
+                "b94ec6cc34249f4c"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "b94ec6cc34249f4c",
         "type": "debug",
         "z": "1c1d09cb50197133",
-        "name": "debug 83",
+        "name": "Missing Keys debug",
         "active": true,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
-        "complete": "false",
+        "complete": "payload",
+        "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1400,
-        "y": 320,
+        "x": 1660,
+        "y": 40,
         "wires": []
     },
     {
@@ -3148,7 +3169,7 @@
         "lat": "",
         "lon": "",
         "zoom": "",
-        "layer": "OSMG",
+        "layer": "OSMC",
         "cluster": "",
         "maxage": "",
         "usermenu": "show",
@@ -3455,7 +3476,7 @@
         "type": "function",
         "z": "9f05e3b0da20dbb6",
         "name": "function 37",
-        "func": "function timedate(timestamp) {\n    var milliseconds = timestamp * 1000;\n    var date = new Date(milliseconds);\n\n    var hours = date.getHours();\n    var minutes = date.getMinutes();\n    minutes = minutes < 10 ? '0' + minutes : minutes;\n    var period = hours >= 12 ? 'PM' : 'AM';\n\n    // Convert the hours from 24-hour format to 12-hour format if needed\n    if (hours > 12) {\n        hours -= 12;\n    }\n\n    return hours + ':' + minutes + ' ' + period;\n}\n\n// function datetime(timestamp){\n//     var milliseconds = timestamp * 1000;\n//     var date = new Date(milliseconds);\n//     return \"\"+date\n// }\n\nfunction datetime(timestamp) {\n    var milliseconds = timestamp;\n    var date = new Date(milliseconds);\n    var options = { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true };\n    var formattedDate = date.toLocaleString('en-US', options);\n    return formattedDate;\n}\n\ntry {\n    var json = JSON.parse(msg.payload);\n    msg.payload = json;\n    var msgs = msg.payload;\n    var sunrise = msg.payload.sys.sunrise; // Replace with your Unix timestamp\n    msg.payload.sys.sunrise = timedate(sunrise);\n    var sunset = msg.payload.sys.sunset;\n    msg.payload.sys.sunset = timedate(sunset);\n    var date = new Date();\n    var currentHour = date.toLocaleTimeString();\n    msg.payload.current_session = currentHour;\n    var description = msg.payload.weather[0].description;\n    var capitalizedDescription = description.charAt(0).toUpperCase() + description.slice(1);\n    msg.payload.weather[0].description = capitalizedDescription; // Output the capitalized description\n    var data_upd = msg.payload.dt;\n    console.log(data_upd);\n    msg.payload.dt = datetime(data_upd);\n    return [msg, null];\n} catch(error) {\n    return [null, msg]\n}",
+        "func": "function timedate(timestamp) {\n    var milliseconds = timestamp * 1000;\n    var date = new Date(milliseconds);\n\n    var hours = date.getHours();\n    var minutes = date.getMinutes();\n    minutes = minutes < 10 ? '0' + minutes : minutes;\n    var period = hours >= 12 ? 'PM' : 'AM';\n\n    // Convert the hours from 24-hour format to 12-hour format if needed\n    if (hours > 12) {\n        hours -= 12;\n    }\n\n    return hours + ':' + minutes + ' ' + period;\n}\n\n// function datetime(timestamp){\n//     var milliseconds = timestamp * 1000;\n//     var date = new Date(milliseconds);\n//     return \"\"+date\n// }\n\nfunction datetime(timestamp) {\n    var milliseconds = timestamp;\n    var date = new Date(milliseconds);\n    var options = { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true };\n    var formattedDate = date.toLocaleString('en-US', options);\n    return formattedDate;\n}\n\ntry {\n    var json = JSON.parse(msg.payload);\n    msg.payload = json;\n    var msgs = msg.payload;\n    var sunrise = msg.payload.sys.sunrise; // Replace with your Unix timestamp\n    if (sunrise !== \"unknown\") {\n        msg.payload.sys.sunrise = timedate(sunrise);\n    }\n    var sunset = msg.payload.sys.sunset;\n    if (sunset !== \"unknown\") {\n        msg.payload.sys.sunset = timedate(sunset);\n    }\n    var date = new Date();\n    var currentHour = date.toLocaleTimeString();\n    msg.payload.current_session = currentHour;\n    var description = msg.payload.weather[0].description;\n    var capitalizedDescription = description.charAt(0).toUpperCase() + description.slice(1);\n    msg.payload.weather[0].description = capitalizedDescription; // Output the capitalized description\n    var data_upd = msg.payload.dt;\n    console.log(data_upd);\n    msg.payload.dt = datetime(data_upd);\n    return [msg, null];\n} catch(error) {\n    return [null, msg]\n}",
         "outputs": 2,
         "noerr": 0,
         "initialize": "",
@@ -3480,7 +3501,7 @@
         "order": 7,
         "width": 0,
         "height": 0,
-        "format": "<!DOCTYPE html>\n<html>\n\n<head>\n    <style>\n        body {\n            font-family: Arial, sans-serif;\n            margin: 0;\n            padding: 20px;\n        }\n\n        .container {\n            max-width: 600px;\n            margin: 0 auto;\n            border-radius: 5px;\n            padding: 20px;\n            box-shadow: 0 5px 12px rgba(0, 0, 0, 0.8);\n        }\n\n        h3 {\n            font-size: 24px;\n            margin-top: 0;\n        }\n\n        .weather-container {\n            display: flex;\n            align-items: center;\n            margin-bottom: 20px;\n        }\n\n        .weather-icon {\n            width: 40px;\n            height: 40px;\n            vertical-align: middle;\n            margin-right: 10px;\n        }\n\n        .weather-info {\n            display: flex;\n            flex-direction: column;\n        }\n\n        p {\n            margin: 5px 0;\n        }\n\n        strong {\n            font-weight: bold;\n        }\n    </style>\n</head>\n\n<body>\n    <div class=\"container\">\n        <h3>Current Weather Forecast</h3>\n        <div class=\"weather-container\">\n            <img src=\"https://openweathermap.org/img/w/{{msg.payload.weather[0].icon}}.png\" class=\"weather-icon\">\n            <div class=\"weather-info\">\n                <p><strong>Current Weather:</strong> {{msg.payload.weather[0].main}}</p>\n                <p><strong>Weather Description:</strong> {{msg.payload.weather[0].description}}.</p>\n                <p><strong>Temperature:</strong> {{msg.payload.main.temp}}°C</p>\n            </div>\n        </div>\n        <p><strong>Sunrise Hour:</strong> {{msg.payload.sys.sunrise}}</p>\n        <p><strong>Sunset Hour:</strong> {{msg.payload.sys.sunset}}</p>\n        <p><strong>Clouds percentage:</strong> {{msg.payload.clouds.all}}%</p>\n        <p><strong>Humidity:</strong> {{msg.payload.main.humidity}}%</p>\n        <p><strong>Wind Speed:</strong> {{msg.payload.wind.speed}}m/s</p>\n        <p><strong>Wind Degree:</strong> {{msg.payload.wind.deg}}°</p>\n        <p><strong>Visibility:</strong> {{msg.payload.visibility}} meters</p>\n        <p><strong>Last API Call:</strong> {{msg.payload.current_session}}</p>\n        <p><strong>Last Data Update:</strong> {{msg.payload.dt}}</p>\n        <br>\n        <p style=\"font-size: smaller;\">* All time indicators are converted to local time.</p>\n    </div>\n</body>\n\n</html>",
+        "format": "<!DOCTYPE html>\n<html>\n\n<head>\n    <style>\n        body {\n            font-family: Arial, sans-serif;\n            margin: 0;\n            padding: 20px;\n        }\n\n        .container {\n            max-width: 600px;\n            margin: 0 auto;\n            border-radius: 5px;\n            padding: 20px;\n            box-shadow: 0 5px 12px rgba(0, 0, 0, 0.8);\n        }\n\n        h3 {\n            font-size: 24px;\n            margin-top: 0;\n        }\n\n        .weather-container {\n            display: flex;\n            align-items: center;\n            margin-bottom: 20px;\n        }\n\n        .weather-icon {\n            width: 40px;\n            height: 40px;\n            vertical-align: middle;\n            margin-right: 10px;\n        }\n\n        .weather-info {\n            display: flex;\n            flex-direction: column;\n        }\n\n        p {\n            margin: 5px 0;\n        }\n\n        strong {\n            font-weight: bold;\n        }\n    </style>\n</head>\n\n<body>\n    <div class=\"container\">\n        <h3>Current Weather Forecast</h3>\n        <div class=\"weather-container\">\n            <img src=\"https://openweathermap.org/img/w/{{msg.payload.weather[0].icon}}.png\" class=\"weather-icon\">\n            <div class=\"weather-info\">\n                <p><strong>Current Weather:</strong> {{msg.payload.weather[0].main}}</p>\n                <p><strong>Weather Description:</strong> {{msg.payload.weather[0].description}}.</p>\n                <p><strong>Temperature:</strong> {{msg.payload.main.temp}}°C</p>\n            </div>\n        </div>\n        <p><strong>Sunrise Hour:</strong> {{msg.payload.sys.sunrise}}</p>\n        <p><strong>Sunset Hour:</strong> {{msg.payload.sys.sunset}}</p>\n        <p><strong>Clouds percentage:</strong> {{msg.payload.clouds.all}}%</p>\n        <p><strong>Humidity:</strong> {{msg.payload.main.humidity}}%</p>\n        <p><strong>Wind Speed:</strong> {{msg.payload.wind.speed}}m/s</p>\n        <p><strong>Wind Direction:</strong> {{msg.payload.wind.deg}}°</p>\n        <p><strong>Visibility:</strong> {{msg.payload.visibility}} meters</p>\n        <p><strong>Last API Call:</strong> {{msg.payload.current_session}}</p>\n        <p><strong>Last Data Update:</strong> {{msg.payload.dt}}</p>\n        <br>\n        <p style=\"font-size: smaller;\">* All time indicators are converted to local time.</p>\n    </div>\n</body>\n\n</html>",
         "storeOutMessages": true,
         "fwdInMessages": true,
         "resendOnRefresh": true,
