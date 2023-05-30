@@ -1,105 +1,6 @@
 [
     {
-        "id": "63bb59d1bafe37e6",
-        "type": "subflow",
-        "name": "ClusterMaker",
-        "info": "",
-        "category": "",
-        "in": [
-            {
-                "x": 40,
-                "y": 80,
-                "wires": [
-                    {
-                        "id": "61a93c48d082973e"
-                    }
-                ]
-            }
-        ],
-        "out": [],
-        "env": [],
-        "meta": {},
-        "color": "#C0DEED"
-    },
-    {
-        "id": "61a93c48d082973e",
-        "type": "function",
-        "z": "63bb59d1bafe37e6",
-        "name": "function 38",
-        "func": "var currentDate = new Date().toISOString().split('T')[0];\n\nmsg.topic = `SELECT temperature\nFROM weather_table wt\nJOIN cities_table ct ON wt.city_name = ct.city_name\nWHERE wt.time = '${currentDate}'`;\n\nreturn msg;\n\n\n\n\n",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 190,
-        "y": 80,
-        "wires": [
-            [
-                "9f64f1984c4905f1"
-            ]
-        ]
-    },
-    {
-        "id": "9f64f1984c4905f1",
-        "type": "sqlite",
-        "z": "63bb59d1bafe37e6",
-        "mydb": "d9f236dca5911a50",
-        "sqlquery": "msg.topic",
-        "sql": "",
-        "name": "",
-        "x": 430,
-        "y": 80,
-        "wires": [
-            [
-                "7d979072282a1010"
-            ]
-        ]
-    },
-    {
-        "id": "7d979072282a1010",
-        "type": "function",
-        "z": "63bb59d1bafe37e6",
-        "name": "clusterMaker",
-        "func": "var clusterMaker = context.global.clusters;\nvar temps = msg.payload;\nvar data = [];\nfor (var temp of temps) {\n    data.push([temp.temperature]);\n}\nconsole.log(data);\nclusterMaker.k(3);\nclusterMaker.iterations(750);\nclusterMaker.data(data);\nmsg.payload = clusterMaker.clusters();\nmsg.payload.sort(function(a, b) { return parseFloat(a.centroid) -\nparseFloat(b.centroid);}); //ensure that clusters are sorted on ascending speed\nglobal.set(\"foundclusters\",msg.payload);\nvar listing = global.get(\"foundclusters\");\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 670,
-        "y": 80,
-        "wires": [
-            [
-                "60218d97582ceb2a"
-            ]
-        ]
-    },
-    {
-        "id": "60218d97582ceb2a",
-        "type": "debug",
-        "z": "63bb59d1bafe37e6",
-        "name": "",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 930,
-        "y": 80,
-        "wires": []
-    },
-    {
-        "id": "d9f236dca5911a50",
-        "type": "sqlitedb",
-        "db": "/tmp/cities.db",
-        "mode": "RWC"
-    },
-    {
-        "id": "88d8317cdc24c47a",
+        "id": "5a06fcbc04ae461a",
         "type": "subflow",
         "name": "ImageFlow",
         "info": "The Image Subflow is used to save the image urls of cities in the database.",
@@ -110,7 +11,7 @@
                 "y": 220,
                 "wires": [
                     {
-                        "id": "06d8b9e4386734c9"
+                        "id": "979a3de1b01caa2e"
                     }
                 ]
             }
@@ -121,7 +22,7 @@
                 "y": 320,
                 "wires": [
                     {
-                        "id": "5b8eea643f45603e",
+                        "id": "41f50f8780a38566",
                         "port": 0
                     }
                 ]
@@ -132,9 +33,9 @@
         "color": "#C0DEED"
     },
     {
-        "id": "06d8b9e4386734c9",
+        "id": "979a3de1b01caa2e",
         "type": "function",
-        "z": "88d8317cdc24c47a",
+        "z": "5a06fcbc04ae461a",
         "name": "function 19",
         "func": "var city = msg.payload;\nvar options = [];\nmsg.url = `https://api.teleport.org/api/urban_areas/slug:${city.city_name}/images/`\nmsg.city_name = city.city_name;\nmsg.city_lat = city.lat;\nmsg.city_lng = city.lng;\nmsg.geonameId = city.geonameId;\n// console.log(city.city_name);\n// global.set(\"city_name\", city.city_name);\nreturn msg;\n",
         "outputs": 1,
@@ -146,14 +47,14 @@
         "y": 220,
         "wires": [
             [
-                "a6026be793fd581e"
+                "7064690e014434d8"
             ]
         ]
     },
     {
-        "id": "a6026be793fd581e",
+        "id": "7064690e014434d8",
         "type": "http request",
-        "z": "88d8317cdc24c47a",
+        "z": "5a06fcbc04ae461a",
         "name": "",
         "method": "GET",
         "ret": "obj",
@@ -170,15 +71,15 @@
         "y": 220,
         "wires": [
             [
-                "c53e3d80a81a426a",
-                "606dfd4d52c02f8a"
+                "5aec29e30e9a6cfb",
+                "57783ce8cb6f72c1"
             ]
         ]
     },
     {
-        "id": "c53e3d80a81a426a",
+        "id": "5aec29e30e9a6cfb",
         "type": "debug",
-        "z": "88d8317cdc24c47a",
+        "z": "5a06fcbc04ae461a",
         "name": "debug 36",
         "active": false,
         "tosidebar": true,
@@ -193,9 +94,9 @@
         "wires": []
     },
     {
-        "id": "606dfd4d52c02f8a",
+        "id": "57783ce8cb6f72c1",
         "type": "function",
-        "z": "88d8317cdc24c47a",
+        "z": "5a06fcbc04ae461a",
         "name": "function 20",
         "func": "var photos = msg.payload.photos;\nvar mobile_url = \"\";\nvar web_url = \"\";\nfor (var i = 0; i < photos.length; i ++) {\n    mobile_url = photos[i].image.mobile;\n    web_url = photos[i].image.web;\n}\n\nmsg.topic = `INSERT OR IGNORE INTO image_table (web_img_url, mob_img_url, city_name, lat, lng, geonameId) VALUES ('${web_url}', '${mobile_url}', '${msg.city_name}', ${msg.city_lat}, ${msg.city_lng}, ${msg.geonameId})`;\n\nreturn msg;",
         "outputs": 1,
@@ -207,15 +108,15 @@
         "y": 260,
         "wires": [
             [
-                "e1ffbf38e7dcf29d",
-                "5b8eea643f45603e"
+                "0ba7aa096de621e5",
+                "41f50f8780a38566"
             ]
         ]
     },
     {
-        "id": "e1ffbf38e7dcf29d",
+        "id": "0ba7aa096de621e5",
         "type": "debug",
-        "z": "88d8317cdc24c47a",
+        "z": "5a06fcbc04ae461a",
         "name": "debug 40",
         "active": false,
         "tosidebar": true,
@@ -230,9 +131,9 @@
         "wires": []
     },
     {
-        "id": "5b8eea643f45603e",
+        "id": "41f50f8780a38566",
         "type": "sqlite",
-        "z": "88d8317cdc24c47a",
+        "z": "5a06fcbc04ae461a",
         "mydb": "e1b7d6f10fa6ce00",
         "sqlquery": "msg.topic",
         "sql": "",
@@ -241,14 +142,14 @@
         "y": 320,
         "wires": [
             [
-                "2487bab339b47305"
+                "d0370652958aed29"
             ]
         ]
     },
     {
-        "id": "2487bab339b47305",
+        "id": "d0370652958aed29",
         "type": "debug",
-        "z": "88d8317cdc24c47a",
+        "z": "5a06fcbc04ae461a",
         "name": "debug 37",
         "active": false,
         "tosidebar": true,
@@ -263,7 +164,7 @@
         "wires": []
     },
     {
-        "id": "526f0b48e164048f",
+        "id": "058ef3d116a80e99",
         "type": "subflow",
         "name": "WeatherFlow",
         "info": "The WeatherFlow Subflow is used to collect and save data in the db for the 7-Day Forecast.",
@@ -274,7 +175,7 @@
                 "y": 180,
                 "wires": [
                     {
-                        "id": "f412f3744615656e"
+                        "id": "789cabce844f9c61"
                     }
                 ]
             }
@@ -285,7 +186,7 @@
                 "y": 340,
                 "wires": [
                     {
-                        "id": "a9a006fba7f289ac",
+                        "id": "5db911e151fa7299",
                         "port": 0
                     }
                 ]
@@ -296,9 +197,9 @@
         "color": "#C0DEED"
     },
     {
-        "id": "f412f3744615656e",
+        "id": "789cabce844f9c61",
         "type": "function",
-        "z": "526f0b48e164048f",
+        "z": "058ef3d116a80e99",
         "name": "function 17",
         "func": "var city = msg.payload;\nvar options = [];\nmsg.url = `https://api.open-meteo.com/v1/forecast?latitude=${city.lat}&longitude=${city.lng}&daily=weathercode,temperature_2m_max,temperature_2m_min,uv_index_max,uv_index_clear_sky_max,rain_sum,snowfall_sum,windspeed_10m_max,winddirection_10m_dominant,shortwave_radiation_sum&current_weather=true&timezone=auto`\nmsg.city_name = city.city_name;\nmsg.city_lat = city.lat;\nmsg.city_lng = city.lng;\nmsg.continent_code = city.continent_code;\nmsg.geonameId = city.geonameId;\n// console.log(city.city_name);\nreturn msg;\n",
         "outputs": 1,
@@ -310,14 +211,14 @@
         "y": 180,
         "wires": [
             [
-                "30784caca4168d7b"
+                "3d1576201d7a4fee"
             ]
         ]
     },
     {
-        "id": "f03c48b032a4794f",
+        "id": "20121b93b0fed214",
         "type": "debug",
-        "z": "526f0b48e164048f",
+        "z": "058ef3d116a80e99",
         "name": "debug 30",
         "active": false,
         "tosidebar": true,
@@ -332,9 +233,9 @@
         "wires": []
     },
     {
-        "id": "30784caca4168d7b",
+        "id": "3d1576201d7a4fee",
         "type": "http request",
-        "z": "526f0b48e164048f",
+        "z": "058ef3d116a80e99",
         "name": "",
         "method": "GET",
         "ret": "obj",
@@ -351,15 +252,15 @@
         "y": 180,
         "wires": [
             [
-                "f03c48b032a4794f",
-                "5c6cdce16e89a67d"
+                "20121b93b0fed214",
+                "517f234ec7bce010"
             ]
         ]
     },
     {
-        "id": "5c6cdce16e89a67d",
+        "id": "517f234ec7bce010",
         "type": "function",
-        "z": "526f0b48e164048f",
+        "z": "058ef3d116a80e99",
         "name": "function 16",
         "func": "var options = [];\n// console.log(msg.city_name);\ntry {\n    var payload = msg.payload;\n    //console.log('payload.daily.city:', payload.city);\n    for (var i = 0; i < payload.daily.time.length; i++) {\n        var obj = {};\n        obj.time = payload.daily.time[i];\n        obj.weathercode = payload.daily.weathercode[i];\n        obj.temperature = parseFloat((payload.daily.temperature_2m_max[i] + payload.daily.temperature_2m_min[i]) / 2).toFixed(2);\n        obj.uv_index_max = payload.daily.uv_index_max[i];\n        obj.uv_index_clear_sky_max = payload.daily.uv_index_clear_sky_max[i];\n        obj.rain_sum = payload.daily.rain_sum[i];\n        obj.snowfall_sum = payload.daily.snowfall_sum[i];\n        obj.windspeed_10m_max = payload.daily.windspeed_10m_max[i];\n        obj.winddirection_10m_dominant = payload.daily.winddirection_10m_dominant[i];\n        obj.shortwave_radiation_sum = payload.daily.shortwave_radiation_sum[i];\n        obj.city_name = msg.city_name;\n        obj.city_lat = msg.city_lat;\n        obj.city_lng = msg.city_lng;\n        obj.geonameId = msg.geonameId;\n        obj.continent_code = msg.continent_code;\n        //console.log(obj.city_name);\n        options.push(obj);\n    }\n\n    msg.payload = options;\n    return [msg, null];\n} catch (error) {\n    // does nothing\n    return [null, msg];\n}\n\n",
         "outputs": 2,
@@ -371,16 +272,16 @@
         "y": 240,
         "wires": [
             [
-                "769f7a67aed891f2",
-                "996d9de45edaf150"
+                "dc6c502c1d61bd55",
+                "e87fe5db4a961971"
             ],
             []
         ]
     },
     {
-        "id": "769f7a67aed891f2",
+        "id": "dc6c502c1d61bd55",
         "type": "debug",
-        "z": "526f0b48e164048f",
+        "z": "058ef3d116a80e99",
         "name": "debug 33",
         "active": false,
         "tosidebar": true,
@@ -394,9 +295,9 @@
         "wires": []
     },
     {
-        "id": "996d9de45edaf150",
+        "id": "e87fe5db4a961971",
         "type": "function",
-        "z": "526f0b48e164048f",
+        "z": "058ef3d116a80e99",
         "name": "INSERT DATABASE",
         "func": "var sql = \"\";\nconsole.log(msg.payload.length);\nfor (var i = 0; i < msg.payload.length; i++) {\n    var time = msg.payload[i].time;\n    console.log(time);\n    var weathercode = msg.payload[i].weathercode;\n    var temperature = msg.payload[i].temperature;\n    var uv_index_max = msg.payload[i].uv_index_max;\n    var uv_index_clear_sky_max = msg.payload[i].uv_index_clear_sky_max;\n    var rain_sum = msg.payload[i].rain_sum;\n    var snowfall_sum = msg.payload[i].snowfall_sum;\n    var windspeed_10m_max = msg.payload[i].windspeed_10m_max;\n    var winddirection_10m_dominant = msg.payload[i].winddirection_10m_dominant;\n    var shortwave_radiation_sum = msg.payload[i].shortwave_radiation_sum;\n    var city_name = msg.payload[i].city_name;\n    var lat = msg.payload[i].city_lat;\n    var lng = msg.payload[i].city_lng;\n    var geonameId = msg.payload[i].geonameId;\n    var continent_code = msg.payload[i].continent_code;\n    sql = `INSERT OR IGNORE INTO weather_table (time, weathercode, temperature, uv_index_max, uv_index_clear_sky_max, rain_sum, snowfall_sum, windspeed_10m_max, winddirection_10m_dominant, shortwave_radiation_sum, city_name, lat, lng, geonameId, continent_code) VALUES (strftime('%Y-%m-%d', '${time}'), ${weathercode}, ${temperature}, ${uv_index_max}, ${uv_index_clear_sky_max}, ${rain_sum}, ${snowfall_sum}, ${windspeed_10m_max}, ${winddirection_10m_dominant}, ${shortwave_radiation_sum}, '${city_name}', ${lat}, ${lng}, ${geonameId}, '${continent_code}')`;\n\n    node.send({ topic: sql }); // send the SQL statement to the next node\n}\n\n// msg.topic = sql;\n// return [null, msg];\n",
         "outputs": 2,
@@ -408,15 +309,15 @@
         "y": 360,
         "wires": [
             [
-                "a9a006fba7f289ac"
+                "5db911e151fa7299"
             ],
             []
         ]
     },
     {
-        "id": "a9a006fba7f289ac",
+        "id": "5db911e151fa7299",
         "type": "sqlite",
-        "z": "526f0b48e164048f",
+        "z": "058ef3d116a80e99",
         "mydb": "e1b7d6f10fa6ce00",
         "sqlquery": "msg.topic",
         "sql": "",
@@ -425,14 +326,14 @@
         "y": 340,
         "wires": [
             [
-                "d539b36367ba8644"
+                "8b68a8d985c5d8cc"
             ]
         ]
     },
     {
-        "id": "d539b36367ba8644",
+        "id": "8b68a8d985c5d8cc",
         "type": "debug",
-        "z": "526f0b48e164048f",
+        "z": "058ef3d116a80e99",
         "name": "debug 31",
         "active": false,
         "tosidebar": true,
@@ -447,7 +348,7 @@
         "wires": []
     },
     {
-        "id": "e731a3cb900e6a76",
+        "id": "b4d201c7727e3cde",
         "type": "subflow",
         "name": "Main Flow",
         "info": "The Main Flow is used to insert all the necessary data of the cities of a selected country (like summary, city names, latitude and longitude and other city attributes).",
@@ -458,7 +359,7 @@
                 "y": 280,
                 "wires": [
                     {
-                        "id": "0093e0f4ad791f18"
+                        "id": "d692d373437802b9"
                     }
                 ]
             }
@@ -469,7 +370,7 @@
                 "y": 520,
                 "wires": [
                     {
-                        "id": "031f256942be3440",
+                        "id": "7eab18f46bceb7ab",
                         "port": 0
                     }
                 ]
@@ -480,9 +381,9 @@
         "color": "#C0DEED"
     },
     {
-        "id": "0093e0f4ad791f18",
+        "id": "d692d373437802b9",
         "type": "function",
-        "z": "e731a3cb900e6a76",
+        "z": "b4d201c7727e3cde",
         "name": "function 6",
         "func": "var country_continent = { \"MK\":\"EU\", \"KR\":\"AS\", \"AM\": \"AS\", \"AW\": \"NA\", \"AU\": \"OC\", \"BY\": \"EU\", \"BE\": \"EU\", \"BA\": \"EU\", \"BR\": \"SA\", \"BG\": \"EU\", \"CM\": \"AF\", \"CA\": \"NA\", \"KY\": \"NA\", \"CL\": \"SA\", \"CN\": \"AS\", \"CO\": \"SA\", \"KM\": \"AF\", \"HR\": \"EU\", \"CU\": \"NA\", \"CY\": \"AS\", \"DK\": \"EU\", \"EC\": \"SA\", \"EG\": \"AF\", \"EE\": \"EU\", \"FI\": \"EU\", \"FR\": \"EU\", \"GE\": \"AS\", \"DE\": \"EU\", \"GI\": \"EU\", \"GR\": \"EU\", \"GD\": \"NA\", \"GY\": \"SA\", \"HU\": \"EU\", \"IN\": \"AS\", \"ID\": \"AS\", \"IR\": \"AS\", \"IE\": \"EU\", \"IT\": \"EU\", \"JM\": \"NA\", \"JP\": \"AS\", \"KZ\": \"AS\", \"KE\": \"AF\", \"LV\": \"EU\", \"LB\": \"AS\", \"LT\": \"EU\", \"LU\": \"EU\", \"MT\": \"EU\", \"MX\": \"NA\", \"MD\": \"EU\", \"MA\": \"AF\", \"NP\": \"AS\", \"NL\": \"EU\", \"NZ\": \"OC\", \"NI\": \"NA\", \"NG\": \"AF\", \"NF\": \"OC\", \"NO\": \"EU\", \"PK\": \"AS\", \"PY\": \"SA\", \"PH\": \"AS\", \"PL\": \"EU\", \"PT\": \"EU\", \"QA\": \"AS\", \"RO\": \"EU\", \"RU\": \"EU\", \"SA\": \"AS\", \"RS\": \"EU\", \"SC\": \"AF\", \"SG\": \"AS\", \"SK\": \"EU\", \"SI\": \"EU\", \"ZA\": \"AF\", \"ES\": \"EU\", \"SE\": \"EU\", \"CH\": \"EU\", \"TH\": \"AS\", \"TT\": \"NA\", \"TN\": \"AF\", \"TR\": \"AS\", \"UA\": \"EU\", \"AE\": \"AS\", \"UY\": \"SA\", \"UZ\": \"AS\", \"VE\": \"SA\", \"CZ\":\"EU\", \"GB\":\"EU\", \"US\":\"NA\" };\n\nvar forbidden_cities_in_countries = { \"MT\": [\"Victoria\"], \"ES\": [\"Guadalajara\"], \"VE\": [\"Barcelona\", \"Valencia\"], \"NF\": [\"Kingston\"], \"CA\": [\"Sydney\", \"London\", \"Richmond\", \"Cambridge\", \"Kingston\"] };\n\nfunction check_forbidden_cities(city_name, country_code) {\n    var forbidd_list = forbidden_cities_in_countries[country_code];\n    if (forbidd_list) {\n        for (var i = 0; i < forbidd_list.length; i++) {\n            if (forbidd_list[i].toLowerCase() === \"\" + city_name) {\n                return true;\n            }\n        }\n    }\n    return false;\n}\n\n\nvar countries = msg.payload.geonames;\nvar options = [];\nfor (var i = 0; i < countries.length; i++) {\n    var city = countries[i];\n    // global.set(\"country_code\", city.countryCode);\n    var city_name = city.toponymName.toLowerCase();\n\n    if (city.fclName.includes(\"city\") && !check_forbidden_cities(city_name, city.countryCode)) {\n        // console.log(\"CITY CODE:\" + city.countryCode);\n        options.push({\n            city: city_name,\n            city_url: \"https://api.teleport.org/api/urban_areas/slug:\" + city.toponymName.toLowerCase() + \"/scores/\",\n            lat: city.lat,\n            lng: city.lng,\n            geonameId: city.geonameId,\n            country_code: city.countryCode,\n            continent_code: country_continent[city.countryCode]\n        });\n    }\n}\n// msg.url = \"https://api.teleport.org/api/urban_areas/slug:athens/scores/\";\n// msg.payload.url = \"https://api.teleport.org/api/urban_areas/slug:athens/scores/\"\nmsg.payload = options;\n// msg.options = options;\nreturn msg;\n\n\n",
         "outputs": 1,
@@ -494,14 +395,14 @@
         "y": 280,
         "wires": [
             [
-                "7523b379ae3d7dac"
+                "832fb7eab6e8d33d"
             ]
         ]
     },
     {
-        "id": "7523b379ae3d7dac",
+        "id": "832fb7eab6e8d33d",
         "type": "split",
-        "z": "e731a3cb900e6a76",
+        "z": "b4d201c7727e3cde",
         "name": "",
         "splt": "\\n",
         "spltType": "str",
@@ -513,15 +414,15 @@
         "y": 280,
         "wires": [
             [
-                "bf2ea9cf12bca2e0",
-                "038ecea868671260"
+                "42e5bff7258bc639",
+                "6e1f9384a048d9bb"
             ]
         ]
     },
     {
-        "id": "bf2ea9cf12bca2e0",
+        "id": "42e5bff7258bc639",
         "type": "debug",
-        "z": "e731a3cb900e6a76",
+        "z": "b4d201c7727e3cde",
         "name": "debug 11",
         "active": false,
         "tosidebar": true,
@@ -535,9 +436,9 @@
         "wires": []
     },
     {
-        "id": "038ecea868671260",
+        "id": "6e1f9384a048d9bb",
         "type": "change",
-        "z": "e731a3cb900e6a76",
+        "z": "b4d201c7727e3cde",
         "name": "",
         "rules": [
             {
@@ -565,14 +466,14 @@
         "y": 280,
         "wires": [
             [
-                "7529b4f2acd02019"
+                "43108de511aa3ab0"
             ]
         ]
     },
     {
-        "id": "7529b4f2acd02019",
+        "id": "43108de511aa3ab0",
         "type": "http request",
-        "z": "e731a3cb900e6a76",
+        "z": "b4d201c7727e3cde",
         "name": "",
         "method": "GET",
         "ret": "txt",
@@ -589,15 +490,15 @@
         "y": 180,
         "wires": [
             [
-                "b83f3997779030a8",
-                "829a5c3e3e3f83c5"
+                "5ab689200beb6dc9",
+                "5bbc911c89d005b7"
             ]
         ]
     },
     {
-        "id": "b83f3997779030a8",
+        "id": "5ab689200beb6dc9",
         "type": "debug",
-        "z": "e731a3cb900e6a76",
+        "z": "b4d201c7727e3cde",
         "name": "",
         "active": false,
         "tosidebar": true,
@@ -612,9 +513,9 @@
         "wires": []
     },
     {
-        "id": "829a5c3e3e3f83c5",
+        "id": "5bbc911c89d005b7",
         "type": "function",
-        "z": "e731a3cb900e6a76",
+        "z": "b4d201c7727e3cde",
         "name": "function 7",
         "func": "var options = {};\n\ntry {\n    // console.log(msg.city);\n    var payload = JSON.parse(msg.payload);\n    // msg.payload = JSON.parse(msg.payload);\n    if (payload.status === 404) {\n        return [null, msg];\n    }\n    // console.log(payload);\n    var url = payload._links.self.href;\n\n    var start = url.indexOf(\"slug:\") + 5; // Get the index of \"slug:\" and add 5 to skip over it\n    var end = url.indexOf(\"/\", start); // Get the index of the next \"/\" after \"slug:\"\n    var citySlug = url.substring(start, end);\n\n    //console.log(citySlug);\n\n    options.city_name = citySlug;\n    //options.city_summary = payload.summary.replace(/(<([^>]+)>)/gi, \"\").trim();\n    options.city_summary = payload.summary  // Remove HTML tags using regex\n        .replace(/<\\/?[^>]+(>|$)/g, \"\")\n        // Replace newline characters with empty string\n        .replace(/\\n/g, \"\")\n        .replace(/['\"]/g, \"\")\n        // Trim any remaining whitespace from beginning and end\n        .trim();\n\n\n    for (var i = 0; i < payload.categories.length; i++) {\n        var categ = payload.categories[i];\n        var key = categ.name.replace(/[\\s&]+/g, '_').replace(/_{2,}/g, '_');\n        options[key.toLowerCase()] = categ.score_out_of_10;\n    }\n\n    var city_saved = msg.city;\n    options.lat = city_saved.lat;\n    options.lng = city_saved.lng;\n    options.geonameId = city_saved.geonameId;\n    options.country_code = city_saved.country_code;\n    options.continent_code = city_saved.continent_code;\n    msg.payload = options;\n    return [msg, null];\n} catch (error) {\n    // does nothing\n    return [null, msg];\n}\n",
         "outputs": 2,
@@ -626,16 +527,16 @@
         "y": 240,
         "wires": [
             [
-                "89ce475c4c0c1316",
-                "d31640290a76115d"
+                "116f9e5e7ba8912e",
+                "ef2f9c70ddaecf36"
             ],
             []
         ]
     },
     {
-        "id": "d31640290a76115d",
+        "id": "ef2f9c70ddaecf36",
         "type": "function",
-        "z": "e731a3cb900e6a76",
+        "z": "b4d201c7727e3cde",
         "name": "INSERT DATABASE",
         "func": "var keys = Object.keys(msg.payload);\n// console.log(keys);\n// Generate the SQL statement dynamically\n// var sql_create = 'CREATE TABLE IF NOT EXISTS cities_table (' + keys.join(', ') + ', PRIMARY KEY (city_name))';\nvar sql = 'INSERT OR IGNORE INTO cities_table (' + keys.join(', ') + ') VALUES (';\nsql += keys.map(function (key) { return \"'\" + msg.payload[key] + \"'\"; }).join(', ');\nsql += ')';\n//msg.topic = [sql_create, sql];\nvar create_msg = {};\n// create_msg.topic = sql_create;\nmsg.topic = sql;\nreturn [create_msg, msg];\n\n//msg.payload = options;\n//return [msg, null];",
         "outputs": 2,
@@ -647,18 +548,18 @@
         "y": 260,
         "wires": [
             [
-                "1d2389ad35a2e888"
+                "589682c59cc7ee27"
             ],
             [
-                "35fbe16614e11b04",
-                "6fe4f6d4bdd17d52"
+                "f88e3224f6df7fe9",
+                "f2e05281bb94655f"
             ]
         ]
     },
     {
-        "id": "89ce475c4c0c1316",
+        "id": "116f9e5e7ba8912e",
         "type": "debug",
-        "z": "e731a3cb900e6a76",
+        "z": "b4d201c7727e3cde",
         "name": "debug 12",
         "active": false,
         "tosidebar": true,
@@ -673,9 +574,9 @@
         "wires": []
     },
     {
-        "id": "35fbe16614e11b04",
+        "id": "f88e3224f6df7fe9",
         "type": "sqlite",
-        "z": "e731a3cb900e6a76",
+        "z": "b4d201c7727e3cde",
         "mydb": "e1b7d6f10fa6ce00",
         "sqlquery": "msg.topic",
         "sql": "",
@@ -684,14 +585,14 @@
         "y": 260,
         "wires": [
             [
-                "8b0a21a64d6cf627"
+                "9b435bb6d3aca011"
             ]
         ]
     },
     {
-        "id": "1d2389ad35a2e888",
+        "id": "589682c59cc7ee27",
         "type": "debug",
-        "z": "e731a3cb900e6a76",
+        "z": "b4d201c7727e3cde",
         "name": "debug 13",
         "active": false,
         "tosidebar": true,
@@ -706,9 +607,9 @@
         "wires": []
     },
     {
-        "id": "8b0a21a64d6cf627",
+        "id": "9b435bb6d3aca011",
         "type": "debug",
-        "z": "e731a3cb900e6a76",
+        "z": "b4d201c7727e3cde",
         "name": "debug 14",
         "active": false,
         "tosidebar": true,
@@ -723,9 +624,9 @@
         "wires": []
     },
     {
-        "id": "6fe4f6d4bdd17d52",
+        "id": "f2e05281bb94655f",
         "type": "change",
-        "z": "e731a3cb900e6a76",
+        "z": "b4d201c7727e3cde",
         "name": "GIVES CITY OBJ",
         "rules": [
             {
@@ -745,16 +646,16 @@
         "y": 360,
         "wires": [
             [
-                "06852b416dbfdd6d",
-                "031f256942be3440",
-                "de5bb65cc3113f80"
+                "2d4a56a1a058e385",
+                "7eab18f46bceb7ab",
+                "b5a6863e55bb2374"
             ]
         ]
     },
     {
-        "id": "06852b416dbfdd6d",
+        "id": "2d4a56a1a058e385",
         "type": "debug",
-        "z": "e731a3cb900e6a76",
+        "z": "b4d201c7727e3cde",
         "name": "debug 35",
         "active": false,
         "tosidebar": true,
@@ -768,37 +669,26 @@
         "wires": []
     },
     {
-        "id": "de5bb65cc3113f80",
-        "type": "subflow:526f0b48e164048f",
-        "z": "e731a3cb900e6a76",
+        "id": "b5a6863e55bb2374",
+        "type": "subflow:058ef3d116a80e99",
+        "z": "b4d201c7727e3cde",
         "name": "",
         "x": 1630,
         "y": 420,
         "wires": [
-            [
-                "52af6aaf5e1eb64d"
-            ]
+            []
         ]
     },
     {
-        "id": "031f256942be3440",
-        "type": "subflow:88d8317cdc24c47a",
-        "z": "e731a3cb900e6a76",
+        "id": "7eab18f46bceb7ab",
+        "type": "subflow:5a06fcbc04ae461a",
+        "z": "b4d201c7727e3cde",
         "name": "",
         "x": 1510,
         "y": 520,
         "wires": [
             []
         ]
-    },
-    {
-        "id": "52af6aaf5e1eb64d",
-        "type": "subflow:63bb59d1bafe37e6",
-        "z": "e731a3cb900e6a76",
-        "name": "",
-        "x": 1790,
-        "y": 420,
-        "wires": []
     },
     {
         "id": "e1b7d6f10fa6ce00",

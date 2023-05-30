@@ -1,6 +1,6 @@
 [
     {
-        "id": "63bb59d1bafe37e6",
+        "id": "b6bd72e9bbfba6d4",
         "type": "subflow",
         "name": "ClusterMaker",
         "info": "",
@@ -11,20 +11,31 @@
                 "y": 80,
                 "wires": [
                     {
-                        "id": "61a93c48d082973e"
+                        "id": "f53450e8e97370ff"
                     }
                 ]
             }
         ],
-        "out": [],
+        "out": [
+            {
+                "x": 960,
+                "y": 200,
+                "wires": [
+                    {
+                        "id": "9bf98c12cfce6fcd",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
         "env": [],
         "meta": {},
         "color": "#C0DEED"
     },
     {
-        "id": "61a93c48d082973e",
+        "id": "f53450e8e97370ff",
         "type": "function",
-        "z": "63bb59d1bafe37e6",
+        "z": "b6bd72e9bbfba6d4",
         "name": "function 38",
         "func": "var currentDate = new Date().toISOString().split('T')[0];\n\nmsg.topic = `SELECT temperature\nFROM weather_table wt\nJOIN cities_table ct ON wt.city_name = ct.city_name\nWHERE wt.time = '${currentDate}'`;\n\nreturn msg;\n\n\n\n\n",
         "outputs": 1,
@@ -36,14 +47,14 @@
         "y": 80,
         "wires": [
             [
-                "9f64f1984c4905f1"
+                "f50cb9ae269dbe54"
             ]
         ]
     },
     {
-        "id": "9f64f1984c4905f1",
+        "id": "f50cb9ae269dbe54",
         "type": "sqlite",
-        "z": "63bb59d1bafe37e6",
+        "z": "b6bd72e9bbfba6d4",
         "mydb": "d9f236dca5911a50",
         "sqlquery": "msg.topic",
         "sql": "",
@@ -52,45 +63,50 @@
         "y": 80,
         "wires": [
             [
-                "7d979072282a1010"
+                "af33c4844ac0a395"
             ]
         ]
     },
     {
-        "id": "7d979072282a1010",
+        "id": "9bf98c12cfce6fcd",
+        "type": "http request",
+        "z": "b6bd72e9bbfba6d4",
+        "name": "",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://127.0.0.1:8080/run",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 790,
+        "y": 160,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "af33c4844ac0a395",
         "type": "function",
-        "z": "63bb59d1bafe37e6",
-        "name": "clusterMaker",
-        "func": "var clusterMaker = context.global.clusters;\nvar temps = msg.payload;\nvar data = [];\nfor (var temp of temps) {\n    data.push([temp.temperature]);\n}\nconsole.log(data);\nclusterMaker.k(3);\nclusterMaker.iterations(750);\nclusterMaker.data(data);\nmsg.payload = clusterMaker.clusters();\nmsg.payload.sort(function(a, b) { return parseFloat(a.centroid) -\nparseFloat(b.centroid);}); //ensure that clusters are sorted on ascending speed\nglobal.set(\"foundclusters\",msg.payload);\nvar listing = global.get(\"foundclusters\");\nreturn msg;",
+        "z": "b6bd72e9bbfba6d4",
+        "name": "function 39",
+        "func": "var list = [];\nfor(var values of msg.payload){\n    list.push(values.temperature);\n}\nmsg.payload = { \"value\": { \"data\": [{ \"name\": \"temperature\", \"value\": list }], \"mode\": \"multiple\", \"function\": \"kmeans\" } };\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 670,
-        "y": 80,
+        "x": 590,
+        "y": 160,
         "wires": [
             [
-                "60218d97582ceb2a"
+                "9bf98c12cfce6fcd"
             ]
         ]
-    },
-    {
-        "id": "60218d97582ceb2a",
-        "type": "debug",
-        "z": "63bb59d1bafe37e6",
-        "name": "",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 930,
-        "y": 80,
-        "wires": []
     },
     {
         "id": "d9f236dca5911a50",
