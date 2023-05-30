@@ -69,7 +69,7 @@
         ]
     },
     {
-        "id": "5f294e422cb57a8d",
+        "id": "da362e744a99a41b",
         "type": "subflow",
         "name": "Calculate Weighted Average",
         "info": "<div>\n  <p>\n    This subflow calculates the weighted average of given values, considering the date of each value.\n    The more recent the date, the higher the value will be weighted in the average calculation.\n  </p>\n  <p>\n    It takes as input a list with the following structure (put this in the <code>msg.payload.value.data</code>):\n    <code>\n      {\n        \"attr_name1\": [\n          {\"value\": x, \"date\": y},\n          {\"value\": z, \"date\": e}\n        ],\n        \"attr_name2\": [\n          {\"value\": q, \"date\": w},\n          ...\n        ]\n      }\n    </code>\n  </p>\n  <p>\n    In the input list, each attribute (<em>attr_name1</em>, <em>attr_name2</em>, etc.) is associated with a list of dictionaries.\n    Each dictionary represents a value entry and contains two keys that should remain as is:\n  </p>\n  <ul>\n    <li><strong>\"value\"</strong>: Specifies the value of the attribute for a specific date.</li>\n    <li><strong>\"date\"</strong>: Specifies the date of the value entry. The date should be in UNIX timestamp format.</li>\n  </ul>\n  <p>\n    The subflow returns an object with keys corresponding to the attribute names specified in the input list, along with their respective weighted averages. The output can be found in <code>msg.payload.value.data</code>.\n  </p>\n  <p>\n    If you want the more old dates to have higher weight in the weighted average, set <code>msg.payload.value.reverse = True</code>.  \n  </p>\n</div>\n",
@@ -80,7 +80,7 @@
                 "y": 180,
                 "wires": [
                     {
-                        "id": "b604632291b1425a"
+                        "id": "b8419a967a575620"
                     }
                 ]
             }
@@ -91,7 +91,7 @@
                 "y": 180,
                 "wires": [
                     {
-                        "id": "c177f61c5866c930",
+                        "id": "406e1ff4aa87c4dd",
                         "port": 0
                     }
                 ]
@@ -102,9 +102,9 @@
         "color": "#DDAA99"
     },
     {
-        "id": "4d0a70163a88c0dd",
+        "id": "a305889cee5bf6fb",
         "type": "function",
-        "z": "5f294e422cb57a8d",
+        "z": "da362e744a99a41b",
         "name": "Calculate Weighted Average",
         "func": "function calc_weight_avg(list) {\n    // Calculate total weight and weighted sum\n    let totalWeight = 0;\n    let weightedSum = 0;\n\n    list.forEach((temperature, index) => {\n        const weight = index + 1;\n\n        weightedSum += temperature.value * weight;\n        totalWeight += weight;\n    });\n\n    const weightedAverage = weightedSum / totalWeight;\n    return weightedAverage;\n}\n\nconst list = msg.payload.value.data;\nfor (let key in list) {\n    list[key] = calc_weight_avg(list[key]);\n}\n\nmsg.payload.value.data = list;\nreturn msg;\n",
         "outputs": 1,
@@ -116,27 +116,27 @@
         "y": 180,
         "wires": [
             [
-                "c177f61c5866c930"
+                "406e1ff4aa87c4dd"
             ]
         ]
     },
     {
-        "id": "b1d891a67631637f",
+        "id": "d8e9daa2c8509009",
         "type": "subflow:6fd479bb119a914b",
-        "z": "5f294e422cb57a8d",
+        "z": "da362e744a99a41b",
         "name": "",
         "x": 460,
         "y": 180,
         "wires": [
             [
-                "4d0a70163a88c0dd"
+                "a305889cee5bf6fb"
             ]
         ]
     },
     {
-        "id": "b604632291b1425a",
+        "id": "b8419a967a575620",
         "type": "function",
-        "z": "5f294e422cb57a8d",
+        "z": "da362e744a99a41b",
         "name": "Reverse",
         "func": "msg.payload.value.reverse = !msg.payload.value.reverse; \nreturn msg;",
         "outputs": 1,
@@ -148,14 +148,14 @@
         "y": 180,
         "wires": [
             [
-                "b1d891a67631637f"
+                "d8e9daa2c8509009"
             ]
         ]
     },
     {
-        "id": "c177f61c5866c930",
+        "id": "406e1ff4aa87c4dd",
         "type": "function",
-        "z": "5f294e422cb57a8d",
+        "z": "da362e744a99a41b",
         "name": "Reverse",
         "func": "msg.payload.value.reverse = !msg.payload.value.reverse; \nreturn msg;",
         "outputs": 1,
@@ -170,7 +170,7 @@
         ]
     },
     {
-        "id": "a833c5f1efa92886",
+        "id": "330083ae8ff427f8",
         "type": "subflow",
         "name": "Weighted Average Req Docker",
         "info": "<div>\n  <p>\n    This subflow communicates with a Docker container running on your PC and runs the Weighted Average Common Function.\n    It uses the Docker image available on Docker Hub:\n    <a href=\"https://hub.docker.com/r/kazakos13/common-functions\">kazakos13/common-functions</a>.\n    If the Docker endpoint is not available, it falls back to running the local build of the Weighted Average subflow.\n  </p>\n  <h3>Input Structure</h3>\n  <p>\n    The subflow takes as input a list with the following structure, which should be placed in the <code>msg.payload.value.data</code> property:\n  </p>\n  <pre>\n    <code>\n{\n  \"attr_name1\": [\n    {\"value\": x, \"date\": y},\n    {\"value\": z, \"date\": e}\n  ],\n  \"attr_name2\": [\n    {\"value\": q, \"date\": w},\n    ...\n  ]\n}\n    </code>\n  </pre>\n  <p>\n    In the input list, each attribute (<em>attr_name1</em>, <em>attr_name2</em>, etc.) is associated with a list of dictionaries.\n    Each dictionary represents a value entry and contains two keys that should remain as is:\n  </p>\n  <ul>\n    <li><strong>\"value\"</strong>: Specifies the value of the attribute for a specific date.</li>\n    <li><strong>\"date\"</strong>: Specifies the date of the value entry. The date should be in UNIX timestamp format.</li>\n  </ul>\n  <h3>Output Structure</h3>\n  <p>\n    The subflow returns an object with keys corresponding to the attribute names specified in the input list, along with their respective weighted averages. The output can be found in the <code>msg.payload.value.data</code> property.\n  </p>\n  <p>\n    If you want the more old dates to have higher weight in the weighted average, set <code>msg.payload.value.reverse = True</code>.\n  </p>\n</div>\n",
@@ -181,7 +181,7 @@
                 "y": 80,
                 "wires": [
                     {
-                        "id": "428194049d20af93"
+                        "id": "f2d70cf2fe4903e1"
                     }
                 ]
             }
@@ -192,11 +192,11 @@
                 "y": 140,
                 "wires": [
                     {
-                        "id": "0f077dbe1e98e210",
+                        "id": "566153d744ca6d36",
                         "port": 0
                     },
                     {
-                        "id": "7406314592d9e8cb",
+                        "id": "887424cc5305eadb",
                         "port": 0
                     }
                 ]
@@ -207,9 +207,9 @@
         "color": "#E2D96E"
     },
     {
-        "id": "428194049d20af93",
+        "id": "f2d70cf2fe4903e1",
         "type": "change",
-        "z": "a833c5f1efa92886",
+        "z": "330083ae8ff427f8",
         "name": "",
         "rules": [
             {
@@ -237,14 +237,14 @@
         "y": 80,
         "wires": [
             [
-                "8c7228e2f5cf8f0e"
+                "c39f5e62248ee3a4"
             ]
         ]
     },
     {
-        "id": "8c7228e2f5cf8f0e",
+        "id": "c39f5e62248ee3a4",
         "type": "http request",
-        "z": "a833c5f1efa92886",
+        "z": "330083ae8ff427f8",
         "name": "Weight Avg Docker",
         "method": "POST",
         "ret": "obj",
@@ -261,14 +261,14 @@
         "y": 160,
         "wires": [
             [
-                "0f077dbe1e98e210"
+                "566153d744ca6d36"
             ]
         ]
     },
     {
-        "id": "0f077dbe1e98e210",
+        "id": "566153d744ca6d36",
         "type": "function",
-        "z": "a833c5f1efa92886",
+        "z": "330083ae8ff427f8",
         "name": "Error Handler",
         "func": "if (msg.statusCode != 200) {\n    msg.payload = msg.copy_input;\n    return [null,msg];\n}\nreturn[msg,null];",
         "outputs": 2,
@@ -281,15 +281,15 @@
         "wires": [
             [],
             [
-                "006c55d0127faa6a",
-                "7406314592d9e8cb"
+                "c3693474db8976e1",
+                "887424cc5305eadb"
             ]
         ]
     },
     {
-        "id": "7406314592d9e8cb",
-        "type": "subflow:5f294e422cb57a8d",
-        "z": "a833c5f1efa92886",
+        "id": "887424cc5305eadb",
+        "type": "subflow:da362e744a99a41b",
+        "z": "330083ae8ff427f8",
         "name": "",
         "x": 720,
         "y": 240,
@@ -298,9 +298,9 @@
         ]
     },
     {
-        "id": "006c55d0127faa6a",
+        "id": "c3693474db8976e1",
         "type": "debug",
-        "z": "a833c5f1efa92886",
+        "z": "330083ae8ff427f8",
         "name": "Error Docker Debug",
         "active": true,
         "tosidebar": true,

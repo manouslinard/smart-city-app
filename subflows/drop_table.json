@@ -1,6 +1,6 @@
 [
     {
-        "id": "ef51d350e0e29109",
+        "id": "f4881bea9e51b3c4",
         "type": "subflow",
         "name": "Drop DB Tables",
         "info": "The Drop DB Tables subflow is used to drop all the database tables and reset the global variables.",
@@ -11,10 +11,10 @@
                 "y": 30,
                 "wires": [
                     {
-                        "id": "e3e2a5595d96054c"
+                        "id": "1a61010f2802e559"
                     },
                     {
-                        "id": "8836a4200fc3fd9c"
+                        "id": "02c314ec9a505203"
                     }
                 ]
             }
@@ -25,7 +25,7 @@
                 "y": 160,
                 "wires": [
                     {
-                        "id": "b0133ad706f89c2c",
+                        "id": "5443588cfc9d7452",
                         "port": 0
                     }
                 ]
@@ -35,7 +35,7 @@
                 "y": 40,
                 "wires": [
                     {
-                        "id": "79258a1b7647ed1d",
+                        "id": "e38ca28815e891a2",
                         "port": 0
                     }
                 ]
@@ -46,9 +46,9 @@
         "color": "#C0DEED"
     },
     {
-        "id": "e3e2a5595d96054c",
+        "id": "1a61010f2802e559",
         "type": "function",
-        "z": "ef51d350e0e29109",
+        "z": "f4881bea9e51b3c4",
         "name": "DROP TABLE WEATHER",
         "func": "msg.topic = \"drop table if exists weather_table\";\nreturn msg;\n",
         "outputs": 1,
@@ -60,16 +60,16 @@
         "y": 160,
         "wires": [
             [
-                "b0133ad706f89c2c",
-                "545311806049a963",
-                "6f76b8c4a05803ce"
+                "5443588cfc9d7452",
+                "d861fb7b8d02de10",
+                "049705fdce882d48"
             ]
         ]
     },
     {
-        "id": "b0133ad706f89c2c",
+        "id": "5443588cfc9d7452",
         "type": "sqlite",
-        "z": "ef51d350e0e29109",
+        "z": "f4881bea9e51b3c4",
         "mydb": "e1b7d6f10fa6ce00",
         "sqlquery": "msg.topic",
         "sql": "",
@@ -81,9 +81,9 @@
         ]
     },
     {
-        "id": "545311806049a963",
+        "id": "d861fb7b8d02de10",
         "type": "function",
-        "z": "ef51d350e0e29109",
+        "z": "f4881bea9e51b3c4",
         "name": "DROP DATABASE",
         "func": "msg.topic = \"drop table if exists cities_table\";\nreturn msg;\n",
         "outputs": 1,
@@ -95,14 +95,14 @@
         "y": 220,
         "wires": [
             [
-                "7b5c361d5c10fb26"
+                "623a8f9fd03aa531"
             ]
         ]
     },
     {
-        "id": "6f76b8c4a05803ce",
+        "id": "049705fdce882d48",
         "type": "function",
-        "z": "ef51d350e0e29109",
+        "z": "f4881bea9e51b3c4",
         "name": "RESET GLOBAL KEYS",
         "func": "var globalKeys = global.keys();\n\nfor (var i = 0; i < globalKeys.length; i++) {\n    // global.delete(globalKeys[i]);\n    if (globalKeys[i] != \"username\") {\n        global.set(globalKeys[i], 0);\n    }\n}\n\nif (global.keys().length <= 0) {\n    msg.payload = \"All global keys deleted.\"\n    return [msg, null];\n}\nmsg.payload = \"All global keys NOT deleted.\"\nreturn [null, msg];",
         "outputs": 2,
@@ -118,9 +118,9 @@
         ]
     },
     {
-        "id": "7b5c361d5c10fb26",
+        "id": "623a8f9fd03aa531",
         "type": "sqlite",
-        "z": "ef51d350e0e29109",
+        "z": "f4881bea9e51b3c4",
         "mydb": "e1b7d6f10fa6ce00",
         "sqlquery": "msg.topic",
         "sql": "",
@@ -132,9 +132,9 @@
         ]
     },
     {
-        "id": "8836a4200fc3fd9c",
+        "id": "02c314ec9a505203",
         "type": "function",
-        "z": "ef51d350e0e29109",
+        "z": "f4881bea9e51b3c4",
         "name": "DROP TABLE IMAGE",
         "func": "msg.topic = \"drop table if exists image_table\";\nreturn msg;\n",
         "outputs": 1,
@@ -146,14 +146,14 @@
         "y": 60,
         "wires": [
             [
-                "79258a1b7647ed1d"
+                "e38ca28815e891a2"
             ]
         ]
     },
     {
-        "id": "79258a1b7647ed1d",
+        "id": "e38ca28815e891a2",
         "type": "sqlite",
-        "z": "ef51d350e0e29109",
+        "z": "f4881bea9e51b3c4",
         "mydb": "e1b7d6f10fa6ce00",
         "sqlquery": "msg.topic",
         "sql": "",

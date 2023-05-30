@@ -1,6 +1,6 @@
 [
     {
-        "id": "b6bd72e9bbfba6d4",
+        "id": "3a49ab9ee4c51e71",
         "type": "subflow",
         "name": "ClusterMaker",
         "info": "",
@@ -11,18 +11,22 @@
                 "y": 80,
                 "wires": [
                     {
-                        "id": "f53450e8e97370ff"
+                        "id": "8aaeff7df4c1e2fc"
                     }
                 ]
             }
         ],
         "out": [
             {
-                "x": 960,
-                "y": 200,
+                "x": 1060,
+                "y": 160,
                 "wires": [
                     {
-                        "id": "9bf98c12cfce6fcd",
+                        "id": "3d7dc3925d93ab65",
+                        "port": 0
+                    },
+                    {
+                        "id": "7444a621b56f8254",
                         "port": 0
                     }
                 ]
@@ -33,9 +37,9 @@
         "color": "#C0DEED"
     },
     {
-        "id": "f53450e8e97370ff",
+        "id": "8aaeff7df4c1e2fc",
         "type": "function",
-        "z": "b6bd72e9bbfba6d4",
+        "z": "3a49ab9ee4c51e71",
         "name": "function 38",
         "func": "var currentDate = new Date().toISOString().split('T')[0];\n\nmsg.topic = `SELECT temperature\nFROM weather_table wt\nJOIN cities_table ct ON wt.city_name = ct.city_name\nWHERE wt.time = '${currentDate}'`;\n\nreturn msg;\n\n\n\n\n",
         "outputs": 1,
@@ -47,14 +51,14 @@
         "y": 80,
         "wires": [
             [
-                "f50cb9ae269dbe54"
+                "e769d67aedaa3184"
             ]
         ]
     },
     {
-        "id": "f50cb9ae269dbe54",
+        "id": "e769d67aedaa3184",
         "type": "sqlite",
-        "z": "b6bd72e9bbfba6d4",
+        "z": "3a49ab9ee4c51e71",
         "mydb": "d9f236dca5911a50",
         "sqlquery": "msg.topic",
         "sql": "",
@@ -63,14 +67,14 @@
         "y": 80,
         "wires": [
             [
-                "af33c4844ac0a395"
+                "c2727d5a0e6834ff"
             ]
         ]
     },
     {
-        "id": "9bf98c12cfce6fcd",
+        "id": "70f222d52b19d8d9",
         "type": "http request",
-        "z": "b6bd72e9bbfba6d4",
+        "z": "3a49ab9ee4c51e71",
         "name": "",
         "method": "POST",
         "ret": "obj",
@@ -86,15 +90,17 @@
         "x": 790,
         "y": 160,
         "wires": [
-            []
+            [
+                "3d7dc3925d93ab65"
+            ]
         ]
     },
     {
-        "id": "af33c4844ac0a395",
+        "id": "c2727d5a0e6834ff",
         "type": "function",
-        "z": "b6bd72e9bbfba6d4",
+        "z": "3a49ab9ee4c51e71",
         "name": "function 39",
-        "func": "var list = [];\nfor(var values of msg.payload){\n    list.push(values.temperature);\n}\nmsg.payload = { \"value\": { \"data\": [{ \"name\": \"temperature\", \"value\": list }], \"mode\": \"multiple\", \"function\": \"kmeans\" } };\nreturn msg;",
+        "func": "var list = [];\nfor(var values of msg.payload){\n    list.push(values.temperature);\n}\nmsg.payload = { \"value\": { \"data\": [{ \"name\": \"temperature\", \"value\": list }], \"mode\": \"multiple\", \"function\": \"kmeans\" } };\nmsg.copy_input = msg.payload;\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -104,8 +110,63 @@
         "y": 160,
         "wires": [
             [
-                "9bf98c12cfce6fcd"
+                "70f222d52b19d8d9"
             ]
+        ]
+    },
+    {
+        "id": "3d7dc3925d93ab65",
+        "type": "function",
+        "z": "3a49ab9ee4c51e71",
+        "name": "Error Handler",
+        "func": "if (msg.statusCode != 200) {\n    msg.payload = msg.copy_input;\n    return [null,msg];\n}\nreturn[msg,null];",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 600,
+        "y": 340,
+        "wires": [
+            [],
+            [
+                "b581e302cd34c01a",
+                "7444a621b56f8254"
+            ]
+        ]
+    },
+    {
+        "id": "b581e302cd34c01a",
+        "type": "debug",
+        "z": "3a49ab9ee4c51e71",
+        "name": "Error Docker Debug",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "\"Could not find docker kmeans algorithm. Executing local kmeans subflow.\"",
+        "targetType": "jsonata",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 820,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "7444a621b56f8254",
+        "type": "function",
+        "z": "3a49ab9ee4c51e71",
+        "name": "Local Cluster Maker",
+        "func": "const clusterMaker = global.get('clusters');\nvar centroids = [];\nclusterMaker.k(3);\nclusterMaker.iterations(750)\n// console.log(\"DASDASDASDASDASD\")\n\n//for each resource\nmsg.payload.value.data.forEach(element => {\n\n    //creating clusterMakerInput\n    let clusterMakerInput = [];\n    element.value.forEach(value => {\n        clusterMakerInput.push([value])\n    });\n\n    clusterMaker.data(clusterMakerInput);\n\n    let temp = clusterMaker.clusters();\n\n    //creating the output \n    let clusterMakerOutput = [];\n    temp.forEach(element => {\n        element.centroid.forEach(element2 => {\n            clusterMakerOutput.push(element2)\n        });\n    });\n    clusterMakerOutput.sort()\n    centroids.push({ [element.name]: clusterMakerOutput });\n});\nmsg.payload = { centroids };\nreturn msg; \n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 940,
+        "y": 340,
+        "wires": [
+            []
         ]
     },
     {

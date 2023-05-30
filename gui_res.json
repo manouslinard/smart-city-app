@@ -1,6 +1,6 @@
 [
     {
-        "id": "b6bd72e9bbfba6d4",
+        "id": "3a49ab9ee4c51e71",
         "type": "subflow",
         "name": "ClusterMaker",
         "info": "",
@@ -11,18 +11,22 @@
                 "y": 80,
                 "wires": [
                     {
-                        "id": "f53450e8e97370ff"
+                        "id": "8aaeff7df4c1e2fc"
                     }
                 ]
             }
         ],
         "out": [
             {
-                "x": 960,
-                "y": 200,
+                "x": 1060,
+                "y": 160,
                 "wires": [
                     {
-                        "id": "9bf98c12cfce6fcd",
+                        "id": "3d7dc3925d93ab65",
+                        "port": 0
+                    },
+                    {
+                        "id": "7444a621b56f8254",
                         "port": 0
                     }
                 ]
@@ -33,9 +37,9 @@
         "color": "#C0DEED"
     },
     {
-        "id": "f53450e8e97370ff",
+        "id": "8aaeff7df4c1e2fc",
         "type": "function",
-        "z": "b6bd72e9bbfba6d4",
+        "z": "3a49ab9ee4c51e71",
         "name": "function 38",
         "func": "var currentDate = new Date().toISOString().split('T')[0];\n\nmsg.topic = `SELECT temperature\nFROM weather_table wt\nJOIN cities_table ct ON wt.city_name = ct.city_name\nWHERE wt.time = '${currentDate}'`;\n\nreturn msg;\n\n\n\n\n",
         "outputs": 1,
@@ -47,14 +51,14 @@
         "y": 80,
         "wires": [
             [
-                "f50cb9ae269dbe54"
+                "e769d67aedaa3184"
             ]
         ]
     },
     {
-        "id": "f50cb9ae269dbe54",
+        "id": "e769d67aedaa3184",
         "type": "sqlite",
-        "z": "b6bd72e9bbfba6d4",
+        "z": "3a49ab9ee4c51e71",
         "mydb": "d9f236dca5911a50",
         "sqlquery": "msg.topic",
         "sql": "",
@@ -63,14 +67,14 @@
         "y": 80,
         "wires": [
             [
-                "af33c4844ac0a395"
+                "c2727d5a0e6834ff"
             ]
         ]
     },
     {
-        "id": "9bf98c12cfce6fcd",
+        "id": "70f222d52b19d8d9",
         "type": "http request",
-        "z": "b6bd72e9bbfba6d4",
+        "z": "3a49ab9ee4c51e71",
         "name": "",
         "method": "POST",
         "ret": "obj",
@@ -86,15 +90,17 @@
         "x": 790,
         "y": 160,
         "wires": [
-            []
+            [
+                "3d7dc3925d93ab65"
+            ]
         ]
     },
     {
-        "id": "af33c4844ac0a395",
+        "id": "c2727d5a0e6834ff",
         "type": "function",
-        "z": "b6bd72e9bbfba6d4",
+        "z": "3a49ab9ee4c51e71",
         "name": "function 39",
-        "func": "var list = [];\nfor(var values of msg.payload){\n    list.push(values.temperature);\n}\nmsg.payload = { \"value\": { \"data\": [{ \"name\": \"temperature\", \"value\": list }], \"mode\": \"multiple\", \"function\": \"kmeans\" } };\nreturn msg;",
+        "func": "var list = [];\nfor(var values of msg.payload){\n    list.push(values.temperature);\n}\nmsg.payload = { \"value\": { \"data\": [{ \"name\": \"temperature\", \"value\": list }], \"mode\": \"multiple\", \"function\": \"kmeans\" } };\nmsg.copy_input = msg.payload;\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -104,8 +110,63 @@
         "y": 160,
         "wires": [
             [
-                "9bf98c12cfce6fcd"
+                "70f222d52b19d8d9"
             ]
+        ]
+    },
+    {
+        "id": "3d7dc3925d93ab65",
+        "type": "function",
+        "z": "3a49ab9ee4c51e71",
+        "name": "Error Handler",
+        "func": "if (msg.statusCode != 200) {\n    msg.payload = msg.copy_input;\n    return [null,msg];\n}\nreturn[msg,null];",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 600,
+        "y": 340,
+        "wires": [
+            [],
+            [
+                "b581e302cd34c01a",
+                "7444a621b56f8254"
+            ]
+        ]
+    },
+    {
+        "id": "b581e302cd34c01a",
+        "type": "debug",
+        "z": "3a49ab9ee4c51e71",
+        "name": "Error Docker Debug",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "\"Could not find docker kmeans algorithm. Executing local kmeans subflow.\"",
+        "targetType": "jsonata",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 820,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "7444a621b56f8254",
+        "type": "function",
+        "z": "3a49ab9ee4c51e71",
+        "name": "Local Cluster Maker",
+        "func": "const clusterMaker = global.get('clusters');\nvar centroids = [];\nclusterMaker.k(3);\nclusterMaker.iterations(750)\n// console.log(\"DASDASDASDASDASD\")\n\n//for each resource\nmsg.payload.value.data.forEach(element => {\n\n    //creating clusterMakerInput\n    let clusterMakerInput = [];\n    element.value.forEach(value => {\n        clusterMakerInput.push([value])\n    });\n\n    clusterMaker.data(clusterMakerInput);\n\n    let temp = clusterMaker.clusters();\n\n    //creating the output \n    let clusterMakerOutput = [];\n    temp.forEach(element => {\n        element.centroid.forEach(element2 => {\n            clusterMakerOutput.push(element2)\n        });\n    });\n    clusterMakerOutput.sort()\n    centroids.push({ [element.name]: clusterMakerOutput });\n});\nmsg.payload = { centroids };\nreturn msg; \n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 940,
+        "y": 340,
+        "wires": [
+            []
         ]
     },
     {
@@ -115,7 +176,7 @@
         "mode": "RWC"
     },
     {
-        "id": "5a06fcbc04ae461a",
+        "id": "54efb170ba57aaef",
         "type": "subflow",
         "name": "ImageFlow",
         "info": "The Image Subflow is used to save the image urls of cities in the database.",
@@ -126,7 +187,7 @@
                 "y": 220,
                 "wires": [
                     {
-                        "id": "979a3de1b01caa2e"
+                        "id": "d723df97e161c358"
                     }
                 ]
             }
@@ -137,7 +198,7 @@
                 "y": 320,
                 "wires": [
                     {
-                        "id": "41f50f8780a38566",
+                        "id": "668cf3cefbab0d16",
                         "port": 0
                     }
                 ]
@@ -148,9 +209,9 @@
         "color": "#C0DEED"
     },
     {
-        "id": "979a3de1b01caa2e",
+        "id": "d723df97e161c358",
         "type": "function",
-        "z": "5a06fcbc04ae461a",
+        "z": "54efb170ba57aaef",
         "name": "function 19",
         "func": "var city = msg.payload;\nvar options = [];\nmsg.url = `https://api.teleport.org/api/urban_areas/slug:${city.city_name}/images/`\nmsg.city_name = city.city_name;\nmsg.city_lat = city.lat;\nmsg.city_lng = city.lng;\nmsg.geonameId = city.geonameId;\n// console.log(city.city_name);\n// global.set(\"city_name\", city.city_name);\nreturn msg;\n",
         "outputs": 1,
@@ -162,14 +223,14 @@
         "y": 220,
         "wires": [
             [
-                "7064690e014434d8"
+                "a19142826a4c2185"
             ]
         ]
     },
     {
-        "id": "7064690e014434d8",
+        "id": "a19142826a4c2185",
         "type": "http request",
-        "z": "5a06fcbc04ae461a",
+        "z": "54efb170ba57aaef",
         "name": "",
         "method": "GET",
         "ret": "obj",
@@ -186,15 +247,15 @@
         "y": 220,
         "wires": [
             [
-                "5aec29e30e9a6cfb",
-                "57783ce8cb6f72c1"
+                "737bbb66489882b5",
+                "3176b95add9ad229"
             ]
         ]
     },
     {
-        "id": "5aec29e30e9a6cfb",
+        "id": "737bbb66489882b5",
         "type": "debug",
-        "z": "5a06fcbc04ae461a",
+        "z": "54efb170ba57aaef",
         "name": "debug 36",
         "active": false,
         "tosidebar": true,
@@ -209,9 +270,9 @@
         "wires": []
     },
     {
-        "id": "57783ce8cb6f72c1",
+        "id": "3176b95add9ad229",
         "type": "function",
-        "z": "5a06fcbc04ae461a",
+        "z": "54efb170ba57aaef",
         "name": "function 20",
         "func": "var photos = msg.payload.photos;\nvar mobile_url = \"\";\nvar web_url = \"\";\nfor (var i = 0; i < photos.length; i ++) {\n    mobile_url = photos[i].image.mobile;\n    web_url = photos[i].image.web;\n}\n\nmsg.topic = `INSERT OR IGNORE INTO image_table (web_img_url, mob_img_url, city_name, lat, lng, geonameId) VALUES ('${web_url}', '${mobile_url}', '${msg.city_name}', ${msg.city_lat}, ${msg.city_lng}, ${msg.geonameId})`;\n\nreturn msg;",
         "outputs": 1,
@@ -223,15 +284,15 @@
         "y": 260,
         "wires": [
             [
-                "0ba7aa096de621e5",
-                "41f50f8780a38566"
+                "b3bc823371a8e6c0",
+                "668cf3cefbab0d16"
             ]
         ]
     },
     {
-        "id": "0ba7aa096de621e5",
+        "id": "b3bc823371a8e6c0",
         "type": "debug",
-        "z": "5a06fcbc04ae461a",
+        "z": "54efb170ba57aaef",
         "name": "debug 40",
         "active": false,
         "tosidebar": true,
@@ -246,9 +307,9 @@
         "wires": []
     },
     {
-        "id": "41f50f8780a38566",
+        "id": "668cf3cefbab0d16",
         "type": "sqlite",
-        "z": "5a06fcbc04ae461a",
+        "z": "54efb170ba57aaef",
         "mydb": "e1b7d6f10fa6ce00",
         "sqlquery": "msg.topic",
         "sql": "",
@@ -257,14 +318,14 @@
         "y": 320,
         "wires": [
             [
-                "d0370652958aed29"
+                "cd5a4bcfaa142099"
             ]
         ]
     },
     {
-        "id": "d0370652958aed29",
+        "id": "cd5a4bcfaa142099",
         "type": "debug",
-        "z": "5a06fcbc04ae461a",
+        "z": "54efb170ba57aaef",
         "name": "debug 37",
         "active": false,
         "tosidebar": true,
@@ -279,7 +340,7 @@
         "wires": []
     },
     {
-        "id": "058ef3d116a80e99",
+        "id": "4bc82cdf9dafcab3",
         "type": "subflow",
         "name": "WeatherFlow",
         "info": "The WeatherFlow Subflow is used to collect and save data in the db for the 7-Day Forecast.",
@@ -290,7 +351,7 @@
                 "y": 180,
                 "wires": [
                     {
-                        "id": "789cabce844f9c61"
+                        "id": "2bed250c5a619c51"
                     }
                 ]
             }
@@ -301,7 +362,7 @@
                 "y": 340,
                 "wires": [
                     {
-                        "id": "5db911e151fa7299",
+                        "id": "5f3888242eb311e6",
                         "port": 0
                     }
                 ]
@@ -312,9 +373,9 @@
         "color": "#C0DEED"
     },
     {
-        "id": "789cabce844f9c61",
+        "id": "2bed250c5a619c51",
         "type": "function",
-        "z": "058ef3d116a80e99",
+        "z": "4bc82cdf9dafcab3",
         "name": "function 17",
         "func": "var city = msg.payload;\nvar options = [];\nmsg.url = `https://api.open-meteo.com/v1/forecast?latitude=${city.lat}&longitude=${city.lng}&daily=weathercode,temperature_2m_max,temperature_2m_min,uv_index_max,uv_index_clear_sky_max,rain_sum,snowfall_sum,windspeed_10m_max,winddirection_10m_dominant,shortwave_radiation_sum&current_weather=true&timezone=auto`\nmsg.city_name = city.city_name;\nmsg.city_lat = city.lat;\nmsg.city_lng = city.lng;\nmsg.continent_code = city.continent_code;\nmsg.geonameId = city.geonameId;\n// console.log(city.city_name);\nreturn msg;\n",
         "outputs": 1,
@@ -326,14 +387,14 @@
         "y": 180,
         "wires": [
             [
-                "3d1576201d7a4fee"
+                "fcacf7ad5f332458"
             ]
         ]
     },
     {
-        "id": "20121b93b0fed214",
+        "id": "299d19be84242b09",
         "type": "debug",
-        "z": "058ef3d116a80e99",
+        "z": "4bc82cdf9dafcab3",
         "name": "debug 30",
         "active": false,
         "tosidebar": true,
@@ -348,9 +409,9 @@
         "wires": []
     },
     {
-        "id": "3d1576201d7a4fee",
+        "id": "fcacf7ad5f332458",
         "type": "http request",
-        "z": "058ef3d116a80e99",
+        "z": "4bc82cdf9dafcab3",
         "name": "",
         "method": "GET",
         "ret": "obj",
@@ -367,15 +428,15 @@
         "y": 180,
         "wires": [
             [
-                "20121b93b0fed214",
-                "517f234ec7bce010"
+                "299d19be84242b09",
+                "7659c97f95534f6a"
             ]
         ]
     },
     {
-        "id": "517f234ec7bce010",
+        "id": "7659c97f95534f6a",
         "type": "function",
-        "z": "058ef3d116a80e99",
+        "z": "4bc82cdf9dafcab3",
         "name": "function 16",
         "func": "var options = [];\n// console.log(msg.city_name);\ntry {\n    var payload = msg.payload;\n    //console.log('payload.daily.city:', payload.city);\n    for (var i = 0; i < payload.daily.time.length; i++) {\n        var obj = {};\n        obj.time = payload.daily.time[i];\n        obj.weathercode = payload.daily.weathercode[i];\n        obj.temperature = parseFloat((payload.daily.temperature_2m_max[i] + payload.daily.temperature_2m_min[i]) / 2).toFixed(2);\n        obj.uv_index_max = payload.daily.uv_index_max[i];\n        obj.uv_index_clear_sky_max = payload.daily.uv_index_clear_sky_max[i];\n        obj.rain_sum = payload.daily.rain_sum[i];\n        obj.snowfall_sum = payload.daily.snowfall_sum[i];\n        obj.windspeed_10m_max = payload.daily.windspeed_10m_max[i];\n        obj.winddirection_10m_dominant = payload.daily.winddirection_10m_dominant[i];\n        obj.shortwave_radiation_sum = payload.daily.shortwave_radiation_sum[i];\n        obj.city_name = msg.city_name;\n        obj.city_lat = msg.city_lat;\n        obj.city_lng = msg.city_lng;\n        obj.geonameId = msg.geonameId;\n        obj.continent_code = msg.continent_code;\n        //console.log(obj.city_name);\n        options.push(obj);\n    }\n\n    msg.payload = options;\n    return [msg, null];\n} catch (error) {\n    // does nothing\n    return [null, msg];\n}\n\n",
         "outputs": 2,
@@ -387,16 +448,16 @@
         "y": 240,
         "wires": [
             [
-                "dc6c502c1d61bd55",
-                "e87fe5db4a961971"
+                "4e0b4504f9bf7672",
+                "d10db61abe617184"
             ],
             []
         ]
     },
     {
-        "id": "dc6c502c1d61bd55",
+        "id": "4e0b4504f9bf7672",
         "type": "debug",
-        "z": "058ef3d116a80e99",
+        "z": "4bc82cdf9dafcab3",
         "name": "debug 33",
         "active": false,
         "tosidebar": true,
@@ -410,9 +471,9 @@
         "wires": []
     },
     {
-        "id": "e87fe5db4a961971",
+        "id": "d10db61abe617184",
         "type": "function",
-        "z": "058ef3d116a80e99",
+        "z": "4bc82cdf9dafcab3",
         "name": "INSERT DATABASE",
         "func": "var sql = \"\";\nconsole.log(msg.payload.length);\nfor (var i = 0; i < msg.payload.length; i++) {\n    var time = msg.payload[i].time;\n    console.log(time);\n    var weathercode = msg.payload[i].weathercode;\n    var temperature = msg.payload[i].temperature;\n    var uv_index_max = msg.payload[i].uv_index_max;\n    var uv_index_clear_sky_max = msg.payload[i].uv_index_clear_sky_max;\n    var rain_sum = msg.payload[i].rain_sum;\n    var snowfall_sum = msg.payload[i].snowfall_sum;\n    var windspeed_10m_max = msg.payload[i].windspeed_10m_max;\n    var winddirection_10m_dominant = msg.payload[i].winddirection_10m_dominant;\n    var shortwave_radiation_sum = msg.payload[i].shortwave_radiation_sum;\n    var city_name = msg.payload[i].city_name;\n    var lat = msg.payload[i].city_lat;\n    var lng = msg.payload[i].city_lng;\n    var geonameId = msg.payload[i].geonameId;\n    var continent_code = msg.payload[i].continent_code;\n    sql = `INSERT OR IGNORE INTO weather_table (time, weathercode, temperature, uv_index_max, uv_index_clear_sky_max, rain_sum, snowfall_sum, windspeed_10m_max, winddirection_10m_dominant, shortwave_radiation_sum, city_name, lat, lng, geonameId, continent_code) VALUES (strftime('%Y-%m-%d', '${time}'), ${weathercode}, ${temperature}, ${uv_index_max}, ${uv_index_clear_sky_max}, ${rain_sum}, ${snowfall_sum}, ${windspeed_10m_max}, ${winddirection_10m_dominant}, ${shortwave_radiation_sum}, '${city_name}', ${lat}, ${lng}, ${geonameId}, '${continent_code}')`;\n\n    node.send({ topic: sql }); // send the SQL statement to the next node\n}\n\n// msg.topic = sql;\n// return [null, msg];\n",
         "outputs": 2,
@@ -424,15 +485,15 @@
         "y": 360,
         "wires": [
             [
-                "5db911e151fa7299"
+                "5f3888242eb311e6"
             ],
             []
         ]
     },
     {
-        "id": "5db911e151fa7299",
+        "id": "5f3888242eb311e6",
         "type": "sqlite",
-        "z": "058ef3d116a80e99",
+        "z": "4bc82cdf9dafcab3",
         "mydb": "e1b7d6f10fa6ce00",
         "sqlquery": "msg.topic",
         "sql": "",
@@ -441,14 +502,14 @@
         "y": 340,
         "wires": [
             [
-                "8b68a8d985c5d8cc"
+                "23d94bf937d65704"
             ]
         ]
     },
     {
-        "id": "8b68a8d985c5d8cc",
+        "id": "23d94bf937d65704",
         "type": "debug",
-        "z": "058ef3d116a80e99",
+        "z": "4bc82cdf9dafcab3",
         "name": "debug 31",
         "active": false,
         "tosidebar": true,
@@ -463,7 +524,7 @@
         "wires": []
     },
     {
-        "id": "b4d201c7727e3cde",
+        "id": "95cc25e64883c3d3",
         "type": "subflow",
         "name": "Main Flow",
         "info": "The Main Flow is used to insert all the necessary data of the cities of a selected country (like summary, city names, latitude and longitude and other city attributes).",
@@ -474,7 +535,7 @@
                 "y": 280,
                 "wires": [
                     {
-                        "id": "d692d373437802b9"
+                        "id": "53506c7aefd2a1db"
                     }
                 ]
             }
@@ -485,7 +546,7 @@
                 "y": 520,
                 "wires": [
                     {
-                        "id": "7eab18f46bceb7ab",
+                        "id": "9b5da0dd051479b3",
                         "port": 0
                     }
                 ]
@@ -496,9 +557,9 @@
         "color": "#C0DEED"
     },
     {
-        "id": "d692d373437802b9",
+        "id": "53506c7aefd2a1db",
         "type": "function",
-        "z": "b4d201c7727e3cde",
+        "z": "95cc25e64883c3d3",
         "name": "function 6",
         "func": "var country_continent = { \"MK\":\"EU\", \"KR\":\"AS\", \"AM\": \"AS\", \"AW\": \"NA\", \"AU\": \"OC\", \"BY\": \"EU\", \"BE\": \"EU\", \"BA\": \"EU\", \"BR\": \"SA\", \"BG\": \"EU\", \"CM\": \"AF\", \"CA\": \"NA\", \"KY\": \"NA\", \"CL\": \"SA\", \"CN\": \"AS\", \"CO\": \"SA\", \"KM\": \"AF\", \"HR\": \"EU\", \"CU\": \"NA\", \"CY\": \"AS\", \"DK\": \"EU\", \"EC\": \"SA\", \"EG\": \"AF\", \"EE\": \"EU\", \"FI\": \"EU\", \"FR\": \"EU\", \"GE\": \"AS\", \"DE\": \"EU\", \"GI\": \"EU\", \"GR\": \"EU\", \"GD\": \"NA\", \"GY\": \"SA\", \"HU\": \"EU\", \"IN\": \"AS\", \"ID\": \"AS\", \"IR\": \"AS\", \"IE\": \"EU\", \"IT\": \"EU\", \"JM\": \"NA\", \"JP\": \"AS\", \"KZ\": \"AS\", \"KE\": \"AF\", \"LV\": \"EU\", \"LB\": \"AS\", \"LT\": \"EU\", \"LU\": \"EU\", \"MT\": \"EU\", \"MX\": \"NA\", \"MD\": \"EU\", \"MA\": \"AF\", \"NP\": \"AS\", \"NL\": \"EU\", \"NZ\": \"OC\", \"NI\": \"NA\", \"NG\": \"AF\", \"NF\": \"OC\", \"NO\": \"EU\", \"PK\": \"AS\", \"PY\": \"SA\", \"PH\": \"AS\", \"PL\": \"EU\", \"PT\": \"EU\", \"QA\": \"AS\", \"RO\": \"EU\", \"RU\": \"EU\", \"SA\": \"AS\", \"RS\": \"EU\", \"SC\": \"AF\", \"SG\": \"AS\", \"SK\": \"EU\", \"SI\": \"EU\", \"ZA\": \"AF\", \"ES\": \"EU\", \"SE\": \"EU\", \"CH\": \"EU\", \"TH\": \"AS\", \"TT\": \"NA\", \"TN\": \"AF\", \"TR\": \"AS\", \"UA\": \"EU\", \"AE\": \"AS\", \"UY\": \"SA\", \"UZ\": \"AS\", \"VE\": \"SA\", \"CZ\":\"EU\", \"GB\":\"EU\", \"US\":\"NA\" };\n\nvar forbidden_cities_in_countries = { \"MT\": [\"Victoria\"], \"ES\": [\"Guadalajara\"], \"VE\": [\"Barcelona\", \"Valencia\"], \"NF\": [\"Kingston\"], \"CA\": [\"Sydney\", \"London\", \"Richmond\", \"Cambridge\", \"Kingston\"] };\n\nfunction check_forbidden_cities(city_name, country_code) {\n    var forbidd_list = forbidden_cities_in_countries[country_code];\n    if (forbidd_list) {\n        for (var i = 0; i < forbidd_list.length; i++) {\n            if (forbidd_list[i].toLowerCase() === \"\" + city_name) {\n                return true;\n            }\n        }\n    }\n    return false;\n}\n\n\nvar countries = msg.payload.geonames;\nvar options = [];\nfor (var i = 0; i < countries.length; i++) {\n    var city = countries[i];\n    // global.set(\"country_code\", city.countryCode);\n    var city_name = city.toponymName.toLowerCase();\n\n    if (city.fclName.includes(\"city\") && !check_forbidden_cities(city_name, city.countryCode)) {\n        // console.log(\"CITY CODE:\" + city.countryCode);\n        options.push({\n            city: city_name,\n            city_url: \"https://api.teleport.org/api/urban_areas/slug:\" + city.toponymName.toLowerCase() + \"/scores/\",\n            lat: city.lat,\n            lng: city.lng,\n            geonameId: city.geonameId,\n            country_code: city.countryCode,\n            continent_code: country_continent[city.countryCode]\n        });\n    }\n}\n// msg.url = \"https://api.teleport.org/api/urban_areas/slug:athens/scores/\";\n// msg.payload.url = \"https://api.teleport.org/api/urban_areas/slug:athens/scores/\"\nmsg.payload = options;\n// msg.options = options;\nreturn msg;\n\n\n",
         "outputs": 1,
@@ -510,14 +571,14 @@
         "y": 280,
         "wires": [
             [
-                "832fb7eab6e8d33d"
+                "51a51308e5cb6356"
             ]
         ]
     },
     {
-        "id": "832fb7eab6e8d33d",
+        "id": "51a51308e5cb6356",
         "type": "split",
-        "z": "b4d201c7727e3cde",
+        "z": "95cc25e64883c3d3",
         "name": "",
         "splt": "\\n",
         "spltType": "str",
@@ -529,15 +590,15 @@
         "y": 280,
         "wires": [
             [
-                "42e5bff7258bc639",
-                "6e1f9384a048d9bb"
+                "20102c2a7566cb68",
+                "d77498faa8ad9517"
             ]
         ]
     },
     {
-        "id": "42e5bff7258bc639",
+        "id": "20102c2a7566cb68",
         "type": "debug",
-        "z": "b4d201c7727e3cde",
+        "z": "95cc25e64883c3d3",
         "name": "debug 11",
         "active": false,
         "tosidebar": true,
@@ -551,9 +612,9 @@
         "wires": []
     },
     {
-        "id": "6e1f9384a048d9bb",
+        "id": "d77498faa8ad9517",
         "type": "change",
-        "z": "b4d201c7727e3cde",
+        "z": "95cc25e64883c3d3",
         "name": "",
         "rules": [
             {
@@ -581,14 +642,14 @@
         "y": 280,
         "wires": [
             [
-                "43108de511aa3ab0"
+                "f8f739026f11961e"
             ]
         ]
     },
     {
-        "id": "43108de511aa3ab0",
+        "id": "f8f739026f11961e",
         "type": "http request",
-        "z": "b4d201c7727e3cde",
+        "z": "95cc25e64883c3d3",
         "name": "",
         "method": "GET",
         "ret": "txt",
@@ -605,15 +666,15 @@
         "y": 180,
         "wires": [
             [
-                "5ab689200beb6dc9",
-                "5bbc911c89d005b7"
+                "8683964238cd257f",
+                "ab89116bd5cbb9f4"
             ]
         ]
     },
     {
-        "id": "5ab689200beb6dc9",
+        "id": "8683964238cd257f",
         "type": "debug",
-        "z": "b4d201c7727e3cde",
+        "z": "95cc25e64883c3d3",
         "name": "",
         "active": false,
         "tosidebar": true,
@@ -628,9 +689,9 @@
         "wires": []
     },
     {
-        "id": "5bbc911c89d005b7",
+        "id": "ab89116bd5cbb9f4",
         "type": "function",
-        "z": "b4d201c7727e3cde",
+        "z": "95cc25e64883c3d3",
         "name": "function 7",
         "func": "var options = {};\n\ntry {\n    // console.log(msg.city);\n    var payload = JSON.parse(msg.payload);\n    // msg.payload = JSON.parse(msg.payload);\n    if (payload.status === 404) {\n        return [null, msg];\n    }\n    // console.log(payload);\n    var url = payload._links.self.href;\n\n    var start = url.indexOf(\"slug:\") + 5; // Get the index of \"slug:\" and add 5 to skip over it\n    var end = url.indexOf(\"/\", start); // Get the index of the next \"/\" after \"slug:\"\n    var citySlug = url.substring(start, end);\n\n    //console.log(citySlug);\n\n    options.city_name = citySlug;\n    //options.city_summary = payload.summary.replace(/(<([^>]+)>)/gi, \"\").trim();\n    options.city_summary = payload.summary  // Remove HTML tags using regex\n        .replace(/<\\/?[^>]+(>|$)/g, \"\")\n        // Replace newline characters with empty string\n        .replace(/\\n/g, \"\")\n        .replace(/['\"]/g, \"\")\n        // Trim any remaining whitespace from beginning and end\n        .trim();\n\n\n    for (var i = 0; i < payload.categories.length; i++) {\n        var categ = payload.categories[i];\n        var key = categ.name.replace(/[\\s&]+/g, '_').replace(/_{2,}/g, '_');\n        options[key.toLowerCase()] = categ.score_out_of_10;\n    }\n\n    var city_saved = msg.city;\n    options.lat = city_saved.lat;\n    options.lng = city_saved.lng;\n    options.geonameId = city_saved.geonameId;\n    options.country_code = city_saved.country_code;\n    options.continent_code = city_saved.continent_code;\n    msg.payload = options;\n    return [msg, null];\n} catch (error) {\n    // does nothing\n    return [null, msg];\n}\n",
         "outputs": 2,
@@ -642,16 +703,16 @@
         "y": 240,
         "wires": [
             [
-                "116f9e5e7ba8912e",
-                "ef2f9c70ddaecf36"
+                "3fe3bb0e3ad1960e",
+                "098579d258459621"
             ],
             []
         ]
     },
     {
-        "id": "ef2f9c70ddaecf36",
+        "id": "098579d258459621",
         "type": "function",
-        "z": "b4d201c7727e3cde",
+        "z": "95cc25e64883c3d3",
         "name": "INSERT DATABASE",
         "func": "var keys = Object.keys(msg.payload);\n// console.log(keys);\n// Generate the SQL statement dynamically\n// var sql_create = 'CREATE TABLE IF NOT EXISTS cities_table (' + keys.join(', ') + ', PRIMARY KEY (city_name))';\nvar sql = 'INSERT OR IGNORE INTO cities_table (' + keys.join(', ') + ') VALUES (';\nsql += keys.map(function (key) { return \"'\" + msg.payload[key] + \"'\"; }).join(', ');\nsql += ')';\n//msg.topic = [sql_create, sql];\nvar create_msg = {};\n// create_msg.topic = sql_create;\nmsg.topic = sql;\nreturn [create_msg, msg];\n\n//msg.payload = options;\n//return [msg, null];",
         "outputs": 2,
@@ -663,18 +724,18 @@
         "y": 260,
         "wires": [
             [
-                "589682c59cc7ee27"
+                "bce89c6302c23503"
             ],
             [
-                "f88e3224f6df7fe9",
-                "f2e05281bb94655f"
+                "59280d7b4f8586ed",
+                "8829d7ecb23c4fae"
             ]
         ]
     },
     {
-        "id": "116f9e5e7ba8912e",
+        "id": "3fe3bb0e3ad1960e",
         "type": "debug",
-        "z": "b4d201c7727e3cde",
+        "z": "95cc25e64883c3d3",
         "name": "debug 12",
         "active": false,
         "tosidebar": true,
@@ -689,9 +750,9 @@
         "wires": []
     },
     {
-        "id": "f88e3224f6df7fe9",
+        "id": "59280d7b4f8586ed",
         "type": "sqlite",
-        "z": "b4d201c7727e3cde",
+        "z": "95cc25e64883c3d3",
         "mydb": "e1b7d6f10fa6ce00",
         "sqlquery": "msg.topic",
         "sql": "",
@@ -700,14 +761,14 @@
         "y": 260,
         "wires": [
             [
-                "9b435bb6d3aca011"
+                "4e29deadd614fc00"
             ]
         ]
     },
     {
-        "id": "589682c59cc7ee27",
+        "id": "bce89c6302c23503",
         "type": "debug",
-        "z": "b4d201c7727e3cde",
+        "z": "95cc25e64883c3d3",
         "name": "debug 13",
         "active": false,
         "tosidebar": true,
@@ -722,9 +783,9 @@
         "wires": []
     },
     {
-        "id": "9b435bb6d3aca011",
+        "id": "4e29deadd614fc00",
         "type": "debug",
-        "z": "b4d201c7727e3cde",
+        "z": "95cc25e64883c3d3",
         "name": "debug 14",
         "active": false,
         "tosidebar": true,
@@ -739,9 +800,9 @@
         "wires": []
     },
     {
-        "id": "f2e05281bb94655f",
+        "id": "8829d7ecb23c4fae",
         "type": "change",
-        "z": "b4d201c7727e3cde",
+        "z": "95cc25e64883c3d3",
         "name": "GIVES CITY OBJ",
         "rules": [
             {
@@ -761,16 +822,16 @@
         "y": 360,
         "wires": [
             [
-                "2d4a56a1a058e385",
-                "7eab18f46bceb7ab",
-                "b5a6863e55bb2374"
+                "894a15520ff45506",
+                "9b5da0dd051479b3",
+                "953a90dee9b4a597"
             ]
         ]
     },
     {
-        "id": "2d4a56a1a058e385",
+        "id": "894a15520ff45506",
         "type": "debug",
-        "z": "b4d201c7727e3cde",
+        "z": "95cc25e64883c3d3",
         "name": "debug 35",
         "active": false,
         "tosidebar": true,
@@ -784,9 +845,9 @@
         "wires": []
     },
     {
-        "id": "b5a6863e55bb2374",
-        "type": "subflow:058ef3d116a80e99",
-        "z": "b4d201c7727e3cde",
+        "id": "953a90dee9b4a597",
+        "type": "subflow:4bc82cdf9dafcab3",
+        "z": "95cc25e64883c3d3",
         "name": "",
         "x": 1630,
         "y": 420,
@@ -795,9 +856,9 @@
         ]
     },
     {
-        "id": "7eab18f46bceb7ab",
-        "type": "subflow:5a06fcbc04ae461a",
-        "z": "b4d201c7727e3cde",
+        "id": "9b5da0dd051479b3",
+        "type": "subflow:54efb170ba57aaef",
+        "z": "95cc25e64883c3d3",
         "name": "",
         "x": 1510,
         "y": 520,
@@ -806,7 +867,7 @@
         ]
     },
     {
-        "id": "bce09a63c46a2eb9",
+        "id": "d1371e6d62f03d35",
         "type": "subflow",
         "name": "Create DB Tables",
         "info": "The Create DB Tables subflow is used to create all the required database tables.",
@@ -817,10 +878,10 @@
                 "y": 30,
                 "wires": [
                     {
-                        "id": "e1b4d8df314b281e"
+                        "id": "2f746a4dbc433a2b"
                     },
                     {
-                        "id": "ec84901ce5bb68ac"
+                        "id": "08bfe525d7e8cd1d"
                     }
                 ]
             }
@@ -831,7 +892,7 @@
                 "y": 200,
                 "wires": [
                     {
-                        "id": "e87049cf504d9ebf",
+                        "id": "32cd338f3c480133",
                         "port": 0
                     }
                 ]
@@ -841,7 +902,7 @@
                 "y": 80,
                 "wires": [
                     {
-                        "id": "60eb315235229dbc",
+                        "id": "f2df9060531d2d43",
                         "port": 0
                     }
                 ]
@@ -852,9 +913,9 @@
         "color": "#C0DEED"
     },
     {
-        "id": "e1b4d8df314b281e",
+        "id": "2f746a4dbc433a2b",
         "type": "function",
-        "z": "bce09a63c46a2eb9",
+        "z": "d1371e6d62f03d35",
         "name": "CREATE TABLE WEATHER",
         "func": "msg.topic = \"CREATE TABLE IF NOT EXISTS weather_table (time DATE, weathercode INTEGER, temperature REAL, uv_index_max REAL, uv_index_clear_sky_max REAL, rain_sum REAL, snowfall_sum REAL, windspeed_10m_max REAL, winddirection_10m_dominant REAL, shortwave_radiation_sum REAL, lat REAL, lng REAL, city_name TEXT, continent_code TEXT, geonameId INTEGER, CONSTRAINT unique_city_time UNIQUE (geonameId, time), FOREIGN KEY(geonameId) REFERENCES cities_table(geonameId))\";\nreturn msg;",
         "outputs": 1,
@@ -866,15 +927,15 @@
         "y": 200,
         "wires": [
             [
-                "e87049cf504d9ebf",
-                "cd5c21fbb0d71e30"
+                "32cd338f3c480133",
+                "e9c165b94957c990"
             ]
         ]
     },
     {
-        "id": "e87049cf504d9ebf",
+        "id": "32cd338f3c480133",
         "type": "sqlite",
-        "z": "bce09a63c46a2eb9",
+        "z": "d1371e6d62f03d35",
         "mydb": "e1b7d6f10fa6ce00",
         "sqlquery": "msg.topic",
         "sql": "",
@@ -886,9 +947,9 @@
         ]
     },
     {
-        "id": "cd5c21fbb0d71e30",
+        "id": "e9c165b94957c990",
         "type": "function",
-        "z": "bce09a63c46a2eb9",
+        "z": "d1371e6d62f03d35",
         "name": "CREATE TABLE",
         "func": "msg.topic = 'CREATE TABLE IF NOT EXISTS cities_table (city_name TEXT, city_summary TEXT, housing REAL, cost_of_living REAL, startups REAL, venture_capital REAL, travel_connectivity REAL, commute REAL, business_freedom REAL, safety REAL, healthcare REAL, education REAL, environmental_quality REAL, economy REAL, taxation REAL, internet_access REAL, leisure_culture REAL, tolerance REAL, outdoors REAL, country_code TEXT, continent_code TEXT, lat REAL, lng REAL, geonameId INTEGER PRIMARY KEY)';\nreturn msg;",
         "outputs": 1,
@@ -900,14 +961,14 @@
         "y": 140,
         "wires": [
             [
-                "0e0723f11ad93b5c"
+                "3a371eb5d36ea046"
             ]
         ]
     },
     {
-        "id": "0e0723f11ad93b5c",
+        "id": "3a371eb5d36ea046",
         "type": "sqlite",
-        "z": "bce09a63c46a2eb9",
+        "z": "d1371e6d62f03d35",
         "mydb": "e1b7d6f10fa6ce00",
         "sqlquery": "msg.topic",
         "sql": "",
@@ -919,9 +980,9 @@
         ]
     },
     {
-        "id": "ec84901ce5bb68ac",
+        "id": "08bfe525d7e8cd1d",
         "type": "function",
-        "z": "bce09a63c46a2eb9",
+        "z": "d1371e6d62f03d35",
         "name": "CREATE TABLE IMAGE",
         "func": "msg.topic = \"CREATE TABLE IF NOT EXISTS image_table (web_img_url TEXT, mob_img_url TEXT, city_name TEXT, lat REAL, lng REAL, geonameId INTEGER, CONSTRAINT unique_city_img UNIQUE(geonameId, mob_img_url, web_img_url), FOREIGN KEY(geonameId) REFERENCES cities_table(geonameId)) \";\nreturn msg;",
         "outputs": 1,
@@ -933,14 +994,14 @@
         "y": 40,
         "wires": [
             [
-                "60eb315235229dbc"
+                "f2df9060531d2d43"
             ]
         ]
     },
     {
-        "id": "60eb315235229dbc",
+        "id": "f2df9060531d2d43",
         "type": "sqlite",
-        "z": "bce09a63c46a2eb9",
+        "z": "d1371e6d62f03d35",
         "mydb": "e1b7d6f10fa6ce00",
         "sqlquery": "msg.topic",
         "sql": "",
@@ -952,7 +1013,7 @@
         ]
     },
     {
-        "id": "20cbadd747c64ada",
+        "id": "f4881bea9e51b3c4",
         "type": "subflow",
         "name": "Drop DB Tables",
         "info": "The Drop DB Tables subflow is used to drop all the database tables and reset the global variables.",
@@ -963,10 +1024,10 @@
                 "y": 30,
                 "wires": [
                     {
-                        "id": "a9a28a183c27ba63"
+                        "id": "1a61010f2802e559"
                     },
                     {
-                        "id": "6f85f4ae3cd65145"
+                        "id": "02c314ec9a505203"
                     }
                 ]
             }
@@ -977,7 +1038,7 @@
                 "y": 160,
                 "wires": [
                     {
-                        "id": "9a1c7ffb895ebce5",
+                        "id": "5443588cfc9d7452",
                         "port": 0
                     }
                 ]
@@ -987,7 +1048,7 @@
                 "y": 40,
                 "wires": [
                     {
-                        "id": "53b2344e8add773a",
+                        "id": "e38ca28815e891a2",
                         "port": 0
                     }
                 ]
@@ -998,9 +1059,9 @@
         "color": "#C0DEED"
     },
     {
-        "id": "a9a28a183c27ba63",
+        "id": "1a61010f2802e559",
         "type": "function",
-        "z": "20cbadd747c64ada",
+        "z": "f4881bea9e51b3c4",
         "name": "DROP TABLE WEATHER",
         "func": "msg.topic = \"drop table if exists weather_table\";\nreturn msg;\n",
         "outputs": 1,
@@ -1012,16 +1073,16 @@
         "y": 160,
         "wires": [
             [
-                "9a1c7ffb895ebce5",
-                "5a91bf7e2c0716b5",
-                "ec66871ce3a22107"
+                "5443588cfc9d7452",
+                "d861fb7b8d02de10",
+                "049705fdce882d48"
             ]
         ]
     },
     {
-        "id": "9a1c7ffb895ebce5",
+        "id": "5443588cfc9d7452",
         "type": "sqlite",
-        "z": "20cbadd747c64ada",
+        "z": "f4881bea9e51b3c4",
         "mydb": "e1b7d6f10fa6ce00",
         "sqlquery": "msg.topic",
         "sql": "",
@@ -1033,9 +1094,9 @@
         ]
     },
     {
-        "id": "5a91bf7e2c0716b5",
+        "id": "d861fb7b8d02de10",
         "type": "function",
-        "z": "20cbadd747c64ada",
+        "z": "f4881bea9e51b3c4",
         "name": "DROP DATABASE",
         "func": "msg.topic = \"drop table if exists cities_table\";\nreturn msg;\n",
         "outputs": 1,
@@ -1047,14 +1108,14 @@
         "y": 220,
         "wires": [
             [
-                "e3bfce677e1f7910"
+                "623a8f9fd03aa531"
             ]
         ]
     },
     {
-        "id": "ec66871ce3a22107",
+        "id": "049705fdce882d48",
         "type": "function",
-        "z": "20cbadd747c64ada",
+        "z": "f4881bea9e51b3c4",
         "name": "RESET GLOBAL KEYS",
         "func": "var globalKeys = global.keys();\n\nfor (var i = 0; i < globalKeys.length; i++) {\n    // global.delete(globalKeys[i]);\n    if (globalKeys[i] != \"username\") {\n        global.set(globalKeys[i], 0);\n    }\n}\n\nif (global.keys().length <= 0) {\n    msg.payload = \"All global keys deleted.\"\n    return [msg, null];\n}\nmsg.payload = \"All global keys NOT deleted.\"\nreturn [null, msg];",
         "outputs": 2,
@@ -1070,9 +1131,9 @@
         ]
     },
     {
-        "id": "e3bfce677e1f7910",
+        "id": "623a8f9fd03aa531",
         "type": "sqlite",
-        "z": "20cbadd747c64ada",
+        "z": "f4881bea9e51b3c4",
         "mydb": "e1b7d6f10fa6ce00",
         "sqlquery": "msg.topic",
         "sql": "",
@@ -1084,9 +1145,9 @@
         ]
     },
     {
-        "id": "6f85f4ae3cd65145",
+        "id": "02c314ec9a505203",
         "type": "function",
-        "z": "20cbadd747c64ada",
+        "z": "f4881bea9e51b3c4",
         "name": "DROP TABLE IMAGE",
         "func": "msg.topic = \"drop table if exists image_table\";\nreturn msg;\n",
         "outputs": 1,
@@ -1098,14 +1159,14 @@
         "y": 60,
         "wires": [
             [
-                "53b2344e8add773a"
+                "e38ca28815e891a2"
             ]
         ]
     },
     {
-        "id": "53b2344e8add773a",
+        "id": "e38ca28815e891a2",
         "type": "sqlite",
-        "z": "20cbadd747c64ada",
+        "z": "f4881bea9e51b3c4",
         "mydb": "e1b7d6f10fa6ce00",
         "sqlquery": "msg.topic",
         "sql": "",
@@ -1117,7 +1178,7 @@
         ]
     },
     {
-        "id": "ec6f1352d28e3197",
+        "id": "cb3bd948345cf655",
         "type": "subflow",
         "name": "Init GUI",
         "info": "The Init GUI subflow contains necessary nodes for initialization of the subflows. For example, reset of db, initialization of global variables, country select from a dropdown and retrieval of its cities (from geonames api).",
@@ -1128,10 +1189,10 @@
                 "y": 400,
                 "wires": [
                     {
-                        "id": "45e4dc2c4c77f0d3"
+                        "id": "463e7e738ae2a527"
                     },
                     {
-                        "id": "7eaa00e99be90a91"
+                        "id": "0c203dfd38290b42"
                     }
                 ]
             }
@@ -1142,7 +1203,7 @@
                 "y": 200,
                 "wires": [
                     {
-                        "id": "1ce6ed1e5a05f428",
+                        "id": "547b7142af4329b1",
                         "port": 0
                     }
                 ]
@@ -1179,9 +1240,9 @@
         "color": "#C0DEED"
     },
     {
-        "id": "f77f87256b0aec65",
+        "id": "53e220326b46d8d8",
         "type": "ui_button",
-        "z": "ec6f1352d28e3197",
+        "z": "cb3bd948345cf655",
         "name": "",
         "group": "07c2498f17a87e52",
         "order": 2,
@@ -1202,15 +1263,15 @@
         "y": 300,
         "wires": [
             [
-                "7eaa00e99be90a91",
-                "45e4dc2c4c77f0d3"
+                "0c203dfd38290b42",
+                "463e7e738ae2a527"
             ]
         ]
     },
     {
-        "id": "7eaa00e99be90a91",
+        "id": "0c203dfd38290b42",
         "type": "function",
-        "z": "ec6f1352d28e3197",
+        "z": "cb3bd948345cf655",
         "name": "ALL COUNTRIES",
         "func": "var res = [];\nvar options = [{\"name\": \"Armenia\", \"code\": \"AM\"}, {\"name\": \"Australia\", \"code\": \"AU\"}, {\"name\": \"Belarus\", \"code\": \"BY\"}, {\"name\": \"Belgium\", \"code\": \"BE\"}, {\"name\": \"Bosnia and Herzegovina\", \"code\": \"BA\"}, {\"name\": \"Brazil\", \"code\": \"BR\"}, {\"name\": \"Bulgaria\", \"code\": \"BG\"}, {\"name\": \"Canada\", \"code\": \"CA\"}, {\"name\": \"Chile\", \"code\": \"CL\"}, {\"name\": \"China\", \"code\": \"CN\"}, {\"name\": \"Croatia\", \"code\": \"HR\"}, {\"name\": \"Cuba\", \"code\": \"CU\"}, {\"name\": \"Cyprus\", \"code\": \"CY\"}, {\"name\": \"Czechia\", \"code\": \"CZ\"}, {\"name\": \"Denmark\", \"code\": \"DK\"}, {\"name\": \"Ecuador\", \"code\": \"EC\"}, {\"name\": \"Egypt\", \"code\": \"EG\"}, {\"name\": \"Estonia\", \"code\": \"EE\"}, {\"name\": \"Finland\", \"code\": \"FI\"}, {\"name\": \"France\", \"code\": \"FR\"}, {\"name\": \"Georgia\", \"code\": \"GE\"}, {\"name\": \"Germany\", \"code\": \"DE\"}, {\"name\": \"Gibraltar\", \"code\": \"GI\"}, {\"name\": \"Greece\", \"code\": \"GR\"}, {\"name\": \"Hungary\", \"code\": \"HU\"}, {\"name\": \"India\", \"code\": \"IN\"}, {\"name\": \"Indonesia\", \"code\": \"ID\"}, {\"name\": \"Iran\", \"code\": \"IR\"}, {\"name\": \"Ireland\", \"code\": \"IE\"}, {\"name\": \"Italy\", \"code\": \"IT\"}, {\"name\": \"Jamaica\", \"code\": \"JM\"}, {\"name\": \"Japan\", \"code\": \"JP\"}, {\"name\": \"Kazakhstan\", \"code\": \"KZ\"}, {\"name\": \"Kenya\", \"code\": \"KE\"}, {\"name\": \"Korea\", \"code\": \"KR\"}, {\"name\": \"Latvia\", \"code\": \"LV\"}, {\"name\": \"Lebanon\", \"code\": \"LB\"}, {\"name\": \"Lithuania\", \"code\": \"LT\"}, {\"name\": \"Luxembourg\", \"code\": \"LU\"}, {\"name\":\"Malta\", \"code\":\"MT\"}, {\"name\": \"Mexico\", \"code\": \"MX\"}, {\"name\": \"Moldova\", \"code\": \"MD\"}, {\"name\": \"Morocco\", \"code\": \"MA\"}, {\"name\": \"Nepal\", \"code\": \"NP\"}, {\"name\": \"Netherlands\", \"code\": \"NL\"}, {\"name\": \"New Zealand\", \"code\": \"NZ\"}, {\"name\": \"Nicaragua\", \"code\": \"NI\"}, {\"name\": \"Nigeria\", \"code\": \"NG\"}, {\"name\": \"Norway\", \"code\": \"NO\"}, {\"name\": \"Philippines\", \"code\": \"PH\"}, {\"name\": \"Poland\", \"code\": \"PL\"}, {\"name\": \"Portugal\", \"code\": \"PT\"}, {\"name\": \"Qatar\", \"code\": \"QA\"}, {\"name\": \"Republic of North Macedonia\", \"code\": \"MK\"}, {\"name\": \"Romania\", \"code\": \"RO\"}, {\"name\": \"Russia\", \"code\": \"RU\"}, {\"name\": \"Saudi Arabia\", \"code\": \"SA\"}, {\"name\": \"Serbia\", \"code\": \"RS\"}, {\"name\": \"Singapore\", \"code\": \"SG\"}, {\"name\": \"Slovakia\", \"code\": \"SK\"}, {\"name\": \"Slovenia\", \"code\": \"SI\"}, {\"name\": \"South Africa\", \"code\": \"ZA\"}, {\"name\": \"Spain\", \"code\": \"ES\"}, {\"name\": \"Sweden\", \"code\": \"SE\"}, {\"name\": \"Switzerland\", \"code\": \"CH\"}, {\"name\": \"Thailand\", \"code\": \"TH\"}, {\"name\": \"Tunisia\", \"code\": \"TN\"}, {\"name\": \"Turkey\", \"code\": \"TR\"}, {\"name\": \"Ukraine\", \"code\": \"UA\"}, {\"name\": \"United Arab Emirates\", \"code\": \"AE\"}, {\"name\": \"United Kingdom\", \"code\": \"GB\"}, {\"name\": \"United States of America\", \"code\": \"US\"}, {\"name\": \"Uruguay\", \"code\": \"UY\"}, {\"name\": \"Uzbekistan\", \"code\": \"UZ\"}, {\"name\": \"Venezuela\", \"code\": \"VE\"}];\nconsole.log(\"Countries List Size: \"+options.length);\nfor (var i = 0; i<options.length; i++){\n    var name = options[i][\"name\"];\n    var code = options[i][\"code\"];\n    var obj = {};\n    obj[name] = code;\n    res.push(obj);\n}\nmsg.options = res;\n// console.log(res);\nmsg.topic = \"Countries\";\nreturn msg;",
         "outputs": 1,
@@ -1222,15 +1283,15 @@
         "y": 240,
         "wires": [
             [
-                "9ec7d6f643aaa784",
-                "1293b038e75897ac"
+                "6f353120536e984c",
+                "5552430ad15c7a43"
             ]
         ]
     },
     {
-        "id": "45e4dc2c4c77f0d3",
-        "type": "subflow:20cbadd747c64ada",
-        "z": "ec6f1352d28e3197",
+        "id": "463e7e738ae2a527",
+        "type": "subflow:f4881bea9e51b3c4",
+        "z": "cb3bd948345cf655",
         "name": "",
         "x": 560,
         "y": 440,
@@ -1240,9 +1301,9 @@
         ]
     },
     {
-        "id": "1293b038e75897ac",
+        "id": "5552430ad15c7a43",
         "type": "change",
-        "z": "ec6f1352d28e3197",
+        "z": "cb3bd948345cf655",
         "name": "GLOBAL USER CONFIG",
         "rules": [
             {
@@ -1265,9 +1326,9 @@
         ]
     },
     {
-        "id": "9510e7a28c7448fa",
+        "id": "cb22fceb4c538f2b",
         "type": "function",
-        "z": "ec6f1352d28e3197",
+        "z": "cb3bd948345cf655",
         "name": "function 28",
         "func": "// resets - initializes vars\nglobal.set('current_cities', []);\nglobal.set('current_counter', 0);\n",
         "outputs": 0,
@@ -1280,9 +1341,9 @@
         "wires": []
     },
     {
-        "id": "9ec7d6f643aaa784",
+        "id": "6f353120536e984c",
         "type": "ui_dropdown",
-        "z": "ec6f1352d28e3197",
+        "z": "cb3bd948345cf655",
         "name": "",
         "label": "",
         "tooltip": "Select a country",
@@ -1308,17 +1369,17 @@
         "y": 240,
         "wires": [
             [
-                "d5e6079dc2678e2a",
-                "9510e7a28c7448fa",
-                "8b6b25a11853d156",
-                "0cb9c834afb896e2"
+                "c87f4134ef8af6f0",
+                "cb22fceb4c538f2b",
+                "1ffdb801ce6fc15b",
+                "02329ab80f3a3e0f"
             ]
         ]
     },
     {
-        "id": "0cb9c834afb896e2",
-        "type": "subflow:bce09a63c46a2eb9",
-        "z": "ec6f1352d28e3197",
+        "id": "02329ab80f3a3e0f",
+        "type": "subflow:d1371e6d62f03d35",
+        "z": "cb3bd948345cf655",
         "name": "",
         "x": 960,
         "y": 340,
@@ -1328,9 +1389,9 @@
         ]
     },
     {
-        "id": "8b6b25a11853d156",
+        "id": "1ffdb801ce6fc15b",
         "type": "change",
-        "z": "ec6f1352d28e3197",
+        "z": "cb3bd948345cf655",
         "name": "RABBIT & MAP CONFIG",
         "rules": [
             {
@@ -1377,9 +1438,9 @@
         ]
     },
     {
-        "id": "7a798af1de1c6a79",
+        "id": "cacb033d347264df",
         "type": "debug",
-        "z": "ec6f1352d28e3197",
+        "z": "cb3bd948345cf655",
         "name": "debug 15",
         "active": false,
         "tosidebar": true,
@@ -1394,9 +1455,9 @@
         "wires": []
     },
     {
-        "id": "5991eb4a784c512a",
+        "id": "9cc9fbbf896e7d2f",
         "type": "http request",
-        "z": "ec6f1352d28e3197",
+        "z": "cb3bd948345cf655",
         "name": "",
         "method": "GET",
         "ret": "obj",
@@ -1413,15 +1474,15 @@
         "y": 200,
         "wires": [
             [
-                "7a798af1de1c6a79",
-                "cea48139efa4c9e2"
+                "cacb033d347264df",
+                "2c0dcc7f7d424647"
             ]
         ]
     },
     {
-        "id": "d5e6079dc2678e2a",
+        "id": "c87f4134ef8af6f0",
         "type": "function",
-        "z": "ec6f1352d28e3197",
+        "z": "cb3bd948345cf655",
         "name": "USER CHOOSE COUNTRY",
         "func": "var country_code = msg.payload; // user sets this.\n// sees if the country is already saved:\nif (global.keys().includes(country_code)) {\n    if(global.get(country_code)) {\n        msg.payload = \"Did not save country - it already exists.\"\n        global.set(\"current_country\", country_code);\n        return [null, msg];\n    }\n}\nglobal.set(country_code, 1);\nglobal.set(\"current_openweather\", 0);\nglobal.set(\"current_country\", \"0\");\nvar username = global.get(\"username\");\nmsg.url = \"http://api.geonames.org/searchJSON?country=\" + country_code + \"&username=\"+username;\nreturn [msg, null];",
         "outputs": 2,
@@ -1433,18 +1494,18 @@
         "y": 120,
         "wires": [
             [
-                "db597b8414e8bdae",
-                "5991eb4a784c512a"
+                "ae7bb0fcd2dc390e",
+                "9cc9fbbf896e7d2f"
             ],
             [
-                "c7c5e6b46e2c6e58"
+                "295ed11b97f0916b"
             ]
         ]
     },
     {
-        "id": "5510cd19a6dff510",
+        "id": "2cf73c9ddeb9c3b8",
         "type": "comment",
-        "z": "ec6f1352d28e3197",
+        "z": "cb3bd948345cf655",
         "name": "Sends link for chosen country",
         "info": "Sends link for chosen country",
         "x": 760,
@@ -1452,9 +1513,9 @@
         "wires": []
     },
     {
-        "id": "db597b8414e8bdae",
+        "id": "ae7bb0fcd2dc390e",
         "type": "debug",
-        "z": "ec6f1352d28e3197",
+        "z": "cb3bd948345cf655",
         "name": "debug 17",
         "active": false,
         "tosidebar": true,
@@ -1469,9 +1530,9 @@
         "wires": []
     },
     {
-        "id": "c7c5e6b46e2c6e58",
+        "id": "295ed11b97f0916b",
         "type": "debug",
-        "z": "ec6f1352d28e3197",
+        "z": "cb3bd948345cf655",
         "name": "debug 41",
         "active": false,
         "tosidebar": true,
@@ -1485,9 +1546,9 @@
         "wires": []
     },
     {
-        "id": "cea48139efa4c9e2",
+        "id": "2c0dcc7f7d424647",
         "type": "function",
-        "z": "ec6f1352d28e3197",
+        "z": "cb3bd948345cf655",
         "name": "CHECK EXISTS",
         "func": "if (msg.payload.totalResultsCount > 0) {\n    return [msg, null]\n} else {\n    msg.payload = \"Country does not exist.\"\n    return [null, msg]\n}\n",
         "outputs": 2,
@@ -1499,16 +1560,16 @@
         "y": 200,
         "wires": [
             [
-                "d4f8b486e49cecad",
-                "1ce6ed1e5a05f428"
+                "0f3edc9c059a4a99",
+                "547b7142af4329b1"
             ],
             []
         ]
     },
     {
-        "id": "d4f8b486e49cecad",
+        "id": "0f3edc9c059a4a99",
         "type": "debug",
-        "z": "ec6f1352d28e3197",
+        "z": "cb3bd948345cf655",
         "name": "Country exists",
         "active": false,
         "tosidebar": true,
@@ -1523,9 +1584,9 @@
         "wires": []
     },
     {
-        "id": "1ce6ed1e5a05f428",
-        "type": "subflow:b4d201c7727e3cde",
-        "z": "ec6f1352d28e3197",
+        "id": "547b7142af4329b1",
+        "type": "subflow:95cc25e64883c3d3",
+        "z": "cb3bd948345cf655",
         "name": "",
         "x": 1250,
         "y": 200,
@@ -1534,7 +1595,7 @@
         ]
     },
     {
-        "id": "29ed978b5e50beb3",
+        "id": "6fd479bb119a914b",
         "type": "subflow",
         "name": "QuickSort",
         "info": "<div>\n  <p>\n    This is the implementation of the Quick Sort algorithm, which can also perform a reverse sort if desired.\n    To choose reverse sort, put <code>msg.payload.value.reverse</code> to True, else put it False.\n  </p>\n  <p>\n    It takes as input a list with the following structure (put this in the <code>msg.payload.value.data</code>):\n    <code>\n      {\n        \"attr_name1\": [\n          {\"value\": x, \"date\": y},\n          {\"value\": z, \"date\": e}\n        ],\n        \"attr_name2\": [\n          {\"value\": q, \"date\": w},\n          ...\n        ]\n      }\n    </code>\n  </p>\n  <p>\n    In the input list, each attribute (<em>attr_name1</em>, <em>attr_name2</em>, etc.) is associated with a list of dictionaries.\n    Each dictionary represents a value entry and contains two keys that should remain as is:\n  </p>\n  <ul>\n    <li><strong>\"value\"</strong>: Specifies the value of the attribute for a specific date.</li>\n    <li><strong>\"date\"</strong>: Specifies the date of the value entry. The date should be in UNIX timestamp format.</li>\n  </ul>\n  <p>\n    The subflow returns the same structure as the input list, but with the lists of each attribute key sorted either normally or in reverse order, based on the chosen option. The output can be found in <code>msg.payload.value.data</code>.\n  </p>\n</div>\n",
@@ -1545,7 +1606,7 @@
                 "y": 120,
                 "wires": [
                     {
-                        "id": "da155e023b50d5dc"
+                        "id": "8a975444807b5c68"
                     }
                 ]
             }
@@ -1556,7 +1617,7 @@
                 "y": 120,
                 "wires": [
                     {
-                        "id": "277dc7cf040c4baa",
+                        "id": "6fef86d08511923a",
                         "port": 0
                     }
                 ]
@@ -1567,9 +1628,9 @@
         "color": "#DDAA99"
     },
     {
-        "id": "da155e023b50d5dc",
+        "id": "8a975444807b5c68",
         "type": "function",
-        "z": "29ed978b5e50beb3",
+        "z": "6fd479bb119a914b",
         "name": "Quick Sort",
         "func": "function quickSort(arr, left, right) {\n    if (left < right) {\n        const pivotIndex = partition(arr, left, right);\n        quickSort(arr, left, pivotIndex - 1);\n        quickSort(arr, pivotIndex + 1, right);\n    }\n    return arr;\n}\n\nfunction partition(arr, left, right) {\n    // const pivot = new Date(arr[right].date);\n    const pivot = arr[right].date;\n    let i = left - 1;\n\n    for (let j = left; j < right; j++) {\n        // const currentDate = new Date(arr[j].date);\n        const currentDate = arr[j].date;\n        if (currentDate < pivot) {\n            i++;\n            swap(arr, i, j);\n        }\n    }\n\n    swap(arr, i + 1, right);\n    return i + 1;\n}\n\nfunction swap(arr, i, j) {\n    const temp = arr[i];\n    arr[i] = arr[j];\n    arr[j] = temp;\n}\n\nvar list = msg.payload.value.data;\nfor (let key in list) {\n    list[key] = quickSort(list[key], 0, list[key].length - 1);\n}\nmsg.payload.value.data = list;\nreturn msg;",
         "outputs": 1,
@@ -1581,14 +1642,14 @@
         "y": 120,
         "wires": [
             [
-                "277dc7cf040c4baa"
+                "6fef86d08511923a"
             ]
         ]
     },
     {
-        "id": "277dc7cf040c4baa",
+        "id": "6fef86d08511923a",
         "type": "function",
-        "z": "29ed978b5e50beb3",
+        "z": "6fd479bb119a914b",
         "name": "Reverse Sort",
         "func": "// Input: list - array of dictionaries [{ temperature: number, date: string }]\nif (!msg.payload.value.reverse) {\n    return msg;\n}\n\nvar list = msg.payload.value.data;\n// console.log(list);\nfor (let key in list) {\n    list[key] = list[key].reverse();\n}\nmsg.payload.value.data = list;\nreturn msg;\n\n",
         "outputs": 1,
@@ -1603,7 +1664,7 @@
         ]
     },
     {
-        "id": "7c8c78650dc65337",
+        "id": "da362e744a99a41b",
         "type": "subflow",
         "name": "Calculate Weighted Average",
         "info": "<div>\n  <p>\n    This subflow calculates the weighted average of given values, considering the date of each value.\n    The more recent the date, the higher the value will be weighted in the average calculation.\n  </p>\n  <p>\n    It takes as input a list with the following structure (put this in the <code>msg.payload.value.data</code>):\n    <code>\n      {\n        \"attr_name1\": [\n          {\"value\": x, \"date\": y},\n          {\"value\": z, \"date\": e}\n        ],\n        \"attr_name2\": [\n          {\"value\": q, \"date\": w},\n          ...\n        ]\n      }\n    </code>\n  </p>\n  <p>\n    In the input list, each attribute (<em>attr_name1</em>, <em>attr_name2</em>, etc.) is associated with a list of dictionaries.\n    Each dictionary represents a value entry and contains two keys that should remain as is:\n  </p>\n  <ul>\n    <li><strong>\"value\"</strong>: Specifies the value of the attribute for a specific date.</li>\n    <li><strong>\"date\"</strong>: Specifies the date of the value entry. The date should be in UNIX timestamp format.</li>\n  </ul>\n  <p>\n    The subflow returns an object with keys corresponding to the attribute names specified in the input list, along with their respective weighted averages. The output can be found in <code>msg.payload.value.data</code>.\n  </p>\n  <p>\n    If you want the more old dates to have higher weight in the weighted average, set <code>msg.payload.value.reverse = True</code>.  \n  </p>\n</div>\n",
@@ -1614,7 +1675,7 @@
                 "y": 180,
                 "wires": [
                     {
-                        "id": "fc7cbacf5377eaba"
+                        "id": "b8419a967a575620"
                     }
                 ]
             }
@@ -1625,7 +1686,7 @@
                 "y": 180,
                 "wires": [
                     {
-                        "id": "4784200b6f6ff1c8",
+                        "id": "406e1ff4aa87c4dd",
                         "port": 0
                     }
                 ]
@@ -1636,9 +1697,9 @@
         "color": "#DDAA99"
     },
     {
-        "id": "3d9c72d6f864b5b2",
+        "id": "a305889cee5bf6fb",
         "type": "function",
-        "z": "7c8c78650dc65337",
+        "z": "da362e744a99a41b",
         "name": "Calculate Weighted Average",
         "func": "function calc_weight_avg(list) {\n    // Calculate total weight and weighted sum\n    let totalWeight = 0;\n    let weightedSum = 0;\n\n    list.forEach((temperature, index) => {\n        const weight = index + 1;\n\n        weightedSum += temperature.value * weight;\n        totalWeight += weight;\n    });\n\n    const weightedAverage = weightedSum / totalWeight;\n    return weightedAverage;\n}\n\nconst list = msg.payload.value.data;\nfor (let key in list) {\n    list[key] = calc_weight_avg(list[key]);\n}\n\nmsg.payload.value.data = list;\nreturn msg;\n",
         "outputs": 1,
@@ -1650,27 +1711,27 @@
         "y": 180,
         "wires": [
             [
-                "4784200b6f6ff1c8"
+                "406e1ff4aa87c4dd"
             ]
         ]
     },
     {
-        "id": "b0f13fe1e2c13b90",
-        "type": "subflow:29ed978b5e50beb3",
-        "z": "7c8c78650dc65337",
+        "id": "d8e9daa2c8509009",
+        "type": "subflow:6fd479bb119a914b",
+        "z": "da362e744a99a41b",
         "name": "",
         "x": 460,
         "y": 180,
         "wires": [
             [
-                "3d9c72d6f864b5b2"
+                "a305889cee5bf6fb"
             ]
         ]
     },
     {
-        "id": "fc7cbacf5377eaba",
+        "id": "b8419a967a575620",
         "type": "function",
-        "z": "7c8c78650dc65337",
+        "z": "da362e744a99a41b",
         "name": "Reverse",
         "func": "msg.payload.value.reverse = !msg.payload.value.reverse; \nreturn msg;",
         "outputs": 1,
@@ -1682,14 +1743,14 @@
         "y": 180,
         "wires": [
             [
-                "b0f13fe1e2c13b90"
+                "d8e9daa2c8509009"
             ]
         ]
     },
     {
-        "id": "4784200b6f6ff1c8",
+        "id": "406e1ff4aa87c4dd",
         "type": "function",
-        "z": "7c8c78650dc65337",
+        "z": "da362e744a99a41b",
         "name": "Reverse",
         "func": "msg.payload.value.reverse = !msg.payload.value.reverse; \nreturn msg;",
         "outputs": 1,
@@ -1704,7 +1765,7 @@
         ]
     },
     {
-        "id": "88492ea3a74d3f8e",
+        "id": "330083ae8ff427f8",
         "type": "subflow",
         "name": "Weighted Average Req Docker",
         "info": "<div>\n  <p>\n    This subflow communicates with a Docker container running on your PC and runs the Weighted Average Common Function.\n    It uses the Docker image available on Docker Hub:\n    <a href=\"https://hub.docker.com/r/kazakos13/common-functions\">kazakos13/common-functions</a>.\n    If the Docker endpoint is not available, it falls back to running the local build of the Weighted Average subflow.\n  </p>\n  <h3>Input Structure</h3>\n  <p>\n    The subflow takes as input a list with the following structure, which should be placed in the <code>msg.payload.value.data</code> property:\n  </p>\n  <pre>\n    <code>\n{\n  \"attr_name1\": [\n    {\"value\": x, \"date\": y},\n    {\"value\": z, \"date\": e}\n  ],\n  \"attr_name2\": [\n    {\"value\": q, \"date\": w},\n    ...\n  ]\n}\n    </code>\n  </pre>\n  <p>\n    In the input list, each attribute (<em>attr_name1</em>, <em>attr_name2</em>, etc.) is associated with a list of dictionaries.\n    Each dictionary represents a value entry and contains two keys that should remain as is:\n  </p>\n  <ul>\n    <li><strong>\"value\"</strong>: Specifies the value of the attribute for a specific date.</li>\n    <li><strong>\"date\"</strong>: Specifies the date of the value entry. The date should be in UNIX timestamp format.</li>\n  </ul>\n  <h3>Output Structure</h3>\n  <p>\n    The subflow returns an object with keys corresponding to the attribute names specified in the input list, along with their respective weighted averages. The output can be found in the <code>msg.payload.value.data</code> property.\n  </p>\n  <p>\n    If you want the more old dates to have higher weight in the weighted average, set <code>msg.payload.value.reverse = True</code>.\n  </p>\n</div>\n",
@@ -1715,7 +1776,7 @@
                 "y": 80,
                 "wires": [
                     {
-                        "id": "2e31f7f8af8f83f2"
+                        "id": "f2d70cf2fe4903e1"
                     }
                 ]
             }
@@ -1726,11 +1787,11 @@
                 "y": 140,
                 "wires": [
                     {
-                        "id": "3401846a1da9f812",
+                        "id": "566153d744ca6d36",
                         "port": 0
                     },
                     {
-                        "id": "d2d7041bc33b4a8c",
+                        "id": "887424cc5305eadb",
                         "port": 0
                     }
                 ]
@@ -1741,9 +1802,9 @@
         "color": "#E2D96E"
     },
     {
-        "id": "2e31f7f8af8f83f2",
+        "id": "f2d70cf2fe4903e1",
         "type": "change",
-        "z": "88492ea3a74d3f8e",
+        "z": "330083ae8ff427f8",
         "name": "",
         "rules": [
             {
@@ -1771,14 +1832,14 @@
         "y": 80,
         "wires": [
             [
-                "e99628cb56d2ebc5"
+                "c39f5e62248ee3a4"
             ]
         ]
     },
     {
-        "id": "e99628cb56d2ebc5",
+        "id": "c39f5e62248ee3a4",
         "type": "http request",
-        "z": "88492ea3a74d3f8e",
+        "z": "330083ae8ff427f8",
         "name": "Weight Avg Docker",
         "method": "POST",
         "ret": "obj",
@@ -1795,14 +1856,14 @@
         "y": 160,
         "wires": [
             [
-                "3401846a1da9f812"
+                "566153d744ca6d36"
             ]
         ]
     },
     {
-        "id": "3401846a1da9f812",
+        "id": "566153d744ca6d36",
         "type": "function",
-        "z": "88492ea3a74d3f8e",
+        "z": "330083ae8ff427f8",
         "name": "Error Handler",
         "func": "if (msg.statusCode != 200) {\n    msg.payload = msg.copy_input;\n    return [null,msg];\n}\nreturn[msg,null];",
         "outputs": 2,
@@ -1815,15 +1876,15 @@
         "wires": [
             [],
             [
-                "97e9eb432174f922",
-                "d2d7041bc33b4a8c"
+                "c3693474db8976e1",
+                "887424cc5305eadb"
             ]
         ]
     },
     {
-        "id": "d2d7041bc33b4a8c",
-        "type": "subflow:7c8c78650dc65337",
-        "z": "88492ea3a74d3f8e",
+        "id": "887424cc5305eadb",
+        "type": "subflow:da362e744a99a41b",
+        "z": "330083ae8ff427f8",
         "name": "",
         "x": 720,
         "y": 240,
@@ -1832,9 +1893,9 @@
         ]
     },
     {
-        "id": "97e9eb432174f922",
+        "id": "c3693474db8976e1",
         "type": "debug",
-        "z": "88492ea3a74d3f8e",
+        "z": "330083ae8ff427f8",
         "name": "Error Docker Debug",
         "active": true,
         "tosidebar": true,
@@ -1849,7 +1910,7 @@
         "wires": []
     },
     {
-        "id": "97917f9349025747",
+        "id": "7aad426696768e58",
         "type": "subflow",
         "name": "Get Many Weather API Data",
         "info": "<div>\n  <p>\n    This subflow calculates the weighted averages of weather information from multiple weather APIs to provide a more precise estimation of the current weather condition.\n  </p>\n  <p>\n    It takes as input the latitude and longitude coordinates (as floats) specified in the <code>msg.city.lat</code> and <code>msg.city.lng</code> properties.\n    Additionally, you need to provide the API keys for the following weather APIs:\n  </p>\n  <ul>\n    <li>\n      <strong>OpenWeatherMap:</strong>\n      <a href=\"https://openweathermap.org/current\" target=\"_blank\">OpenWeatherMap API</a>\n      - Specify the API key in <code>msg.openweathermapapi_key</code>.\n    </li>\n    <li>\n      <strong>Tomorrow API:</strong>\n      <a href=\"https://docs.tomorrow.io/reference/welcome\" target=\"_blank\">Tomorrow API</a>\n      - Specify the API key in <code>msg.tomorrowapi_key</code>.\n    </li>\n    <li>\n      <strong>WeatherAPI:</strong>\n      <a href=\"https://www.weatherapi.com/docs/\" target=\"_blank\">WeatherAPI</a>\n      - Specify the API key in <code>msg.weatherapi_key</code>.\n    </li>\n  </ul>\n  <p>\n    Note that the <a href=\"https://open-meteo.com/en/docs\" target=\"_blank\">OpenMeteo API</a> is also used, but it does not require an API key.\n  </p>\n  <p>\n    The output can be found in <code>msg.payload</code> and it is an object similar to the response from OpenWeatherMap API, but with the values changed to the average weighted values calculated from all the previous APIs.\n  </p>\n</div>\n",
@@ -1860,7 +1921,7 @@
                 "y": 60,
                 "wires": [
                     {
-                        "id": "59fafc0222eb630b"
+                        "id": "aa2e388eae194cf1"
                     }
                 ]
             }
@@ -1871,7 +1932,7 @@
                 "y": 120,
                 "wires": [
                     {
-                        "id": "2da9d7f4e4ee24e2",
+                        "id": "03b4baf87e1c77fc",
                         "port": 0
                     }
                 ]
@@ -1882,9 +1943,9 @@
         "color": "#DDAA99"
     },
     {
-        "id": "38e3579e477112d9",
+        "id": "f7066215f1d45354",
         "type": "http request",
-        "z": "97917f9349025747",
+        "z": "7aad426696768e58",
         "name": "",
         "method": "GET",
         "ret": "obj",
@@ -1901,14 +1962,14 @@
         "y": 140,
         "wires": [
             [
-                "3bc10a6e7778e7a9"
+                "ea4448ef6109756d"
             ]
         ]
     },
     {
-        "id": "0a9b479d433d4fca",
+        "id": "fe2120d4f09ad1e2",
         "type": "function",
-        "z": "97917f9349025747",
+        "z": "7aad426696768e58",
         "name": "Weather APIs",
         "func": "var lat = msg.city.lat;\nvar lng = msg.city.lng;\nflow.set(\"lat\", lat);\nflow.set(\"lng\", lng);\nvar weatherapi_key = msg.weatherapi_key;\nvar openweathermapapi_key = msg.openweathermapapi_key;\nvar tommorowapi_key = msg.tommorowapi_key;\nvar weatherapi = {topic:\"weatherapi\", url:`http://api.weatherapi.com/v1/current.json?key=${weatherapi_key}&q=${lat},${lng}&aqi=no`}\nvar openweather = { topic: \"openweather\",url: `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=${openweathermapapi_key}&units=metric`}\nvar tommorowapi = { topic: \"tommorowapi\",url: `https://api.tomorrow.io/v4/weather/realtime?location=${lat},${lng}&apikey=${tommorowapi_key}`}\nvar openmeteoapi = { topic: \"openmeteoapi\", url: `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current_weather=true&hourly=temperature_2m,relativehumidity_2m,surface_pressure,cloudcover,visibility&forecast_days=1`}\nreturn [weatherapi, openweather, tommorowapi, openmeteoapi];",
         "outputs": 4,
@@ -1920,23 +1981,23 @@
         "y": 200,
         "wires": [
             [
-                "38e3579e477112d9"
+                "f7066215f1d45354"
             ],
             [
-                "13273d8f4dfc71da"
+                "0839519f36cbfabe"
             ],
             [
-                "e5d8838c1e3b8f2e"
+                "86a7bf90d754ce44"
             ],
             [
-                "9143737b55579be5"
+                "cf5f77f98ae95af1"
             ]
         ]
     },
     {
-        "id": "13273d8f4dfc71da",
+        "id": "0839519f36cbfabe",
         "type": "http request",
-        "z": "97917f9349025747",
+        "z": "7aad426696768e58",
         "name": "",
         "method": "GET",
         "ret": "obj",
@@ -1953,14 +2014,14 @@
         "y": 180,
         "wires": [
             [
-                "3bc10a6e7778e7a9"
+                "ea4448ef6109756d"
             ]
         ]
     },
     {
-        "id": "e5d8838c1e3b8f2e",
+        "id": "86a7bf90d754ce44",
         "type": "http request",
-        "z": "97917f9349025747",
+        "z": "7aad426696768e58",
         "name": "",
         "method": "GET",
         "ret": "obj",
@@ -1977,14 +2038,14 @@
         "y": 220,
         "wires": [
             [
-                "3bc10a6e7778e7a9"
+                "ea4448ef6109756d"
             ]
         ]
     },
     {
-        "id": "9143737b55579be5",
+        "id": "cf5f77f98ae95af1",
         "type": "http request",
-        "z": "97917f9349025747",
+        "z": "7aad426696768e58",
         "name": "",
         "method": "GET",
         "ret": "obj",
@@ -2001,14 +2062,14 @@
         "y": 260,
         "wires": [
             [
-                "3bc10a6e7778e7a9"
+                "ea4448ef6109756d"
             ]
         ]
     },
     {
-        "id": "3bc10a6e7778e7a9",
+        "id": "ea4448ef6109756d",
         "type": "join",
-        "z": "97917f9349025747",
+        "z": "7aad426696768e58",
         "name": "",
         "mode": "custom",
         "build": "object",
@@ -2029,22 +2090,22 @@
         "y": 200,
         "wires": [
             [
-                "77d7037c2390af12",
-                "9e527dbe43750841",
-                "876657fcde218c01",
-                "0bf88fa03a110855",
-                "331d036e06e7983e",
-                "4e1b04e1b58ed916",
-                "3333ebb82010e33b",
-                "68354f59231f6bfb",
-                "616d833b1fe24c67"
+                "de36d3ae8652bf48",
+                "195085d250f97aa9",
+                "d74f413d24f4c244",
+                "dfe3140457ac0303",
+                "779ee682bf9b5afb",
+                "38a2b6fef672d095",
+                "2ce4200189698d2b",
+                "4a9d90a6836d1be5",
+                "b3e02eb8537c616f"
             ]
         ]
     },
     {
-        "id": "77d7037c2390af12",
+        "id": "de36d3ae8652bf48",
         "type": "debug",
-        "z": "97917f9349025747",
+        "z": "7aad426696768e58",
         "name": "debug 60",
         "active": false,
         "tosidebar": true,
@@ -2058,9 +2119,9 @@
         "wires": []
     },
     {
-        "id": "9e527dbe43750841",
+        "id": "195085d250f97aa9",
         "type": "function",
-        "z": "97917f9349025747",
+        "z": "7aad426696768e58",
         "name": "Make list of temps & dates",
         "func": "var weatherapi_dict = {};\nvar openmeteoapi_dict = {};\nvar tommorowapi_dict = {};\nvar openweatherapi_dict = {};\nvar missing_keys = [];\nif (!msg.payload['weatherapi']['error']) {\n    weatherapi_dict = { \"date\": msg.payload['weatherapi']['current']['last_updated_epoch'] * 1000, \"value\": msg.payload['weatherapi']['current']['temp_c'] };\n} else {\n    missing_keys.push(\"weatherapi\");\n}\nif (!msg.payload['tommorowapi']['code']) {\n    tommorowapi_dict = { \"date\": Date.parse(msg.payload['tommorowapi']['data']['time']), \"value\": msg.payload['tommorowapi']['data']['values']['temperature'] };\n} else {\n    missing_keys.push(\"tommorowapi\");\n}\nif (msg.payload['openweather']['cod'] == 200) {\n    openweatherapi_dict = { \"date\": msg.payload['openweather']['dt'] * 1000, \"value\": msg.payload['openweather']['main']['temp'] };\n} else {\n    missing_keys.push(\"openweatherapi\");\n}\nopenmeteoapi_dict = { \"date\": Date.parse(msg.payload['openmeteoapi']['current_weather']['time']), \"value\": msg.payload['openmeteoapi']['current_weather']['temperature'] };\nmsg.payload = [weatherapi_dict, openmeteoapi_dict, openweatherapi_dict, tommorowapi_dict];\nmsg.missing_keys = missing_keys;\nmsg.topic = \"temperature\";\nreturn msg;\n",
         "outputs": 1,
@@ -2072,14 +2133,14 @@
         "y": 240,
         "wires": [
             [
-                "4e3c1f517d034485"
+                "ad809f1d260163d6"
             ]
         ]
     },
     {
-        "id": "876657fcde218c01",
+        "id": "d74f413d24f4c244",
         "type": "function",
-        "z": "97917f9349025747",
+        "z": "7aad426696768e58",
         "name": "Make list of windsp & dates",
         "func": "// wind speed is meters per second.\nvar weatherapi_dict = {};\nvar openmeteoapi_dict = {};\nvar tommorowapi_dict = {};\nvar openweatherapi_dict = {};\nvar missing_keys= [];\nif (!msg.payload['weatherapi']['error']) {\n    weatherapi_dict = { \"date\": msg.payload['weatherapi']['current']['last_updated_epoch'] * 1000, \"value\": msg.payload['weatherapi']['current']['wind_kph'] * 0.2778 };\n} else {\n    missing_keys.push(\"weatherapi\");\n}\nif (!msg.payload['tommorowapi']['code']) {\n    tommorowapi_dict = { \"date\": Date.parse(msg.payload['tommorowapi']['data']['time']), \"value\": msg.payload['tommorowapi']['data']['values']['windSpeed'] };\n} else {\n    missing_keys.push(\"tommorowapi\");\n}\nif (msg.payload['openweather']['cod'] == 200) {\n    openweatherapi_dict = { \"date\": msg.payload['openweather']['dt'] * 1000, \"value\": msg.payload['openweather']['wind']['speed'] };\n} else {\n    missing_keys.push(\"openweatherapi\");\n}\nopenmeteoapi_dict = { \"date\": Date.parse(msg.payload['openmeteoapi']['current_weather']['time']), \"value\": msg.payload['openmeteoapi']['current_weather']['windspeed'] * 0.2778 };\nmsg.payload = [weatherapi_dict, openmeteoapi_dict, openweatherapi_dict, tommorowapi_dict];\nmsg.missing_keys = missing_keys;\nmsg.topic = \"wind_speed\";\nreturn msg;\n",
         "outputs": 1,
@@ -2091,14 +2152,14 @@
         "y": 280,
         "wires": [
             [
-                "4e3c1f517d034485"
+                "ad809f1d260163d6"
             ]
         ]
     },
     {
-        "id": "0bf88fa03a110855",
+        "id": "dfe3140457ac0303",
         "type": "function",
-        "z": "97917f9349025747",
+        "z": "7aad426696768e58",
         "name": "Make list of pressure & dates",
         "func": "// wind speed is meters per second.\nconst currentTimestamp = Date.now();\nconst time_of_day = msg.payload['openmeteoapi']['hourly']['time'];\nvar latest_time = 0;\n// console.log(currentTimestamp);\nvar index = 0;\nfor(var time of time_of_day){\n    const time_ml = Date.parse(time);    // converts seconds to miliseconds.\n    if (time_ml <= currentTimestamp){\n        latest_time = time_ml;\n        index += 1;\n        console.log(latest_time);\n    } else {\n        break;\n    }\n}\nindex -= 1;\n// msg.payload = latest_time;\n\nvar weatherapi_dict = {};\nvar tommorowapi_dict = {};\nvar openweatherapi_dict = {};\nvar missing_keys = [];\nif (!msg.payload['weatherapi']['error']) {\n    weatherapi_dict = { \"date\": msg.payload['weatherapi']['current']['last_updated_epoch'] * 1000, \"value\": msg.payload['weatherapi']['current']['pressure_mb'] };\n} else {\n    missing_keys.push(\"weatherapi\");\n}\nvar openmeteoapi_dict = { \"date\": latest_time, \"value\": msg.payload['openmeteoapi']['hourly']['surface_pressure'][index]};\nif (!msg.payload['tommorowapi']['code']) {\n    tommorowapi_dict = { \"date\": Date.parse(msg.payload['tommorowapi']['data']['time']), \"value\": msg.payload['tommorowapi']['data']['values']['pressureSurfaceLevel'] };\n} else {\n    missing_keys.push(\"tommorowapi\");\n}\nif (msg.payload['openweather']['cod'] == 200) {\n    openweatherapi_dict = { \"date\": msg.payload['openweather']['dt'] * 1000, \"value\": msg.payload['openweather']['main']['pressure'] };\n} else {\n    missing_keys.push(\"openweatherapi\");\n}\nmsg.payload = [weatherapi_dict, openmeteoapi_dict, openweatherapi_dict, tommorowapi_dict];\nmsg.missing_keys = missing_keys;\nmsg.topic = \"pressure\";\nreturn msg;\n",
         "outputs": 1,
@@ -2110,14 +2171,14 @@
         "y": 320,
         "wires": [
             [
-                "4e3c1f517d034485"
+                "ad809f1d260163d6"
             ]
         ]
     },
     {
-        "id": "331d036e06e7983e",
+        "id": "779ee682bf9b5afb",
         "type": "function",
-        "z": "97917f9349025747",
+        "z": "7aad426696768e58",
         "name": "Make list of visibility & dates",
         "func": "// wind speed is meters per second.\nconst currentTimestamp = Date.now();\nconst time_of_day = msg.payload['openmeteoapi']['hourly']['time'];\nvar latest_time = 0;\n// console.log(currentTimestamp);\nvar index = 0;\nfor(var time of time_of_day){\n    const time_ml = Date.parse(time);    // converts seconds to miliseconds.\n    if (time_ml <= currentTimestamp){\n        latest_time = time_ml;\n        index += 1;\n        console.log(latest_time);\n    } else {\n        break;\n    }\n}\nindex -= 1;\n// msg.payload = latest_time;\nvar weatherapi_dict = {};\nvar tommorowapi_dict = {};\nvar openweatherapi_dict = {};\nvar missing_keys = [];\nif (!msg.payload['weatherapi']['error']) {\n    weatherapi_dict = { \"date\": msg.payload['weatherapi']['current']['last_updated_epoch'] * 1000, \"value\": msg.payload['weatherapi']['current']['vis_km'] * 1000 };\n} else {\n    missing_keys.push(\"weatherapi\");\n}\nvar openmeteoapi_dict = { \"date\": latest_time, \"value\": msg.payload['openmeteoapi']['hourly']['visibility'][index]};\nif (!msg.payload['tommorowapi']['code']) {\n    tommorowapi_dict = { \"date\": Date.parse(msg.payload['tommorowapi']['data']['time']), \"value\": msg.payload['tommorowapi']['data']['values']['visibility'] * 1000 };\n} else {\n    missing_keys.push(\"tommorowapi\");\n}\nif (msg.payload['openweather']['cod'] == 200) {\n    openweatherapi_dict = { \"date\": msg.payload['openweather']['dt'] * 1000, \"value\": msg.payload['openweather']['visibility'] };\n} else {\n    missing_keys.push(\"openweatherapi\");\n}\nmsg.payload = [weatherapi_dict, openmeteoapi_dict, openweatherapi_dict, tommorowapi_dict];\nmsg.missing_keys=missing_keys;\nmsg.topic = \"visibility\";\nreturn msg;\n",
         "outputs": 1,
@@ -2129,14 +2190,14 @@
         "y": 360,
         "wires": [
             [
-                "4e3c1f517d034485"
+                "ad809f1d260163d6"
             ]
         ]
     },
     {
-        "id": "4e1b04e1b58ed916",
+        "id": "38a2b6fef672d095",
         "type": "function",
-        "z": "97917f9349025747",
+        "z": "7aad426696768e58",
         "name": "Make list of humidity & dates",
         "func": "// wind speed is meters per second.\nconst currentTimestamp = Date.now();\nconst time_of_day = msg.payload['openmeteoapi']['hourly']['time'];\nvar latest_time = 0;\n// console.log(currentTimestamp);\nvar index = 0;\nfor(var time of time_of_day){\n    const time_ml = Date.parse(time);    // converts seconds to miliseconds.\n    if (time_ml <= currentTimestamp){\n        latest_time = time_ml;\n        index += 1;\n        console.log(latest_time);\n    } else {\n        break;\n    }\n}\nindex -= 1;\n\nvar weatherapi_dict = {};\nvar tommorowapi_dict = {};\nvar openweatherapi_dict = {};\nvar missing_keys = [];\nif (!msg.payload['weatherapi']['error']) {\n    weatherapi_dict = { \"date\": msg.payload['weatherapi']['current']['last_updated_epoch'] * 1000, \"value\": msg.payload['weatherapi']['current']['humidity'] };\n} else {\n    missing_keys.push(\"weatherapi\");\n}\nvar openmeteoapi_dict = { \"date\": latest_time, \"value\": msg.payload['openmeteoapi']['hourly']['relativehumidity_2m'][index]};\nif (!msg.payload['tommorowapi']['code']) {\n    tommorowapi_dict = { \"date\": Date.parse(msg.payload['tommorowapi']['data']['time']), \"value\": msg.payload['tommorowapi']['data']['values']['humidity'] };\n} else {\n    missing_keys.push(\"tommorowapi\");\n}\nif (msg.payload['openweather']['cod'] == 200) {\n    openweatherapi_dict = { \"date\": msg.payload['openweather']['dt'] * 1000, \"value\": msg.payload['openweather']['main']['humidity'] };\n} else {\n    missing_keys.push(\"openweatherapi\");\n}\nmsg.payload = [weatherapi_dict, openmeteoapi_dict, openweatherapi_dict, tommorowapi_dict];\nmsg.missing_keys =missing_keys;\nmsg.topic = \"humidity\";\nreturn msg;\n",
         "outputs": 1,
@@ -2148,14 +2209,14 @@
         "y": 400,
         "wires": [
             [
-                "4e3c1f517d034485"
+                "ad809f1d260163d6"
             ]
         ]
     },
     {
-        "id": "3333ebb82010e33b",
+        "id": "2ce4200189698d2b",
         "type": "function",
-        "z": "97917f9349025747",
+        "z": "7aad426696768e58",
         "name": "Make list of cloud & dates",
         "func": "// wind speed is meters per second.\nconst currentTimestamp = Date.now();\nconst time_of_day = msg.payload['openmeteoapi']['hourly']['time'];\nvar latest_time = 0;\n// console.log(currentTimestamp);\nvar index = 0;\nfor(var time of time_of_day){\n    const time_ml = Date.parse(time);    // converts seconds to miliseconds.\n    if (time_ml <= currentTimestamp){\n        latest_time = time_ml;\n        index += 1;\n        console.log(latest_time);\n    } else {\n        break;\n    }\n}\nindex -= 1;\n// msg.payload = latest_time;\nconsole.log(index);\n// var weatherapi_dict = { \"date\": msg.payload['weatherapi']['current']['last_updated_epoch'] * 1000, \"value\": msg.payload['weatherapi']['current']['cloud']};\n// var openmeteoapi_dict = { \"date\": latest_time, \"value\": msg.payload['openmeteoapi']['hourly']['cloudcover'][index]};\n// var tommorowapi_dict = { \"date\": Date.parse(msg.payload['tommorowapi']['data']['time']), \"value\": msg.payload['tommorowapi']['data']['values']['cloudCover']};\n// var openweatherapi_dict = { \"date\": msg.payload['openweather']['dt'] * 1000, \"value\": msg.payload['openweather']['clouds']['all']};\n// msg.payload = [weatherapi_dict,openmeteoapi_dict,openweatherapi_dict,tommorowapi_dict];\n// msg.topic = \"cloud\";\n// return msg;\n\nvar weatherapi_dict = {};\nvar tommorowapi_dict = {};\nvar openweatherapi_dict = {};\nvar missing_keys = [];\nif (!msg.payload['weatherapi']['error']) {\n    weatherapi_dict = { \"date\": msg.payload['weatherapi']['current']['last_updated_epoch'] * 1000, \"value\": msg.payload['weatherapi']['current']['cloud'] };\n} else {\n    missing_keys.push(\"weatherapi\");\n}\nvar openmeteoapi_dict = { \"date\": latest_time, \"value\": msg.payload['openmeteoapi']['hourly']['cloudcover'][index]};\nif (!msg.payload['tommorowapi']['code']) {\n    tommorowapi_dict = { \"date\": Date.parse(msg.payload['tommorowapi']['data']['time']), \"value\": msg.payload['tommorowapi']['data']['values']['cloudCover'] };\n} else {\n    missing_keys.push(\"tommorowapi\");\n}\nif (msg.payload['openweather']['cod'] == 200) {\n    openweatherapi_dict = { \"date\": msg.payload['openweather']['dt'] * 1000, \"value\": msg.payload['openweather']['clouds']['all'] };\n} else {\n    missing_keys.push(\"openweatherapi\");\n}\nmsg.payload = [weatherapi_dict, openmeteoapi_dict, openweatherapi_dict, tommorowapi_dict];\nmsg.missing_keys = missing_keys;\nmsg.topic = \"cloud\";\nreturn msg;\n",
         "outputs": 1,
@@ -2167,14 +2228,14 @@
         "y": 440,
         "wires": [
             [
-                "4e3c1f517d034485"
+                "ad809f1d260163d6"
             ]
         ]
     },
     {
-        "id": "53f0baf29826bf3f",
+        "id": "12f44e7a34caf128",
         "type": "join",
-        "z": "97917f9349025747",
+        "z": "7aad426696768e58",
         "name": "",
         "mode": "custom",
         "build": "object",
@@ -2195,15 +2256,15 @@
         "y": 320,
         "wires": [
             [
-                "2da9d7f4e4ee24e2",
-                "d281ae07a39f14c1"
+                "03b4baf87e1c77fc",
+                "082f659cc9cd44c4"
             ]
         ]
     },
     {
-        "id": "68354f59231f6bfb",
+        "id": "4a9d90a6836d1be5",
         "type": "function",
-        "z": "97917f9349025747",
+        "z": "7aad426696768e58",
         "name": "Returns only openweathermap",
         "func": "var value_weatherapi=0;\nvar value_tommorow=0;\nvar value_openweather=0;\nvar missing_keys = [];\nif (!msg.payload['weatherapi']['error']) {\n    value_weatherapi = msg.payload['weatherapi']['current']['last_updated_epoch'] * 1000;\n} else {\n    missing_keys.push(\"weatherapi\");\n}\nif (!msg.payload['tommorowapi']['code']) {\n    value_tommorow = Date.parse(msg.payload['tommorowapi']['data']['time']);\n} else {\n    missing_keys.push(\"tommorowapi\");\n}\nif (msg.payload['openweather']['cod'] == 200) {\n    value_openweather = msg.payload['openweather']['dt'] * 1000;\n} else {\n    missing_keys.push(\"openweatherapi\");\n}\nvar max_date = Math.max(value_weatherapi, value_tommorow, Date.parse(msg.payload['openmeteoapi']['current_weather']['time']), value_openweather);\nconsole.log(\"MAXDATE:\"+max_date);\n// console.log(\"DATE DEBUGGING =================== \");\n// console.log(\"WEATHER_API:\"+Date.parse(msg.payload['weatherapi']['current']['last_updated']));\n// console.log(\"OPENMETEO_API:\"+Date.parse(msg.payload['openmeteoapi']['current_weather']['time']));\n// console.log(\"TOMMOROW_API:\"+Date.parse(msg.payload['tommorowapi']['data']['time']));\n// console.log(\"OPENWEATHERMAP:\"+msg.payload['openweather']['dt'] * 1000);\n\n// var open = msg.payload[\"openweather\"];\n// open['dt'] = max_date;\n// msg.payload = {};\n// msg.payload = open;\n// msg.missing_keys = missing_keys;\n// msg.topic = \"openweather\";\n// return msg;\n\nif (msg.payload['openweather']['cod'] == 200) {\n    let open = msg.payload[\"openweather\"];\n    open['dt'] = max_date;\n    msg.payload = open;\n    msg.missing_keys = missing_keys;\n    msg.topic = \"openweather\";\n    return msg;\n\n}\nmsg.payload = {};\nlet open = {};\nlet lat = parseFloat(flow.get(\"lat\"));\nlet lng = parseFloat(flow.get(\"lng\"));\n// openweathermap['coord'] = msg.payload['openweather']['coord'];\n// openweathermap['weather'] = msg.payload['openweather']['weather'];\n// openweathermap['sys'] = msg.payload['openweather']['sys'];\n// openweathermap['name'] = msg.payload['openweather']['name'];\nopen[\"coord\"] = {\"lon\":lng,\"lat\":lat};\nopen[\"weather\"] = [{ \"id\": 0, \"main\": \"Unknown\", \"description\": \"unknown\", \"icon\":\"50d\"}];\nopen[\"name\"] = \"unknown\";\nopen[\"sys\"] = {\"country\":\"unknown\",\"sunrise\":\"unknown\",\"sunset\":\"unknown\"};\nopen['dt'] = max_date;\nmsg.payload = open;\nmsg.missing_keys = missing_keys;\nmsg.topic = \"openweather\";\n\nreturn msg;\n",
         "outputs": 1,
@@ -2215,15 +2276,15 @@
         "y": 140,
         "wires": [
             [
-                "53f0baf29826bf3f",
-                "fbfd8e7da12a6c23"
+                "12f44e7a34caf128",
+                "34374f3c89dde193"
             ]
         ]
     },
     {
-        "id": "2da9d7f4e4ee24e2",
+        "id": "03b4baf87e1c77fc",
         "type": "function",
-        "z": "97917f9349025747",
+        "z": "7aad426696768e58",
         "name": "Puts avg data in Openweather map Template",
         "func": "var payload = msg.payload[\"avg_data\"][\"value\"][\"data\"];\n// var openweathermap = msg.payload['openweather'];\nvar openweathermap = {};\nopenweathermap['main'] = {};\nopenweathermap['visibility'] = {};\nopenweathermap['wind'] = {};\nopenweathermap['clouds'] = {};\nopenweathermap['coord'] = msg.payload['openweather']['coord'];\nopenweathermap['weather'] = msg.payload['openweather']['weather'];\nopenweathermap['sys'] = msg.payload['openweather']['sys'];\nopenweathermap['name'] = msg.payload['openweather']['name'];\n// openweathermap['main']['temp'] = payload['temperature'];\n// openweathermap['main']['pressure'] = payload['pressure'];\n// openweathermap['main']['humidity'] = payload['humidity'];\n// openweathermap['visibility'] = payload['visibility'];\n// openweathermap['wind']['speed'] = payload['wind_speed'];\n// openweathermap['clouds']['all'] = payload['cloud'];\n// openweathermap['wind']['deg'] = payload['wind_dir'];\nopenweathermap['main']['temp'] = parseFloat(payload['temperature'].toFixed(2));\nopenweathermap['main']['pressure'] = parseFloat(payload['pressure'].toFixed(2));\nopenweathermap['main']['humidity'] = parseFloat(payload['humidity'].toFixed(2));\nopenweathermap['visibility'] = parseFloat(payload['visibility'].toFixed(2));\nopenweathermap['wind']['speed'] = parseFloat(payload['wind_speed'].toFixed(2));\nopenweathermap['clouds']['all'] = parseFloat(payload['cloud'].toFixed(2));\nopenweathermap['wind']['deg'] = parseFloat(payload['wind_dir'].toFixed(2));\nopenweathermap['dt'] = msg.payload['openweather']['dt'];\ndelete openweathermap.main.feels_like;\ndelete openweathermap.main.temp_min;\ndelete openweathermap.main.temp_max;\nmsg.payload = {};\nmsg.payload = openweathermap;\nmsg.topic=\"\";\nreturn msg;",
         "outputs": 1,
@@ -2238,9 +2299,9 @@
         ]
     },
     {
-        "id": "616d833b1fe24c67",
+        "id": "b3e02eb8537c616f",
         "type": "function",
-        "z": "97917f9349025747",
+        "z": "7aad426696768e58",
         "name": "Make list of winddir & dates",
         "func": "// var weatherapi_dict = { \"date\": msg.payload['weatherapi']['current']['last_updated_epoch']*1000, \"value\": msg.payload['weatherapi']['current']['wind_degree']};\n// var openmeteoapi_dict = { \"date\": Date.parse(msg.payload['openmeteoapi']['current_weather']['time']), \"value\": msg.payload['openmeteoapi']['current_weather']['winddirection']};\n// var tommorowapi_dict = { \"date\": Date.parse(msg.payload['tommorowapi']['data']['time']), \"value\": msg.payload['tommorowapi']['data']['values']['windDirection'] };\n// var openweatherapi_dict = { \"date\": msg.payload['openweather']['dt'] * 1000, \"value\": msg.payload['openweather']['wind']['deg']};\n// msg.payload = [weatherapi_dict,openmeteoapi_dict,openweatherapi_dict,tommorowapi_dict];\n// msg.topic = \"wind_dir\";\n// return msg;\nvar weatherapi_dict = {};\nvar openmeteoapi_dict = {};\nvar tommorowapi_dict = {};\nvar openweatherapi_dict = {};\nvar missing_keys=[];\nif (!msg.payload['weatherapi']['error']) {\n    weatherapi_dict = { \"date\": msg.payload['weatherapi']['current']['last_updated_epoch'] * 1000, \"value\": msg.payload['weatherapi']['current']['wind_degree'] };\n} else {\n    missing_keys.push(\"weatherapi\");\n}\nif (!msg.payload['tommorowapi']['code']) {\n    tommorowapi_dict = { \"date\": Date.parse(msg.payload['tommorowapi']['data']['time']), \"value\": msg.payload['tommorowapi']['data']['values']['windDirection'] };\n} else {\n    missing_keys.push(\"tommorowapi\");\n}\nif (msg.payload['openweather']['cod'] == 200) {\n    openweatherapi_dict = { \"date\": msg.payload['openweather']['dt'] * 1000, \"value\": msg.payload['openweather']['wind']['deg'] };\n} else {\n    missing_keys.push(\"openweatherapi\");\n}\nopenmeteoapi_dict = { \"date\": Date.parse(msg.payload['openmeteoapi']['current_weather']['time']), \"value\": msg.payload['openmeteoapi']['current_weather']['winddirection'] };\nmsg.payload = [weatherapi_dict, openmeteoapi_dict, openweatherapi_dict, tommorowapi_dict];\nmsg.missing_keys = missing_keys;\nmsg.topic = \"wind_dir\";\nreturn msg;\n",
         "outputs": 1,
@@ -2252,14 +2313,14 @@
         "y": 200,
         "wires": [
             [
-                "4e3c1f517d034485"
+                "ad809f1d260163d6"
             ]
         ]
     },
     {
-        "id": "7ab7440ed872a01f",
+        "id": "a5e8c637813690a7",
         "type": "inject",
-        "z": "97917f9349025747",
+        "z": "7aad426696768e58",
         "name": "Test Inject",
         "props": [
             {
@@ -2282,14 +2343,14 @@
         "y": 620,
         "wires": [
             [
-                "c0ee97f9a4919d9c"
+                "c6dc03e0aef6e77c"
             ]
         ]
     },
     {
-        "id": "4e3c1f517d034485",
+        "id": "ad809f1d260163d6",
         "type": "join",
-        "z": "97917f9349025747",
+        "z": "7aad426696768e58",
         "name": "",
         "mode": "custom",
         "build": "object",
@@ -2310,15 +2371,15 @@
         "y": 360,
         "wires": [
             [
-                "4d651bce3078a81d",
-                "440499ae221c711a"
+                "fcf659bc5ee964b7",
+                "a23fd8f06fc07dea"
             ]
         ]
     },
     {
-        "id": "4d651bce3078a81d",
+        "id": "fcf659bc5ee964b7",
         "type": "debug",
-        "z": "97917f9349025747",
+        "z": "7aad426696768e58",
         "name": "debug 65",
         "active": false,
         "tosidebar": true,
@@ -2332,9 +2393,9 @@
         "wires": []
     },
     {
-        "id": "d281ae07a39f14c1",
+        "id": "082f659cc9cd44c4",
         "type": "debug",
-        "z": "97917f9349025747",
+        "z": "7aad426696768e58",
         "name": "debug 66",
         "active": false,
         "tosidebar": true,
@@ -2348,9 +2409,9 @@
         "wires": []
     },
     {
-        "id": "ef885a4c499deeab",
+        "id": "b8385aba69e641b9",
         "type": "change",
-        "z": "97917f9349025747",
+        "z": "7aad426696768e58",
         "name": "",
         "rules": [
             {
@@ -2370,14 +2431,14 @@
         "y": 420,
         "wires": [
             [
-                "53f0baf29826bf3f"
+                "12f44e7a34caf128"
             ]
         ]
     },
     {
-        "id": "c0ee97f9a4919d9c",
+        "id": "c6dc03e0aef6e77c",
         "type": "change",
-        "z": "97917f9349025747",
+        "z": "7aad426696768e58",
         "name": "REVERSE SORT FALSE",
         "rules": [
             {
@@ -2397,14 +2458,14 @@
         "y": 580,
         "wires": [
             [
-                "6a8441b76c571274"
+                "2b18ccaf41d8225f"
             ]
         ]
     },
     {
-        "id": "440499ae221c711a",
+        "id": "a23fd8f06fc07dea",
         "type": "function",
-        "z": "97917f9349025747",
+        "z": "7aad426696768e58",
         "name": "Correct data set",
         "func": "var data = msg.payload;\n// Remove empty values for each key\nfor (const key in data) {\n    if (Array.isArray(data[key])) {\n        data[key] = data[key].filter(item => Object.keys(item).length !== 0);\n    }\n}\nmsg.payload = {};\nmsg.payload.value = {};\nmsg.payload.value[\"data\"] = data;\nconsole.log(msg.payload.value[\"data\"]);\nreturn msg;",
         "outputs": 1,
@@ -2416,27 +2477,27 @@
         "y": 520,
         "wires": [
             [
-                "c0ee97f9a4919d9c"
+                "c6dc03e0aef6e77c"
             ]
         ]
     },
     {
-        "id": "6a8441b76c571274",
-        "type": "subflow:88492ea3a74d3f8e",
-        "z": "97917f9349025747",
+        "id": "2b18ccaf41d8225f",
+        "type": "subflow:330083ae8ff427f8",
+        "z": "7aad426696768e58",
         "name": "",
         "x": 1730,
         "y": 500,
         "wires": [
             [
-                "ef885a4c499deeab"
+                "b8385aba69e641b9"
             ]
         ]
     },
     {
-        "id": "59fafc0222eb630b",
+        "id": "aa2e388eae194cf1",
         "type": "delay",
-        "z": "97917f9349025747",
+        "z": "7aad426696768e58",
         "name": "",
         "pauseType": "delay",
         "timeout": "2",
@@ -2454,14 +2515,14 @@
         "y": 60,
         "wires": [
             [
-                "0a9b479d433d4fca"
+                "fe2120d4f09ad1e2"
             ]
         ]
     },
     {
-        "id": "fbfd8e7da12a6c23",
+        "id": "34374f3c89dde193",
         "type": "function",
-        "z": "97917f9349025747",
+        "z": "7aad426696768e58",
         "name": "Alert Missing API_Keys",
         "func": "const missing_keys = msg.missing_keys;\nif (missing_keys && missing_keys.length == 0) {\n    return [null, msg];\n}\nlet s = \"The Following Keys are not valid or not properly configured: \";\nfor (let mk of missing_keys) {\n    if (mk === \"openweatherapi\") {\n        s += mk + \" (openweatherapi key loss will result in data-loss in gui), \";\n    } else {\n        s += mk + \", \";\n    }\n}\ns = s.slice(0, -2) + \".\";\nif (missing_keys.length == 3) {\n    s += \" The only accessible api is openmeteo (collecting data only from there).\"\n}\nmsg.payload = s;\nreturn [msg, null];",
         "outputs": 2,
@@ -2473,15 +2534,15 @@
         "y": 40,
         "wires": [
             [
-                "76f3bfbf1d5549b4"
+                "8337b426c5c6fabc"
             ],
             []
         ]
     },
     {
-        "id": "76f3bfbf1d5549b4",
+        "id": "8337b426c5c6fabc",
         "type": "debug",
-        "z": "97917f9349025747",
+        "z": "7aad426696768e58",
         "name": "Missing Keys debug",
         "active": true,
         "tosidebar": true,
@@ -2496,7 +2557,7 @@
         "wires": []
     },
     {
-        "id": "a5a5cf1a89289ca8",
+        "id": "ee89b44531c9be79",
         "type": "tab",
         "label": "GUI City Results",
         "disabled": false,
@@ -2504,9 +2565,9 @@
         "env": []
     },
     {
-        "id": "c453ae6917f0d93f",
+        "id": "df6d9480edab8953",
         "type": "function",
-        "z": "a5a5cf1a89289ca8",
+        "z": "ee89b44531c9be79",
         "name": "filter",
         "func": "var city = msg.city;\nglobal.set(\"current_city\", city);\nvar select_query = `SELECT * FROM cities_table \nJOIN weather_table ON cities_table.geonameId = weather_table.geonameId \nJOIN image_table ON cities_table.geonameId = image_table.geonameId \nWHERE cities_table.geonameId = ${city.geonameId}\n`;\nmsg.topic = select_query;\nreturn msg;",
         "outputs": 1,
@@ -2518,14 +2579,14 @@
         "y": 200,
         "wires": [
             [
-                "088e1ec67857516f"
+                "67e0174a2782b991"
             ]
         ]
     },
     {
-        "id": "088e1ec67857516f",
+        "id": "67e0174a2782b991",
         "type": "sqlite",
-        "z": "a5a5cf1a89289ca8",
+        "z": "ee89b44531c9be79",
         "mydb": "e1b7d6f10fa6ce00",
         "sqlquery": "msg.topic",
         "sql": "",
@@ -2534,15 +2595,15 @@
         "y": 220,
         "wires": [
             [
-                "91c3b71ca31b0130",
-                "2d358d46a948a23c"
+                "d7a77581bed512ec",
+                "96434b8a909bd334"
             ]
         ]
     },
     {
-        "id": "91c3b71ca31b0130",
+        "id": "d7a77581bed512ec",
         "type": "debug",
-        "z": "a5a5cf1a89289ca8",
+        "z": "ee89b44531c9be79",
         "name": "debug 43",
         "active": false,
         "tosidebar": true,
@@ -2557,9 +2618,9 @@
         "wires": []
     },
     {
-        "id": "a40609c760f10cc3",
+        "id": "f5d9343d7baf0595",
         "type": "inject",
-        "z": "a5a5cf1a89289ca8",
+        "z": "ee89b44531c9be79",
         "name": "",
         "props": [
             {
@@ -2577,14 +2638,14 @@
         "y": 120,
         "wires": [
             [
-                "c453ae6917f0d93f"
+                "df6d9480edab8953"
             ]
         ]
     },
     {
-        "id": "a4696d7d500b905d",
+        "id": "1f3a10f607cc249c",
         "type": "function",
-        "z": "a5a5cf1a89289ca8",
+        "z": "ee89b44531c9be79",
         "name": "function 23",
         "func": "try {\n    var city = msg.payload[0]; //this has all the rankings\n    city.name = city.city_name.charAt(0).toUpperCase() + city.city_name.slice(1);\n    msg.payload[0].city_name = city.name;\n    return [msg, null];\n}\ncatch(error) {\n    return [null, msg];\n}",
         "outputs": 2,
@@ -2596,15 +2657,15 @@
         "y": 500,
         "wires": [
             [
-                "646e5a253d33c4cb"
+                "fcf45c86a2cd0e8c"
             ],
             []
         ]
     },
     {
-        "id": "646e5a253d33c4cb",
+        "id": "fcf45c86a2cd0e8c",
         "type": "ui_template",
-        "z": "a5a5cf1a89289ca8",
+        "z": "ee89b44531c9be79",
         "group": "07c2498f17a87e52",
         "name": "City Image",
         "order": 5,
@@ -2623,9 +2684,9 @@
         ]
     },
     {
-        "id": "970766eeefe514c4",
+        "id": "c372c03f9d92f48d",
         "type": "delay",
-        "z": "a5a5cf1a89289ca8",
+        "z": "ee89b44531c9be79",
         "name": "",
         "pauseType": "delay",
         "timeout": "1",
@@ -2643,14 +2704,14 @@
         "y": 200,
         "wires": [
             [
-                "c453ae6917f0d93f"
+                "df6d9480edab8953"
             ]
         ]
     },
     {
-        "id": "0ca3ef6ed4733495",
+        "id": "45495272c771ec64",
         "type": "function",
-        "z": "a5a5cf1a89289ca8",
+        "z": "ee89b44531c9be79",
         "name": "function 24",
         "func": "const mon = [\n    \"housing\",\n    \"cost_of_living\",\n    \"startups\",\n    \"venture_capital\",\n    \"travel_connectivity\",\n    \"commute\",\n    \"business_freedom\",\n    \"safety\",\n    \"healthcare\",\n    \"education\",\n    \"environmental_quality\",\n    \"economy\",\n    \"taxation\",\n    \"internet_access\",\n    \"leisure_culture\",\n    \"tolerance\",\n    \"outdoors\"\n]\n\ntry {\n    var city = msg.payload[0];\n    var rankings = {};\n    for (var i = 0; i < mon.length; i++) {\n        var attr = mon[i];\n        var value = parseFloat(city[attr]).toFixed(2);\n        if (value !== \"0.00\") {\n            rankings[attr] = value;\n        }\n    }\n    let labels = Object.keys(rankings);\n    let data = Object.values(rankings);\n    msg.payload = [{\n        \"series\": [\"rank\"],\n        \"data\": [data],\n        \"labels\": labels\n    }];\n    msg.payload[0].labels = msg.payload[0].labels.map(label => label.charAt(0).toUpperCase() + label.slice(1));\n    return [msg, null];\n} catch(error) {\n    // do nothing\n    return [null, msg];\n}\n",
         "outputs": 2,
@@ -2662,15 +2723,15 @@
         "y": 440,
         "wires": [
             [
-                "0c80acf997d2703e"
+                "9a83be1434949c1b"
             ],
             []
         ]
     },
     {
-        "id": "0c80acf997d2703e",
+        "id": "9a83be1434949c1b",
         "type": "ui_chart",
-        "z": "a5a5cf1a89289ca8",
+        "z": "ee89b44531c9be79",
         "name": "",
         "group": "07c2498f17a87e52",
         "order": 6,
@@ -2712,9 +2773,9 @@
         ]
     },
     {
-        "id": "3ce1ba73f7ed634e",
+        "id": "bdff4821e5477020",
         "type": "ui_chart",
-        "z": "a5a5cf1a89289ca8",
+        "z": "ee89b44531c9be79",
         "name": "",
         "group": "07c2498f17a87e52",
         "order": 8,
@@ -2756,9 +2817,9 @@
         ]
     },
     {
-        "id": "2fd0bdfb170abbb2",
+        "id": "127cb2fb6a397186",
         "type": "function",
-        "z": "a5a5cf1a89289ca8",
+        "z": "ee89b44531c9be79",
         "name": "function 25",
         "func": "var mon = [\n    \"weathercode\",\n    \"temperature\",\n    \"uv_index_max\",\n    \"uv_index_clear_sky_max\",\n    \"rain_sum\",\n    \"snowfall_sum\",\n    \"windspeed_10m_max\",\n    //\"winddirection_10m_dominant\",\n    \"shortwave_radiation_sum\"\n]\ntry {\n    var data_res = msg.payload;\n    var data = {};\n    for (var i = 0; i < mon.length; i++) {\n        data[mon[i]] = [];\n        for (var j = 0; j < data_res.length; j++) {\n            data[mon[i]].push({ \"x\": data_res[j][\"time\"], \"y\": data_res[j][mon[i]]});\n        }\n    }\n\n    // console.log(data);\n    let labels = Object.keys(data);\n    let values = Object.values(data);\n    // console.log(values);\n\n    msg.payload = [{\n        // \"series\": [\"A\", \"B\", \"C\"], // names - labels\n        \"series\": labels,\n        // data -> the enviroment forecast. x = date and y = value -> should be in the same order as series.\n        // \"data\": [\n        //     [{ \"x\": \"2023-04-30\", \"y\": 5 }, { \"x\": \"2023-05-01\", \"y\": 4 }, { \"x\": \"2023-05-02\", \"y\": 2 }],\n        //     [{ \"x\": \"2023-04-30\", \"y\": 6 }, { \"x\": \"2023-05-01\", \"y\": 7 }, { \"x\": \"2023-05-02\", \"y\": 6 }],\n        //     [{ \"x\": \"2023-04-30\", \"y\": 7 }, { \"x\": \"2023-05-01\", \"y\": 7 }, { \"x\": \"2023-05-02\", \"y\": 7 }]\n        // ],\n        \"data\": values,\n        \"labels\": [\"\"]\n    }]\n    return [msg, null];\n} catch(error) {\n    // do nothing.\n    return [null, msg];\n}",
         "outputs": 1,
@@ -2770,14 +2831,14 @@
         "y": 300,
         "wires": [
             [
-                "3ce1ba73f7ed634e"
+                "bdff4821e5477020"
             ]
         ]
     },
     {
-        "id": "3226250136f1cf2c",
+        "id": "77a7ac525e087148",
         "type": "ui_button",
-        "z": "a5a5cf1a89289ca8",
+        "z": "ee89b44531c9be79",
         "name": "",
         "group": "07c2498f17a87e52",
         "order": 3,
@@ -2798,15 +2859,15 @@
         "y": 320,
         "wires": [
             [
-                "01a7270a3d7d672e",
-                "9b2a79caf5637dba"
+                "e9f9a00b774a0b38",
+                "f4047a841829fdeb"
             ]
         ]
     },
     {
-        "id": "9d15ba1972c84b26",
+        "id": "3fdf745bcaf5fba7",
         "type": "ui_button",
-        "z": "a5a5cf1a89289ca8",
+        "z": "ee89b44531c9be79",
         "name": "",
         "group": "07c2498f17a87e52",
         "order": 4,
@@ -2827,14 +2888,14 @@
         "y": 380,
         "wires": [
             [
-                "01a7270a3d7d672e"
+                "e9f9a00b774a0b38"
             ]
         ]
     },
     {
-        "id": "149a962a1183be90",
+        "id": "8685b75813b23c9a",
         "type": "debug",
-        "z": "a5a5cf1a89289ca8",
+        "z": "ee89b44531c9be79",
         "name": "debug 44",
         "active": false,
         "tosidebar": true,
@@ -2849,9 +2910,9 @@
         "wires": []
     },
     {
-        "id": "2d358d46a948a23c",
+        "id": "96434b8a909bd334",
         "type": "function",
-        "z": "a5a5cf1a89289ca8",
+        "z": "ee89b44531c9be79",
         "name": "function 26",
         "func": "// Get the value of the global context with the key 'current_cities'\nvar myList = global.get('current_cities');\n\n// If the value doesn't exist, create an empty array\nif (!myList) {\n    myList = [];\n}\n\n// Check if msg.payload[0].city_name already exists in myList\nvar cityExists = myList.some(function (cityObj) {\n    return cityObj.city_name === msg.payload[0].city_name;\n});\n\n// If the city does not exist, push msg.payload to myList\nif (!cityExists) {\n    myList.push(msg.payload);\n}\n\n// Set the value of the global context with the key 'current_cities' to the updated list\nglobal.set('current_cities', myList);\n\nreturn msg;\n",
         "outputs": 1,
@@ -2863,14 +2924,14 @@
         "y": 220,
         "wires": [
             [
-                "071764d82d6e0f54"
+                "a9d94dfa9d31f013"
             ]
         ]
     },
     {
-        "id": "071764d82d6e0f54",
+        "id": "a9d94dfa9d31f013",
         "type": "debug",
-        "z": "a5a5cf1a89289ca8",
+        "z": "ee89b44531c9be79",
         "name": "debug 45",
         "active": false,
         "tosidebar": true,
@@ -2885,9 +2946,9 @@
         "wires": []
     },
     {
-        "id": "01a7270a3d7d672e",
+        "id": "e9f9a00b774a0b38",
         "type": "function",
-        "z": "a5a5cf1a89289ca8",
+        "z": "ee89b44531c9be79",
         "name": "function 30",
         "func": "var counter = global.get('current_counter');\n\n// console.log(msg.payload);\n\nif(msg.payload) {   // next\n    // console.log(\"Next\");\n    counter += 1;\n} else {    // previous\n    // console.log(\"Previous\");\n    counter -= 1;\n}\n\n\nglobal.set('current_counter', counter);\n\nvar current_country = global.get(\"current_country\");\nif (current_country != \"0\") {\n    global.set(\"current_country\", \"0\");\n    msg.payload = current_country;\n    var select_query = `SELECT * FROM cities_table WHERE cities_table.country_code = \"${current_country}\"`;\n    msg.topic = select_query;\n    return [null, msg];\n}\n\n// console.log(counter);\nvar myList = global.get('current_cities');\nvar index = (counter % myList.length + myList.length) % myList.length;\n// var index = counter % myList.length;\nmsg.payload = myList[index];\nreturn [msg, null];",
         "outputs": 2,
@@ -2899,24 +2960,24 @@
         "y": 400,
         "wires": [
             [
-                "2fd0bdfb170abbb2",
-                "0ca3ef6ed4733495",
-                "a4696d7d500b905d",
-                "216fe04eda669a1c",
-                "59bac8b4de43ac44",
-                "2a926dcbfde283b2",
-                "051f6373fcb64800",
-                "536d4aaf5af46da4"
+                "127cb2fb6a397186",
+                "45495272c771ec64",
+                "1f3a10f607cc249c",
+                "40c7863383b22416",
+                "d31505a14dc3f141",
+                "13c4be38b0ee6e9e",
+                "11282f8d083c325b",
+                "b3a94e68229e53bb"
             ],
             [
-                "9147bdd36b775764"
+                "16171d7a688b920d"
             ]
         ]
     },
     {
-        "id": "9b2a79caf5637dba",
+        "id": "f4047a841829fdeb",
         "type": "debug",
-        "z": "a5a5cf1a89289ca8",
+        "z": "ee89b44531c9be79",
         "name": "debug 47",
         "active": false,
         "tosidebar": true,
@@ -2931,9 +2992,9 @@
         "wires": []
     },
     {
-        "id": "9147bdd36b775764",
+        "id": "16171d7a688b920d",
         "type": "sqlite",
-        "z": "a5a5cf1a89289ca8",
+        "z": "ee89b44531c9be79",
         "mydb": "e1b7d6f10fa6ce00",
         "sqlquery": "msg.topic",
         "sql": "",
@@ -2942,14 +3003,14 @@
         "y": 640,
         "wires": [
             [
-                "db5e0d8e8d8f4afd"
+                "03d02e97314fa56f"
             ]
         ]
     },
     {
-        "id": "db5e0d8e8d8f4afd",
+        "id": "03d02e97314fa56f",
         "type": "split",
-        "z": "a5a5cf1a89289ca8",
+        "z": "ee89b44531c9be79",
         "name": "",
         "splt": "\\n",
         "spltType": "str",
@@ -2961,15 +3022,15 @@
         "y": 640,
         "wires": [
             [
-                "149a962a1183be90",
-                "33dea7d646ea1175"
+                "8685b75813b23c9a",
+                "1b844ffe7b1bf768"
             ]
         ]
     },
     {
-        "id": "33dea7d646ea1175",
+        "id": "1b844ffe7b1bf768",
         "type": "function",
-        "z": "a5a5cf1a89289ca8",
+        "z": "ee89b44531c9be79",
         "name": "function 31",
         "func": "var city = msg.payload;\nvar select_query = `SELECT * FROM cities_table \nJOIN weather_table ON cities_table.geonameId = weather_table.geonameId \nJOIN image_table ON cities_table.geonameId = image_table.geonameId \nWHERE cities_table.geonameId = ${city.geonameId}\n`;\nmsg.topic = select_query;\nreturn msg;",
         "outputs": 1,
@@ -2981,14 +3042,14 @@
         "y": 660,
         "wires": [
             [
-                "94844ffdfca0469f"
+                "e8d450a9707e3926"
             ]
         ]
     },
     {
-        "id": "94844ffdfca0469f",
+        "id": "e8d450a9707e3926",
         "type": "sqlite",
-        "z": "a5a5cf1a89289ca8",
+        "z": "ee89b44531c9be79",
         "mydb": "e1b7d6f10fa6ce00",
         "sqlquery": "msg.topic",
         "sql": "",
@@ -2997,15 +3058,15 @@
         "y": 660,
         "wires": [
             [
-                "20e5721da76d2813",
-                "3188bcc9e0df4ca3"
+                "12e54a7d0d2f2488",
+                "fdd9f7f15a36d2f1"
             ]
         ]
     },
     {
-        "id": "20e5721da76d2813",
+        "id": "12e54a7d0d2f2488",
         "type": "debug",
-        "z": "a5a5cf1a89289ca8",
+        "z": "ee89b44531c9be79",
         "name": "debug 48",
         "active": false,
         "tosidebar": true,
@@ -3020,9 +3081,9 @@
         "wires": []
     },
     {
-        "id": "3188bcc9e0df4ca3",
+        "id": "fdd9f7f15a36d2f1",
         "type": "function",
-        "z": "a5a5cf1a89289ca8",
+        "z": "ee89b44531c9be79",
         "name": "function 32",
         "func": "// Get the value of the global context with the key 'current_cities'\nvar myList = global.get('current_cities');\n\n// If the value doesn't exist, create an empty array\nif (!myList) {\n    myList = [];\n}\n\n// Check if msg.payload[0].city_name already exists in myList\nvar cityExists = myList.some(function (cityObj) {\n    return cityObj.city_name === msg.payload[0].city_name;\n});\n\n// If the city does not exist, push msg.payload to myList\nif (!cityExists) {\n    myList.push(msg.payload);\n}\n\nreturn msg;",
         "outputs": 1,
@@ -3037,9 +3098,9 @@
         ]
     },
     {
-        "id": "216fe04eda669a1c",
+        "id": "40c7863383b22416",
         "type": "function",
-        "z": "a5a5cf1a89289ca8",
+        "z": "ee89b44531c9be79",
         "name": "function 33",
         "func": "try {\n    var city = msg.payload[0];\n    // console.log(city);\n    msg.payload = {};\n    msg.payload.name = city.city_name.charAt(0).toUpperCase() + city.city_name.slice(1);\n    msg.payload.lat = city.lat;\n    msg.payload.lon = city.lng;\n    msg.payload.iconColor = \"green\";\n    msg.payload.photoUrl = city.mob_img_url;\n    msg.payload.map_url = global.get(\"map_url\");\n    // msg.map.map_url = global.get(\"map_url\");\n    // console.log(global.get(\"map_url\"));\n    // console.log(global.get(\"username\"));\n    return [msg, null];\n} catch(error) {\n    msg.payload=\"Loading cities from API server...\";\n    return [null, msg];\n}",
         "outputs": 2,
@@ -3051,19 +3112,19 @@
         "y": 380,
         "wires": [
             [
-                "cd6470dfa729db27",
-                "1f8efed8c4f94878",
-                "7ce91bf2fc1971ef"
+                "7f221d31be0b1856",
+                "8a9dc65f3bc84d2e",
+                "385509093b252e48"
             ],
             [
-                "f3c68e17db4d206e"
+                "054254876232263b"
             ]
         ]
     },
     {
-        "id": "7726800329d5e96e",
+        "id": "77577e73f32afbd1",
         "type": "worldmap",
-        "z": "a5a5cf1a89289ca8",
+        "z": "ee89b44531c9be79",
         "name": "",
         "lat": "",
         "lon": "",
@@ -3093,9 +3154,9 @@
         "wires": []
     },
     {
-        "id": "cd6470dfa729db27",
+        "id": "7f221d31be0b1856",
         "type": "debug",
-        "z": "a5a5cf1a89289ca8",
+        "z": "ee89b44531c9be79",
         "name": "debug 49",
         "active": false,
         "tosidebar": true,
@@ -3110,9 +3171,9 @@
         "wires": []
     },
     {
-        "id": "1f8efed8c4f94878",
+        "id": "8a9dc65f3bc84d2e",
         "type": "ui_template",
-        "z": "a5a5cf1a89289ca8",
+        "z": "ee89b44531c9be79",
         "group": "07c2498f17a87e52",
         "name": "Map Url",
         "order": 10,
@@ -3131,9 +3192,9 @@
         ]
     },
     {
-        "id": "7ce91bf2fc1971ef",
+        "id": "385509093b252e48",
         "type": "change",
-        "z": "a5a5cf1a89289ca8",
+        "z": "ee89b44531c9be79",
         "name": "DEL URL",
         "rules": [
             {
@@ -3151,14 +3212,14 @@
         "y": 380,
         "wires": [
             [
-                "7726800329d5e96e"
+                "77577e73f32afbd1"
             ]
         ]
     },
     {
-        "id": "59bac8b4de43ac44",
+        "id": "d31505a14dc3f141",
         "type": "debug",
-        "z": "a5a5cf1a89289ca8",
+        "z": "ee89b44531c9be79",
         "name": "debug 50",
         "active": false,
         "tosidebar": true,
@@ -3173,11 +3234,11 @@
         "wires": []
     },
     {
-        "id": "47c591e3f5c9fd26",
+        "id": "3e331dc56a5e2c71",
         "type": "debug",
-        "z": "a5a5cf1a89289ca8",
+        "z": "ee89b44531c9be79",
         "name": "debug 51",
-        "active": true,
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -3190,9 +3251,9 @@
         "wires": []
     },
     {
-        "id": "978bdf4dfa9d0ed4",
+        "id": "d143027c3df61084",
         "type": "debug",
-        "z": "a5a5cf1a89289ca8",
+        "z": "ee89b44531c9be79",
         "name": "debug 52",
         "active": false,
         "tosidebar": true,
@@ -3207,9 +3268,9 @@
         "wires": []
     },
     {
-        "id": "ecaa878efc6b0ffe",
+        "id": "7bb4e4709e318ec2",
         "type": "debug",
-        "z": "a5a5cf1a89289ca8",
+        "z": "ee89b44531c9be79",
         "name": "debug 53",
         "active": false,
         "tosidebar": true,
@@ -3223,9 +3284,9 @@
         "wires": []
     },
     {
-        "id": "b0e6fa09e7e5b05b",
+        "id": "be8e4a4de8f67059",
         "type": "ui_template",
-        "z": "a5a5cf1a89289ca8",
+        "z": "ee89b44531c9be79",
         "group": "07c2498f17a87e52",
         "name": "City Temperature",
         "order": 9,
@@ -3244,9 +3305,9 @@
         ]
     },
     {
-        "id": "9c164f5f98c7d7ca",
+        "id": "f0f0be22757abbaf",
         "type": "debug",
-        "z": "a5a5cf1a89289ca8",
+        "z": "ee89b44531c9be79",
         "name": "",
         "active": false,
         "tosidebar": true,
@@ -3260,40 +3321,40 @@
         "wires": []
     },
     {
-        "id": "43951f50b470bd86",
+        "id": "e8df013bbf50354b",
         "type": "amqp in",
-        "z": "a5a5cf1a89289ca8",
+        "z": "ee89b44531c9be79",
         "name": "",
         "topic": "",
         "iotype": "4",
         "ioname": "test",
-        "server": "9c177982dc33aa7b",
+        "server": "4c0bc455143ee2ce",
         "x": 1150,
         "y": 140,
         "wires": [
             [
-                "d09a0e1132ae714f",
-                "c85d07006e4e625a"
+                "e153ad8652a6ca5d",
+                "06350acc753ba5be"
             ]
         ]
     },
     {
-        "id": "3ead07387f9b8e16",
+        "id": "a55c408356acbf6f",
         "type": "amqp out",
-        "z": "a5a5cf1a89289ca8",
+        "z": "ee89b44531c9be79",
         "name": "",
         "routingkey": "",
         "iotype": "0",
         "ioname": "amq.direct",
-        "server": "9c177982dc33aa7b",
+        "server": "4c0bc455143ee2ce",
         "x": 1090,
         "y": 600,
         "wires": []
     },
     {
-        "id": "2a926dcbfde283b2",
+        "id": "13c4be38b0ee6e9e",
         "type": "function",
-        "z": "a5a5cf1a89289ca8",
+        "z": "ee89b44531c9be79",
         "name": "function 36",
         "func": "msg.openweathermapapi_key = global.get(\"open_weather_appid\");\nmsg.weatherapi_key = global.get(\"weatherapi_key\");\nmsg.tommorowapi_key = global.get(\"tommorowapi_key\");\ntry{\n    var city = msg.payload[0];\n    var oldCity = global.get(\"current_openweather\");\n    console.log(\"OLD CITTYYYYY\");\n    console.log(oldCity);\n    if (!oldCity || oldCity != city) {\n        if (city) {\n            global.set(\"current_openweather\", city);\n        }\n        // console.log(global.get(\"current_openweather\"));\n    }\n    msg.city = {};\n    msg.city.lat = city.lat;\n    msg.city.lng = city.lng;\n    return [msg, null];\n}\ncatch (error) {\n    var city = global.get(\"current_openweather\");\n    if (!city) {\n        return [null, msg];\n    }\n    console.log(city);\n    msg.city.lat = city.lat;\n    msg.city.lng = city.lng;\n    return [msg, null];\n}\n\n",
         "outputs": 2,
@@ -3305,18 +3366,18 @@
         "y": 580,
         "wires": [
             [
-                "5409a3dcaee54e4c",
-                "fa6f9b66d45dcca7"
+                "df213cab32cff50f",
+                "795ad55a7f479acc"
             ],
             [
-                "92a6f14591ce3c2a"
+                "f6a3a3f262579804"
             ]
         ]
     },
     {
-        "id": "d09a0e1132ae714f",
+        "id": "e153ad8652a6ca5d",
         "type": "function",
-        "z": "a5a5cf1a89289ca8",
+        "z": "ee89b44531c9be79",
         "name": "function 37",
         "func": "function timedate(timestamp) {\n    var milliseconds = timestamp * 1000;\n    var date = new Date(milliseconds);\n\n    var hours = date.getHours();\n    var minutes = date.getMinutes();\n    minutes = minutes < 10 ? '0' + minutes : minutes;\n    var period = hours >= 12 ? 'PM' : 'AM';\n\n    // Convert the hours from 24-hour format to 12-hour format if needed\n    if (hours > 12) {\n        hours -= 12;\n    }\n\n    return hours + ':' + minutes + ' ' + period;\n}\n\n// function datetime(timestamp){\n//     var milliseconds = timestamp * 1000;\n//     var date = new Date(milliseconds);\n//     return \"\"+date\n// }\n\nfunction datetime(timestamp) {\n    var milliseconds = timestamp;\n    var date = new Date(milliseconds);\n    var options = { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true };\n    var formattedDate = date.toLocaleString('en-US', options);\n    return formattedDate;\n}\n\ntry {\n    var json = JSON.parse(msg.payload);\n    msg.payload = json;\n    var msgs = msg.payload;\n    var sunrise = msg.payload.sys.sunrise; // Replace with your Unix timestamp\n    if (sunrise !== \"unknown\") {\n        msg.payload.sys.sunrise = timedate(sunrise);\n    }\n    var sunset = msg.payload.sys.sunset;\n    if (sunset !== \"unknown\") {\n        msg.payload.sys.sunset = timedate(sunset);\n    }\n    var date = new Date();\n    var currentHour = date.toLocaleTimeString();\n    msg.payload.current_session = currentHour;\n    var description = msg.payload.weather[0].description;\n    var capitalizedDescription = description.charAt(0).toUpperCase() + description.slice(1);\n    msg.payload.weather[0].description = capitalizedDescription; // Output the capitalized description\n    var data_upd = msg.payload.dt;\n    console.log(data_upd);\n    msg.payload.dt = datetime(data_upd);\n    return [msg, null];\n} catch(error) {\n    return [null, msg]\n}",
         "outputs": 2,
@@ -3328,16 +3389,16 @@
         "y": 140,
         "wires": [
             [
-                "9c164f5f98c7d7ca",
-                "591ae6786ef05f01"
+                "f0f0be22757abbaf",
+                "453cae818433a648"
             ],
             []
         ]
     },
     {
-        "id": "591ae6786ef05f01",
+        "id": "453cae818433a648",
         "type": "ui_template",
-        "z": "a5a5cf1a89289ca8",
+        "z": "ee89b44531c9be79",
         "group": "07c2498f17a87e52",
         "name": "Weather Forecast",
         "order": 7,
@@ -3356,9 +3417,9 @@
         ]
     },
     {
-        "id": "1f6cc2194e4fadeb",
+        "id": "897829af87610572",
         "type": "inject",
-        "z": "a5a5cf1a89289ca8",
+        "z": "ee89b44531c9be79",
         "name": "",
         "props": [
             {
@@ -3380,14 +3441,14 @@
         "y": 520,
         "wires": [
             [
-                "2a926dcbfde283b2"
+                "13c4be38b0ee6e9e"
             ]
         ]
     },
     {
-        "id": "5409a3dcaee54e4c",
+        "id": "df213cab32cff50f",
         "type": "debug",
-        "z": "a5a5cf1a89289ca8",
+        "z": "ee89b44531c9be79",
         "name": "debug 56",
         "active": false,
         "tosidebar": true,
@@ -3402,9 +3463,9 @@
         "wires": []
     },
     {
-        "id": "f3c68e17db4d206e",
+        "id": "054254876232263b",
         "type": "ui_toast",
-        "z": "a5a5cf1a89289ca8",
+        "z": "ee89b44531c9be79",
         "position": "top right",
         "displayTime": "3",
         "highlight": "",
@@ -3421,23 +3482,23 @@
         "wires": []
     },
     {
-        "id": "fa6f9b66d45dcca7",
-        "type": "subflow:97917f9349025747",
-        "z": "a5a5cf1a89289ca8",
+        "id": "795ad55a7f479acc",
+        "type": "subflow:7aad426696768e58",
+        "z": "ee89b44531c9be79",
         "name": "",
-        "x": 840,
+        "x": 830,
         "y": 600,
         "wires": [
             [
-                "3ead07387f9b8e16",
-                "4a0c8d72eb14860a"
+                "a55c408356acbf6f",
+                "4bdbf1eb54000537"
             ]
         ]
     },
     {
-        "id": "c85d07006e4e625a",
+        "id": "06350acc753ba5be",
         "type": "debug",
-        "z": "a5a5cf1a89289ca8",
+        "z": "ee89b44531c9be79",
         "name": "debug 68",
         "active": false,
         "tosidebar": true,
@@ -3451,9 +3512,9 @@
         "wires": []
     },
     {
-        "id": "4a0c8d72eb14860a",
+        "id": "4bdbf1eb54000537",
         "type": "debug",
-        "z": "a5a5cf1a89289ca8",
+        "z": "ee89b44531c9be79",
         "name": "debug 69",
         "active": false,
         "tosidebar": true,
@@ -3468,9 +3529,9 @@
         "wires": []
     },
     {
-        "id": "92a6f14591ce3c2a",
+        "id": "f6a3a3f262579804",
         "type": "debug",
-        "z": "a5a5cf1a89289ca8",
+        "z": "ee89b44531c9be79",
         "name": "debug 71",
         "active": false,
         "tosidebar": true,
@@ -3485,9 +3546,9 @@
         "wires": []
     },
     {
-        "id": "2a6c7e49413a76a7",
-        "type": "subflow:ec6f1352d28e3197",
-        "z": "a5a5cf1a89289ca8",
+        "id": "19775c253ff4e6cb",
+        "type": "subflow:cb3bd948345cf655",
+        "z": "ee89b44531c9be79",
         "name": "",
         "env": [
             {
@@ -3511,18 +3572,18 @@
                 "type": "str"
             }
         ],
-        "x": 250,
+        "x": 240,
         "y": 200,
         "wires": [
             [
-                "970766eeefe514c4"
+                "c372c03f9d92f48d"
             ]
         ]
     },
     {
-        "id": "d481b84a6baa1597",
+        "id": "ab0b00df6ceeb168",
         "type": "inject",
-        "z": "a5a5cf1a89289ca8",
+        "z": "ee89b44531c9be79",
         "name": "Force Reset",
         "props": [
             {
@@ -3544,28 +3605,28 @@
         "y": 140,
         "wires": [
             [
-                "2a6c7e49413a76a7"
+                "19775c253ff4e6cb"
             ]
         ]
     },
     {
-        "id": "1c71bd51e47fa7b1",
-        "type": "subflow:b6bd72e9bbfba6d4",
-        "z": "a5a5cf1a89289ca8",
+        "id": "9dd5b8bce5a40c4f",
+        "type": "subflow:3a49ab9ee4c51e71",
+        "z": "ee89b44531c9be79",
         "name": "",
-        "x": 1210,
+        "x": 1190,
         "y": 560,
         "wires": [
             [
-                "9ab8e19342f0cf91",
-                "47c591e3f5c9fd26"
+                "c63e9829e74109be",
+                "3e331dc56a5e2c71"
             ]
         ]
     },
     {
-        "id": "9ab8e19342f0cf91",
+        "id": "c63e9829e74109be",
         "type": "function",
-        "z": "a5a5cf1a89289ca8",
+        "z": "ee89b44531c9be79",
         "name": "function 40",
         "func": "// var avg_tmp = msg.payload[0].avg_continent_temp;\nvar centers = msg.payload.centroids[0].temperature;\nconsole.log(\"CENTERS \" + centers);\nvar city_tmp = msg.city_temperature;\n// console.log(avg_tmp+\" \"+city_tmp);\nvar s = \"\";\n// var minDistance = Infinity;\n// var nearestCenter = -1;\n// for (let i = 0; i < centers.length; i++) {\n//     var distance = Math.abs(city_tmp - centers[i]);\n//     if (distance < minDistance) {\n//         minDistance = distance;\n//         nearestCenter = i;\n//     }\n// }\nvar max = Math.max(...centers);\nvar lowest = Math.min(...centers);\nconsole.log(\"TERMINAL FINDER\");\nconsole.log(city_tmp);\n// console.log(minDistance);\nconsole.log(max);\n\nif (city_tmp >= max){\n    s = \"higher\";\n    // console.log(s);\n} else if (city_tmp <= lowest){\n    s = \"lower\";\n    // console.log(s);\n} else {\n    s = \"middle\";\n    // console.log(s);\n}\nmsg.label = s;\nreturn msg;",
         "outputs": 1,
@@ -3577,15 +3638,15 @@
         "y": 540,
         "wires": [
             [
-                "b0e6fa09e7e5b05b",
-                "978bdf4dfa9d0ed4"
+                "be8e4a4de8f67059",
+                "d143027c3df61084"
             ]
         ]
     },
     {
-        "id": "e7e71dfe5821a979",
+        "id": "05b1ce936ac110d0",
         "type": "function",
-        "z": "a5a5cf1a89289ca8",
+        "z": "ee89b44531c9be79",
         "name": "function 35",
         "func": "var continent_codes = { \"AF\": \"Africa\", \"NA\": \"North America\", \"OC\": \"Oceania\", \"AN\": \"Antarctica\", \"AS\": \"Asia\", \"EU\": \"Europe\", \"SA\": \"South America\" }\nvar continent = continent_codes[msg.continent_code];\nvar listing = global.get(\"foundclusters\");\nvar city_tmp = msg.city_temperature;\n\n// Check if listing is an array\nif (Array.isArray(listing)) {\n    // Find the minimum, maximum, and middle centroids\n    var centroids = listing.map(function (cluster) {\n        return cluster.centroid;\n    });\n    var lowestCentroid = Math.min(...centroids);\n    var highestCentroid = Math.max(...centroids);\n    var middleCentroid = centroids.reduce(function (acc, val) {\n        return (val !== lowestCentroid && val !== highestCentroid) ? val : acc;\n    });\n\n    // Compare city temperature with the centroids\n    if (city_tmp < lowestCentroid) {\n        msg.label = \"lower\";\n    } else if (city_tmp > highestCentroid) {\n        msg.label = \"higher\";\n    } else {\n        msg.label = \"middle\";\n    }\n} else {\n    // Handle the case when listing is not an array\n    msg.label = \"unknown\";\n}\nmsg.continent = continent;\nreturn msg;\n\n\n\n// return msg;",
         "outputs": 1,
@@ -3600,9 +3661,9 @@
         ]
     },
     {
-        "id": "051f6373fcb64800",
+        "id": "11282f8d083c325b",
         "type": "debug",
-        "z": "a5a5cf1a89289ca8",
+        "z": "ee89b44531c9be79",
         "name": "debug 73",
         "active": false,
         "tosidebar": true,
@@ -3617,9 +3678,9 @@
         "wires": []
     },
     {
-        "id": "536d4aaf5af46da4",
+        "id": "b3a94e68229e53bb",
         "type": "function",
-        "z": "a5a5cf1a89289ca8",
+        "z": "ee89b44531c9be79",
         "name": "function 41",
         "func": "try {\n    var city = msg.payload[0]; //this has all the rankings\n    msg.city_temperature = city.temperature;\n    msg.continent_code = city.continent_code;\n    console.log(\"CONTINENT: \"+city.continent_code);\n    msg.topic = `SELECT AVG(temperature) as avg_continent_temp from weather_table WHERE continent_code = '${city.continent_code}'`;\n    return [msg, null];\n}\ncatch (error) {\n    return [null, msg];\n}\n",
         "outputs": 1,
@@ -3631,14 +3692,14 @@
         "y": 740,
         "wires": [
             [
-                "b4f687609b2ed50b"
+                "af78cc33ee4a2da5"
             ]
         ]
     },
     {
-        "id": "b4f687609b2ed50b",
+        "id": "af78cc33ee4a2da5",
         "type": "sqlite",
-        "z": "a5a5cf1a89289ca8",
+        "z": "ee89b44531c9be79",
         "mydb": "e1b7d6f10fa6ce00",
         "sqlquery": "msg.topic",
         "sql": "",
@@ -3647,7 +3708,7 @@
         "y": 740,
         "wires": [
             [
-                "1c71bd51e47fa7b1"
+                "9dd5b8bce5a40c4f"
             ]
         ]
     },
@@ -3669,7 +3730,7 @@
         "className": ""
     },
     {
-        "id": "9c177982dc33aa7b",
+        "id": "4c0bc455143ee2ce",
         "type": "amqp-server",
         "host": "localhost",
         "port": "5672",
