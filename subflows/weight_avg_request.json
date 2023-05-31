@@ -306,7 +306,7 @@
         "tosidebar": true,
         "console": false,
         "tostatus": false,
-        "complete": "\"Could not find docker quicksort algorithm. Executing local quicksort subflow.\"",
+        "complete": "\"Could not find docker weighted average algorithm. Executing local weghted average subflow.\"",
         "targetType": "jsonata",
         "statusVal": "",
         "statusType": "auto",

@@ -3,7 +3,7 @@
         "id": "3a49ab9ee4c51e71",
         "type": "subflow",
         "name": "ClusterMaker",
-        "info": "",
+        "info": "<div>\n  <p>This node utilizes the kmeans function from the <a href=\"https://hub.docker.com/r/kazakos13/common-functions\">common-functions</a> Docker image for grouping the temperatures of the database.</p>\n  <p>The output of this node is the centers of the temperatures in the database for the current day.</p>\n  <p>You can access the output in <code>msg.payload.centroids</code>, which is a list containing all three centers for the given values.</p>\n</div>",
         "category": "",
         "in": [
             {
@@ -18,8 +18,8 @@
         ],
         "out": [
             {
-                "x": 1060,
-                "y": 160,
+                "x": 1080,
+                "y": 180,
                 "wires": [
                     {
                         "id": "3d7dc3925d93ab65",
@@ -34,7 +34,7 @@
         ],
         "env": [],
         "meta": {},
-        "color": "#C0DEED"
+        "color": "#E2D96E"
     },
     {
         "id": "8aaeff7df4c1e2fc",
@@ -75,7 +75,7 @@
         "id": "70f222d52b19d8d9",
         "type": "http request",
         "z": "3a49ab9ee4c51e71",
-        "name": "",
+        "name": "Req Docker Kmeans",
         "method": "POST",
         "ret": "obj",
         "paytoqs": "ignore",
@@ -87,7 +87,7 @@
         "authType": "",
         "senderr": false,
         "headers": [],
-        "x": 790,
+        "x": 820,
         "y": 160,
         "wires": [
             [
@@ -125,8 +125,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 600,
-        "y": 340,
+        "x": 780,
+        "y": 260,
         "wires": [
             [],
             [
@@ -148,8 +148,8 @@
         "targetType": "jsonata",
         "statusVal": "",
         "statusType": "auto",
-        "x": 820,
-        "y": 420,
+        "x": 840,
+        "y": 340,
         "wires": []
     },
     {
@@ -163,8 +163,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 940,
-        "y": 340,
+        "x": 1040,
+        "y": 260,
         "wires": [
             []
         ]
@@ -475,7 +475,7 @@
         "type": "function",
         "z": "4bc82cdf9dafcab3",
         "name": "INSERT DATABASE",
-        "func": "var sql = \"\";\nconsole.log(msg.payload.length);\nfor (var i = 0; i < msg.payload.length; i++) {\n    var time = msg.payload[i].time;\n    console.log(time);\n    var weathercode = msg.payload[i].weathercode;\n    var temperature = msg.payload[i].temperature;\n    var uv_index_max = msg.payload[i].uv_index_max;\n    var uv_index_clear_sky_max = msg.payload[i].uv_index_clear_sky_max;\n    var rain_sum = msg.payload[i].rain_sum;\n    var snowfall_sum = msg.payload[i].snowfall_sum;\n    var windspeed_10m_max = msg.payload[i].windspeed_10m_max;\n    var winddirection_10m_dominant = msg.payload[i].winddirection_10m_dominant;\n    var shortwave_radiation_sum = msg.payload[i].shortwave_radiation_sum;\n    var city_name = msg.payload[i].city_name;\n    var lat = msg.payload[i].city_lat;\n    var lng = msg.payload[i].city_lng;\n    var geonameId = msg.payload[i].geonameId;\n    var continent_code = msg.payload[i].continent_code;\n    sql = `INSERT OR IGNORE INTO weather_table (time, weathercode, temperature, uv_index_max, uv_index_clear_sky_max, rain_sum, snowfall_sum, windspeed_10m_max, winddirection_10m_dominant, shortwave_radiation_sum, city_name, lat, lng, geonameId, continent_code) VALUES (strftime('%Y-%m-%d', '${time}'), ${weathercode}, ${temperature}, ${uv_index_max}, ${uv_index_clear_sky_max}, ${rain_sum}, ${snowfall_sum}, ${windspeed_10m_max}, ${winddirection_10m_dominant}, ${shortwave_radiation_sum}, '${city_name}', ${lat}, ${lng}, ${geonameId}, '${continent_code}')`;\n\n    node.send({ topic: sql }); // send the SQL statement to the next node\n}\n\n// msg.topic = sql;\n// return [null, msg];\n",
+        "func": "var sql = \"\";\n// console.log(msg.payload.length);\nfor (var i = 0; i < msg.payload.length; i++) {\n    var time = msg.payload[i].time;\n    // console.log(time);\n    var weathercode = msg.payload[i].weathercode;\n    var temperature = msg.payload[i].temperature;\n    var uv_index_max = msg.payload[i].uv_index_max;\n    var uv_index_clear_sky_max = msg.payload[i].uv_index_clear_sky_max;\n    var rain_sum = msg.payload[i].rain_sum;\n    var snowfall_sum = msg.payload[i].snowfall_sum;\n    var windspeed_10m_max = msg.payload[i].windspeed_10m_max;\n    var winddirection_10m_dominant = msg.payload[i].winddirection_10m_dominant;\n    var shortwave_radiation_sum = msg.payload[i].shortwave_radiation_sum;\n    var city_name = msg.payload[i].city_name;\n    var lat = msg.payload[i].city_lat;\n    var lng = msg.payload[i].city_lng;\n    var geonameId = msg.payload[i].geonameId;\n    var continent_code = msg.payload[i].continent_code;\n    sql = `INSERT OR IGNORE INTO weather_table (time, weathercode, temperature, uv_index_max, uv_index_clear_sky_max, rain_sum, snowfall_sum, windspeed_10m_max, winddirection_10m_dominant, shortwave_radiation_sum, city_name, lat, lng, geonameId, continent_code) VALUES (strftime('%Y-%m-%d', '${time}'), ${weathercode}, ${temperature}, ${uv_index_max}, ${uv_index_clear_sky_max}, ${rain_sum}, ${snowfall_sum}, ${windspeed_10m_max}, ${winddirection_10m_dominant}, ${shortwave_radiation_sum}, '${city_name}', ${lat}, ${lng}, ${geonameId}, '${continent_code}')`;\n\n    node.send({ topic: sql }); // send the SQL statement to the next node\n}\n\n// msg.topic = sql;\n// return [null, msg];\n",
         "outputs": 2,
         "noerr": 0,
         "initialize": "",
@@ -1273,7 +1273,7 @@
         "type": "function",
         "z": "cb3bd948345cf655",
         "name": "ALL COUNTRIES",
-        "func": "var res = [];\nvar options = [{\"name\": \"Armenia\", \"code\": \"AM\"}, {\"name\": \"Australia\", \"code\": \"AU\"}, {\"name\": \"Belarus\", \"code\": \"BY\"}, {\"name\": \"Belgium\", \"code\": \"BE\"}, {\"name\": \"Bosnia and Herzegovina\", \"code\": \"BA\"}, {\"name\": \"Brazil\", \"code\": \"BR\"}, {\"name\": \"Bulgaria\", \"code\": \"BG\"}, {\"name\": \"Canada\", \"code\": \"CA\"}, {\"name\": \"Chile\", \"code\": \"CL\"}, {\"name\": \"China\", \"code\": \"CN\"}, {\"name\": \"Croatia\", \"code\": \"HR\"}, {\"name\": \"Cuba\", \"code\": \"CU\"}, {\"name\": \"Cyprus\", \"code\": \"CY\"}, {\"name\": \"Czechia\", \"code\": \"CZ\"}, {\"name\": \"Denmark\", \"code\": \"DK\"}, {\"name\": \"Ecuador\", \"code\": \"EC\"}, {\"name\": \"Egypt\", \"code\": \"EG\"}, {\"name\": \"Estonia\", \"code\": \"EE\"}, {\"name\": \"Finland\", \"code\": \"FI\"}, {\"name\": \"France\", \"code\": \"FR\"}, {\"name\": \"Georgia\", \"code\": \"GE\"}, {\"name\": \"Germany\", \"code\": \"DE\"}, {\"name\": \"Gibraltar\", \"code\": \"GI\"}, {\"name\": \"Greece\", \"code\": \"GR\"}, {\"name\": \"Hungary\", \"code\": \"HU\"}, {\"name\": \"India\", \"code\": \"IN\"}, {\"name\": \"Indonesia\", \"code\": \"ID\"}, {\"name\": \"Iran\", \"code\": \"IR\"}, {\"name\": \"Ireland\", \"code\": \"IE\"}, {\"name\": \"Italy\", \"code\": \"IT\"}, {\"name\": \"Jamaica\", \"code\": \"JM\"}, {\"name\": \"Japan\", \"code\": \"JP\"}, {\"name\": \"Kazakhstan\", \"code\": \"KZ\"}, {\"name\": \"Kenya\", \"code\": \"KE\"}, {\"name\": \"Korea\", \"code\": \"KR\"}, {\"name\": \"Latvia\", \"code\": \"LV\"}, {\"name\": \"Lebanon\", \"code\": \"LB\"}, {\"name\": \"Lithuania\", \"code\": \"LT\"}, {\"name\": \"Luxembourg\", \"code\": \"LU\"}, {\"name\":\"Malta\", \"code\":\"MT\"}, {\"name\": \"Mexico\", \"code\": \"MX\"}, {\"name\": \"Moldova\", \"code\": \"MD\"}, {\"name\": \"Morocco\", \"code\": \"MA\"}, {\"name\": \"Nepal\", \"code\": \"NP\"}, {\"name\": \"Netherlands\", \"code\": \"NL\"}, {\"name\": \"New Zealand\", \"code\": \"NZ\"}, {\"name\": \"Nicaragua\", \"code\": \"NI\"}, {\"name\": \"Nigeria\", \"code\": \"NG\"}, {\"name\": \"Norway\", \"code\": \"NO\"}, {\"name\": \"Philippines\", \"code\": \"PH\"}, {\"name\": \"Poland\", \"code\": \"PL\"}, {\"name\": \"Portugal\", \"code\": \"PT\"}, {\"name\": \"Qatar\", \"code\": \"QA\"}, {\"name\": \"Republic of North Macedonia\", \"code\": \"MK\"}, {\"name\": \"Romania\", \"code\": \"RO\"}, {\"name\": \"Russia\", \"code\": \"RU\"}, {\"name\": \"Saudi Arabia\", \"code\": \"SA\"}, {\"name\": \"Serbia\", \"code\": \"RS\"}, {\"name\": \"Singapore\", \"code\": \"SG\"}, {\"name\": \"Slovakia\", \"code\": \"SK\"}, {\"name\": \"Slovenia\", \"code\": \"SI\"}, {\"name\": \"South Africa\", \"code\": \"ZA\"}, {\"name\": \"Spain\", \"code\": \"ES\"}, {\"name\": \"Sweden\", \"code\": \"SE\"}, {\"name\": \"Switzerland\", \"code\": \"CH\"}, {\"name\": \"Thailand\", \"code\": \"TH\"}, {\"name\": \"Tunisia\", \"code\": \"TN\"}, {\"name\": \"Turkey\", \"code\": \"TR\"}, {\"name\": \"Ukraine\", \"code\": \"UA\"}, {\"name\": \"United Arab Emirates\", \"code\": \"AE\"}, {\"name\": \"United Kingdom\", \"code\": \"GB\"}, {\"name\": \"United States of America\", \"code\": \"US\"}, {\"name\": \"Uruguay\", \"code\": \"UY\"}, {\"name\": \"Uzbekistan\", \"code\": \"UZ\"}, {\"name\": \"Venezuela\", \"code\": \"VE\"}];\nconsole.log(\"Countries List Size: \"+options.length);\nfor (var i = 0; i<options.length; i++){\n    var name = options[i][\"name\"];\n    var code = options[i][\"code\"];\n    var obj = {};\n    obj[name] = code;\n    res.push(obj);\n}\nmsg.options = res;\n// console.log(res);\nmsg.topic = \"Countries\";\nreturn msg;",
+        "func": "var res = [];\nvar options = [{\"name\": \"Armenia\", \"code\": \"AM\"}, {\"name\": \"Australia\", \"code\": \"AU\"}, {\"name\": \"Belarus\", \"code\": \"BY\"}, {\"name\": \"Belgium\", \"code\": \"BE\"}, {\"name\": \"Bosnia and Herzegovina\", \"code\": \"BA\"}, {\"name\": \"Brazil\", \"code\": \"BR\"}, {\"name\": \"Bulgaria\", \"code\": \"BG\"}, {\"name\": \"Canada\", \"code\": \"CA\"}, {\"name\": \"Chile\", \"code\": \"CL\"}, {\"name\": \"China\", \"code\": \"CN\"}, {\"name\": \"Croatia\", \"code\": \"HR\"}, {\"name\": \"Cuba\", \"code\": \"CU\"}, {\"name\": \"Cyprus\", \"code\": \"CY\"}, {\"name\": \"Czechia\", \"code\": \"CZ\"}, {\"name\": \"Denmark\", \"code\": \"DK\"}, {\"name\": \"Ecuador\", \"code\": \"EC\"}, {\"name\": \"Egypt\", \"code\": \"EG\"}, {\"name\": \"Estonia\", \"code\": \"EE\"}, {\"name\": \"Finland\", \"code\": \"FI\"}, {\"name\": \"France\", \"code\": \"FR\"}, {\"name\": \"Georgia\", \"code\": \"GE\"}, {\"name\": \"Germany\", \"code\": \"DE\"}, {\"name\": \"Gibraltar\", \"code\": \"GI\"}, {\"name\": \"Greece\", \"code\": \"GR\"}, {\"name\": \"Hungary\", \"code\": \"HU\"}, {\"name\": \"India\", \"code\": \"IN\"}, {\"name\": \"Indonesia\", \"code\": \"ID\"}, {\"name\": \"Iran\", \"code\": \"IR\"}, {\"name\": \"Ireland\", \"code\": \"IE\"}, {\"name\": \"Italy\", \"code\": \"IT\"}, {\"name\": \"Jamaica\", \"code\": \"JM\"}, {\"name\": \"Japan\", \"code\": \"JP\"}, {\"name\": \"Kazakhstan\", \"code\": \"KZ\"}, {\"name\": \"Kenya\", \"code\": \"KE\"}, {\"name\": \"Korea\", \"code\": \"KR\"}, {\"name\": \"Latvia\", \"code\": \"LV\"}, {\"name\": \"Lebanon\", \"code\": \"LB\"}, {\"name\": \"Lithuania\", \"code\": \"LT\"}, {\"name\": \"Luxembourg\", \"code\": \"LU\"}, {\"name\":\"Malta\", \"code\":\"MT\"}, {\"name\": \"Mexico\", \"code\": \"MX\"}, {\"name\": \"Moldova\", \"code\": \"MD\"}, {\"name\": \"Morocco\", \"code\": \"MA\"}, {\"name\": \"Nepal\", \"code\": \"NP\"}, {\"name\": \"Netherlands\", \"code\": \"NL\"}, {\"name\": \"New Zealand\", \"code\": \"NZ\"}, {\"name\": \"Nicaragua\", \"code\": \"NI\"}, {\"name\": \"Nigeria\", \"code\": \"NG\"}, {\"name\": \"Norway\", \"code\": \"NO\"}, {\"name\": \"Philippines\", \"code\": \"PH\"}, {\"name\": \"Poland\", \"code\": \"PL\"}, {\"name\": \"Portugal\", \"code\": \"PT\"}, {\"name\": \"Qatar\", \"code\": \"QA\"}, {\"name\": \"Republic of North Macedonia\", \"code\": \"MK\"}, {\"name\": \"Romania\", \"code\": \"RO\"}, {\"name\": \"Russia\", \"code\": \"RU\"}, {\"name\": \"Saudi Arabia\", \"code\": \"SA\"}, {\"name\": \"Serbia\", \"code\": \"RS\"}, {\"name\": \"Singapore\", \"code\": \"SG\"}, {\"name\": \"Slovakia\", \"code\": \"SK\"}, {\"name\": \"Slovenia\", \"code\": \"SI\"}, {\"name\": \"South Africa\", \"code\": \"ZA\"}, {\"name\": \"Spain\", \"code\": \"ES\"}, {\"name\": \"Sweden\", \"code\": \"SE\"}, {\"name\": \"Switzerland\", \"code\": \"CH\"}, {\"name\": \"Thailand\", \"code\": \"TH\"}, {\"name\": \"Tunisia\", \"code\": \"TN\"}, {\"name\": \"Turkey\", \"code\": \"TR\"}, {\"name\": \"Ukraine\", \"code\": \"UA\"}, {\"name\": \"United Arab Emirates\", \"code\": \"AE\"}, {\"name\": \"United Kingdom\", \"code\": \"GB\"}, {\"name\": \"United States of America\", \"code\": \"US\"}, {\"name\": \"Uruguay\", \"code\": \"UY\"}, {\"name\": \"Uzbekistan\", \"code\": \"UZ\"}, {\"name\": \"Venezuela\", \"code\": \"VE\"}];\n// console.log(\"Countries List Size: \"+options.length);\nfor (var i = 0; i<options.length; i++){\n    var name = options[i][\"name\"];\n    var code = options[i][\"code\"];\n    var obj = {};\n    obj[name] = code;\n    res.push(obj);\n}\nmsg.options = res;\n// console.log(res);\nmsg.topic = \"Countries\";\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1901,7 +1901,7 @@
         "tosidebar": true,
         "console": false,
         "tostatus": false,
-        "complete": "\"Could not find docker quicksort algorithm. Executing local quicksort subflow.\"",
+        "complete": "\"Could not find docker weighted average algorithm. Executing local weghted average subflow.\"",
         "targetType": "jsonata",
         "statusVal": "",
         "statusType": "auto",
@@ -2161,7 +2161,7 @@
         "type": "function",
         "z": "7aad426696768e58",
         "name": "Make list of pressure & dates",
-        "func": "// wind speed is meters per second.\nconst currentTimestamp = Date.now();\nconst time_of_day = msg.payload['openmeteoapi']['hourly']['time'];\nvar latest_time = 0;\n// console.log(currentTimestamp);\nvar index = 0;\nfor(var time of time_of_day){\n    const time_ml = Date.parse(time);    // converts seconds to miliseconds.\n    if (time_ml <= currentTimestamp){\n        latest_time = time_ml;\n        index += 1;\n        console.log(latest_time);\n    } else {\n        break;\n    }\n}\nindex -= 1;\n// msg.payload = latest_time;\n\nvar weatherapi_dict = {};\nvar tommorowapi_dict = {};\nvar openweatherapi_dict = {};\nvar missing_keys = [];\nif (!msg.payload['weatherapi']['error']) {\n    weatherapi_dict = { \"date\": msg.payload['weatherapi']['current']['last_updated_epoch'] * 1000, \"value\": msg.payload['weatherapi']['current']['pressure_mb'] };\n} else {\n    missing_keys.push(\"weatherapi\");\n}\nvar openmeteoapi_dict = { \"date\": latest_time, \"value\": msg.payload['openmeteoapi']['hourly']['surface_pressure'][index]};\nif (!msg.payload['tommorowapi']['code']) {\n    tommorowapi_dict = { \"date\": Date.parse(msg.payload['tommorowapi']['data']['time']), \"value\": msg.payload['tommorowapi']['data']['values']['pressureSurfaceLevel'] };\n} else {\n    missing_keys.push(\"tommorowapi\");\n}\nif (msg.payload['openweather']['cod'] == 200) {\n    openweatherapi_dict = { \"date\": msg.payload['openweather']['dt'] * 1000, \"value\": msg.payload['openweather']['main']['pressure'] };\n} else {\n    missing_keys.push(\"openweatherapi\");\n}\nmsg.payload = [weatherapi_dict, openmeteoapi_dict, openweatherapi_dict, tommorowapi_dict];\nmsg.missing_keys = missing_keys;\nmsg.topic = \"pressure\";\nreturn msg;\n",
+        "func": "// wind speed is meters per second.\nconst currentTimestamp = Date.now();\nconst time_of_day = msg.payload['openmeteoapi']['hourly']['time'];\nvar latest_time = 0;\n// console.log(currentTimestamp);\nvar index = 0;\nfor(var time of time_of_day){\n    const time_ml = Date.parse(time);    // converts seconds to miliseconds.\n    if (time_ml <= currentTimestamp){\n        latest_time = time_ml;\n        index += 1;\n        // console.log(latest_time);\n    } else {\n        break;\n    }\n}\nindex -= 1;\n// msg.payload = latest_time;\n\nvar weatherapi_dict = {};\nvar tommorowapi_dict = {};\nvar openweatherapi_dict = {};\nvar missing_keys = [];\nif (!msg.payload['weatherapi']['error']) {\n    weatherapi_dict = { \"date\": msg.payload['weatherapi']['current']['last_updated_epoch'] * 1000, \"value\": msg.payload['weatherapi']['current']['pressure_mb'] };\n} else {\n    missing_keys.push(\"weatherapi\");\n}\nvar openmeteoapi_dict = { \"date\": latest_time, \"value\": msg.payload['openmeteoapi']['hourly']['surface_pressure'][index]};\nif (!msg.payload['tommorowapi']['code']) {\n    tommorowapi_dict = { \"date\": Date.parse(msg.payload['tommorowapi']['data']['time']), \"value\": msg.payload['tommorowapi']['data']['values']['pressureSurfaceLevel'] };\n} else {\n    missing_keys.push(\"tommorowapi\");\n}\nif (msg.payload['openweather']['cod'] == 200) {\n    openweatherapi_dict = { \"date\": msg.payload['openweather']['dt'] * 1000, \"value\": msg.payload['openweather']['main']['pressure'] };\n} else {\n    missing_keys.push(\"openweatherapi\");\n}\nmsg.payload = [weatherapi_dict, openmeteoapi_dict, openweatherapi_dict, tommorowapi_dict];\nmsg.missing_keys = missing_keys;\nmsg.topic = \"pressure\";\nreturn msg;\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -2180,7 +2180,7 @@
         "type": "function",
         "z": "7aad426696768e58",
         "name": "Make list of visibility & dates",
-        "func": "// wind speed is meters per second.\nconst currentTimestamp = Date.now();\nconst time_of_day = msg.payload['openmeteoapi']['hourly']['time'];\nvar latest_time = 0;\n// console.log(currentTimestamp);\nvar index = 0;\nfor(var time of time_of_day){\n    const time_ml = Date.parse(time);    // converts seconds to miliseconds.\n    if (time_ml <= currentTimestamp){\n        latest_time = time_ml;\n        index += 1;\n        console.log(latest_time);\n    } else {\n        break;\n    }\n}\nindex -= 1;\n// msg.payload = latest_time;\nvar weatherapi_dict = {};\nvar tommorowapi_dict = {};\nvar openweatherapi_dict = {};\nvar missing_keys = [];\nif (!msg.payload['weatherapi']['error']) {\n    weatherapi_dict = { \"date\": msg.payload['weatherapi']['current']['last_updated_epoch'] * 1000, \"value\": msg.payload['weatherapi']['current']['vis_km'] * 1000 };\n} else {\n    missing_keys.push(\"weatherapi\");\n}\nvar openmeteoapi_dict = { \"date\": latest_time, \"value\": msg.payload['openmeteoapi']['hourly']['visibility'][index]};\nif (!msg.payload['tommorowapi']['code']) {\n    tommorowapi_dict = { \"date\": Date.parse(msg.payload['tommorowapi']['data']['time']), \"value\": msg.payload['tommorowapi']['data']['values']['visibility'] * 1000 };\n} else {\n    missing_keys.push(\"tommorowapi\");\n}\nif (msg.payload['openweather']['cod'] == 200) {\n    openweatherapi_dict = { \"date\": msg.payload['openweather']['dt'] * 1000, \"value\": msg.payload['openweather']['visibility'] };\n} else {\n    missing_keys.push(\"openweatherapi\");\n}\nmsg.payload = [weatherapi_dict, openmeteoapi_dict, openweatherapi_dict, tommorowapi_dict];\nmsg.missing_keys=missing_keys;\nmsg.topic = \"visibility\";\nreturn msg;\n",
+        "func": "// wind speed is meters per second.\nconst currentTimestamp = Date.now();\nconst time_of_day = msg.payload['openmeteoapi']['hourly']['time'];\nvar latest_time = 0;\n// console.log(currentTimestamp);\nvar index = 0;\nfor(var time of time_of_day){\n    const time_ml = Date.parse(time);    // converts seconds to miliseconds.\n    if (time_ml <= currentTimestamp){\n        latest_time = time_ml;\n        index += 1;\n        // console.log(latest_time);\n    } else {\n        break;\n    }\n}\nindex -= 1;\n// msg.payload = latest_time;\nvar weatherapi_dict = {};\nvar tommorowapi_dict = {};\nvar openweatherapi_dict = {};\nvar missing_keys = [];\nif (!msg.payload['weatherapi']['error']) {\n    weatherapi_dict = { \"date\": msg.payload['weatherapi']['current']['last_updated_epoch'] * 1000, \"value\": msg.payload['weatherapi']['current']['vis_km'] * 1000 };\n} else {\n    missing_keys.push(\"weatherapi\");\n}\nvar openmeteoapi_dict = { \"date\": latest_time, \"value\": msg.payload['openmeteoapi']['hourly']['visibility'][index]};\nif (!msg.payload['tommorowapi']['code']) {\n    tommorowapi_dict = { \"date\": Date.parse(msg.payload['tommorowapi']['data']['time']), \"value\": msg.payload['tommorowapi']['data']['values']['visibility'] * 1000 };\n} else {\n    missing_keys.push(\"tommorowapi\");\n}\nif (msg.payload['openweather']['cod'] == 200) {\n    openweatherapi_dict = { \"date\": msg.payload['openweather']['dt'] * 1000, \"value\": msg.payload['openweather']['visibility'] };\n} else {\n    missing_keys.push(\"openweatherapi\");\n}\nmsg.payload = [weatherapi_dict, openmeteoapi_dict, openweatherapi_dict, tommorowapi_dict];\nmsg.missing_keys=missing_keys;\nmsg.topic = \"visibility\";\nreturn msg;\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -2199,7 +2199,7 @@
         "type": "function",
         "z": "7aad426696768e58",
         "name": "Make list of humidity & dates",
-        "func": "// wind speed is meters per second.\nconst currentTimestamp = Date.now();\nconst time_of_day = msg.payload['openmeteoapi']['hourly']['time'];\nvar latest_time = 0;\n// console.log(currentTimestamp);\nvar index = 0;\nfor(var time of time_of_day){\n    const time_ml = Date.parse(time);    // converts seconds to miliseconds.\n    if (time_ml <= currentTimestamp){\n        latest_time = time_ml;\n        index += 1;\n        console.log(latest_time);\n    } else {\n        break;\n    }\n}\nindex -= 1;\n\nvar weatherapi_dict = {};\nvar tommorowapi_dict = {};\nvar openweatherapi_dict = {};\nvar missing_keys = [];\nif (!msg.payload['weatherapi']['error']) {\n    weatherapi_dict = { \"date\": msg.payload['weatherapi']['current']['last_updated_epoch'] * 1000, \"value\": msg.payload['weatherapi']['current']['humidity'] };\n} else {\n    missing_keys.push(\"weatherapi\");\n}\nvar openmeteoapi_dict = { \"date\": latest_time, \"value\": msg.payload['openmeteoapi']['hourly']['relativehumidity_2m'][index]};\nif (!msg.payload['tommorowapi']['code']) {\n    tommorowapi_dict = { \"date\": Date.parse(msg.payload['tommorowapi']['data']['time']), \"value\": msg.payload['tommorowapi']['data']['values']['humidity'] };\n} else {\n    missing_keys.push(\"tommorowapi\");\n}\nif (msg.payload['openweather']['cod'] == 200) {\n    openweatherapi_dict = { \"date\": msg.payload['openweather']['dt'] * 1000, \"value\": msg.payload['openweather']['main']['humidity'] };\n} else {\n    missing_keys.push(\"openweatherapi\");\n}\nmsg.payload = [weatherapi_dict, openmeteoapi_dict, openweatherapi_dict, tommorowapi_dict];\nmsg.missing_keys =missing_keys;\nmsg.topic = \"humidity\";\nreturn msg;\n",
+        "func": "// wind speed is meters per second.\nconst currentTimestamp = Date.now();\nconst time_of_day = msg.payload['openmeteoapi']['hourly']['time'];\nvar latest_time = 0;\n// console.log(currentTimestamp);\nvar index = 0;\nfor(var time of time_of_day){\n    const time_ml = Date.parse(time);    // converts seconds to miliseconds.\n    if (time_ml <= currentTimestamp){\n        latest_time = time_ml;\n        index += 1;\n        // console.log(latest_time);\n    } else {\n        break;\n    }\n}\nindex -= 1;\n\nvar weatherapi_dict = {};\nvar tommorowapi_dict = {};\nvar openweatherapi_dict = {};\nvar missing_keys = [];\nif (!msg.payload['weatherapi']['error']) {\n    weatherapi_dict = { \"date\": msg.payload['weatherapi']['current']['last_updated_epoch'] * 1000, \"value\": msg.payload['weatherapi']['current']['humidity'] };\n} else {\n    missing_keys.push(\"weatherapi\");\n}\nvar openmeteoapi_dict = { \"date\": latest_time, \"value\": msg.payload['openmeteoapi']['hourly']['relativehumidity_2m'][index]};\nif (!msg.payload['tommorowapi']['code']) {\n    tommorowapi_dict = { \"date\": Date.parse(msg.payload['tommorowapi']['data']['time']), \"value\": msg.payload['tommorowapi']['data']['values']['humidity'] };\n} else {\n    missing_keys.push(\"tommorowapi\");\n}\nif (msg.payload['openweather']['cod'] == 200) {\n    openweatherapi_dict = { \"date\": msg.payload['openweather']['dt'] * 1000, \"value\": msg.payload['openweather']['main']['humidity'] };\n} else {\n    missing_keys.push(\"openweatherapi\");\n}\nmsg.payload = [weatherapi_dict, openmeteoapi_dict, openweatherapi_dict, tommorowapi_dict];\nmsg.missing_keys =missing_keys;\nmsg.topic = \"humidity\";\nreturn msg;\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -2218,7 +2218,7 @@
         "type": "function",
         "z": "7aad426696768e58",
         "name": "Make list of cloud & dates",
-        "func": "// wind speed is meters per second.\nconst currentTimestamp = Date.now();\nconst time_of_day = msg.payload['openmeteoapi']['hourly']['time'];\nvar latest_time = 0;\n// console.log(currentTimestamp);\nvar index = 0;\nfor(var time of time_of_day){\n    const time_ml = Date.parse(time);    // converts seconds to miliseconds.\n    if (time_ml <= currentTimestamp){\n        latest_time = time_ml;\n        index += 1;\n        console.log(latest_time);\n    } else {\n        break;\n    }\n}\nindex -= 1;\n// msg.payload = latest_time;\nconsole.log(index);\n// var weatherapi_dict = { \"date\": msg.payload['weatherapi']['current']['last_updated_epoch'] * 1000, \"value\": msg.payload['weatherapi']['current']['cloud']};\n// var openmeteoapi_dict = { \"date\": latest_time, \"value\": msg.payload['openmeteoapi']['hourly']['cloudcover'][index]};\n// var tommorowapi_dict = { \"date\": Date.parse(msg.payload['tommorowapi']['data']['time']), \"value\": msg.payload['tommorowapi']['data']['values']['cloudCover']};\n// var openweatherapi_dict = { \"date\": msg.payload['openweather']['dt'] * 1000, \"value\": msg.payload['openweather']['clouds']['all']};\n// msg.payload = [weatherapi_dict,openmeteoapi_dict,openweatherapi_dict,tommorowapi_dict];\n// msg.topic = \"cloud\";\n// return msg;\n\nvar weatherapi_dict = {};\nvar tommorowapi_dict = {};\nvar openweatherapi_dict = {};\nvar missing_keys = [];\nif (!msg.payload['weatherapi']['error']) {\n    weatherapi_dict = { \"date\": msg.payload['weatherapi']['current']['last_updated_epoch'] * 1000, \"value\": msg.payload['weatherapi']['current']['cloud'] };\n} else {\n    missing_keys.push(\"weatherapi\");\n}\nvar openmeteoapi_dict = { \"date\": latest_time, \"value\": msg.payload['openmeteoapi']['hourly']['cloudcover'][index]};\nif (!msg.payload['tommorowapi']['code']) {\n    tommorowapi_dict = { \"date\": Date.parse(msg.payload['tommorowapi']['data']['time']), \"value\": msg.payload['tommorowapi']['data']['values']['cloudCover'] };\n} else {\n    missing_keys.push(\"tommorowapi\");\n}\nif (msg.payload['openweather']['cod'] == 200) {\n    openweatherapi_dict = { \"date\": msg.payload['openweather']['dt'] * 1000, \"value\": msg.payload['openweather']['clouds']['all'] };\n} else {\n    missing_keys.push(\"openweatherapi\");\n}\nmsg.payload = [weatherapi_dict, openmeteoapi_dict, openweatherapi_dict, tommorowapi_dict];\nmsg.missing_keys = missing_keys;\nmsg.topic = \"cloud\";\nreturn msg;\n",
+        "func": "// wind speed is meters per second.\nconst currentTimestamp = Date.now();\nconst time_of_day = msg.payload['openmeteoapi']['hourly']['time'];\nvar latest_time = 0;\n// console.log(currentTimestamp);\nvar index = 0;\nfor(var time of time_of_day){\n    const time_ml = Date.parse(time);    // converts seconds to miliseconds.\n    if (time_ml <= currentTimestamp){\n        latest_time = time_ml;\n        index += 1;\n        // console.log(latest_time);\n    } else {\n        break;\n    }\n}\nindex -= 1;\n// msg.payload = latest_time;\n// console.log(index);\n// var weatherapi_dict = { \"date\": msg.payload['weatherapi']['current']['last_updated_epoch'] * 1000, \"value\": msg.payload['weatherapi']['current']['cloud']};\n// var openmeteoapi_dict = { \"date\": latest_time, \"value\": msg.payload['openmeteoapi']['hourly']['cloudcover'][index]};\n// var tommorowapi_dict = { \"date\": Date.parse(msg.payload['tommorowapi']['data']['time']), \"value\": msg.payload['tommorowapi']['data']['values']['cloudCover']};\n// var openweatherapi_dict = { \"date\": msg.payload['openweather']['dt'] * 1000, \"value\": msg.payload['openweather']['clouds']['all']};\n// msg.payload = [weatherapi_dict,openmeteoapi_dict,openweatherapi_dict,tommorowapi_dict];\n// msg.topic = \"cloud\";\n// return msg;\n\nvar weatherapi_dict = {};\nvar tommorowapi_dict = {};\nvar openweatherapi_dict = {};\nvar missing_keys = [];\nif (!msg.payload['weatherapi']['error']) {\n    weatherapi_dict = { \"date\": msg.payload['weatherapi']['current']['last_updated_epoch'] * 1000, \"value\": msg.payload['weatherapi']['current']['cloud'] };\n} else {\n    missing_keys.push(\"weatherapi\");\n}\nvar openmeteoapi_dict = { \"date\": latest_time, \"value\": msg.payload['openmeteoapi']['hourly']['cloudcover'][index]};\nif (!msg.payload['tommorowapi']['code']) {\n    tommorowapi_dict = { \"date\": Date.parse(msg.payload['tommorowapi']['data']['time']), \"value\": msg.payload['tommorowapi']['data']['values']['cloudCover'] };\n} else {\n    missing_keys.push(\"tommorowapi\");\n}\nif (msg.payload['openweather']['cod'] == 200) {\n    openweatherapi_dict = { \"date\": msg.payload['openweather']['dt'] * 1000, \"value\": msg.payload['openweather']['clouds']['all'] };\n} else {\n    missing_keys.push(\"openweatherapi\");\n}\nmsg.payload = [weatherapi_dict, openmeteoapi_dict, openweatherapi_dict, tommorowapi_dict];\nmsg.missing_keys = missing_keys;\nmsg.topic = \"cloud\";\nreturn msg;\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -2266,7 +2266,7 @@
         "type": "function",
         "z": "7aad426696768e58",
         "name": "Returns only openweathermap",
-        "func": "var value_weatherapi=0;\nvar value_tommorow=0;\nvar value_openweather=0;\nvar missing_keys = [];\nif (!msg.payload['weatherapi']['error']) {\n    value_weatherapi = msg.payload['weatherapi']['current']['last_updated_epoch'] * 1000;\n} else {\n    missing_keys.push(\"weatherapi\");\n}\nif (!msg.payload['tommorowapi']['code']) {\n    value_tommorow = Date.parse(msg.payload['tommorowapi']['data']['time']);\n} else {\n    missing_keys.push(\"tommorowapi\");\n}\nif (msg.payload['openweather']['cod'] == 200) {\n    value_openweather = msg.payload['openweather']['dt'] * 1000;\n} else {\n    missing_keys.push(\"openweatherapi\");\n}\nvar max_date = Math.max(value_weatherapi, value_tommorow, Date.parse(msg.payload['openmeteoapi']['current_weather']['time']), value_openweather);\nconsole.log(\"MAXDATE:\"+max_date);\n// console.log(\"DATE DEBUGGING =================== \");\n// console.log(\"WEATHER_API:\"+Date.parse(msg.payload['weatherapi']['current']['last_updated']));\n// console.log(\"OPENMETEO_API:\"+Date.parse(msg.payload['openmeteoapi']['current_weather']['time']));\n// console.log(\"TOMMOROW_API:\"+Date.parse(msg.payload['tommorowapi']['data']['time']));\n// console.log(\"OPENWEATHERMAP:\"+msg.payload['openweather']['dt'] * 1000);\n\n// var open = msg.payload[\"openweather\"];\n// open['dt'] = max_date;\n// msg.payload = {};\n// msg.payload = open;\n// msg.missing_keys = missing_keys;\n// msg.topic = \"openweather\";\n// return msg;\n\nif (msg.payload['openweather']['cod'] == 200) {\n    let open = msg.payload[\"openweather\"];\n    open['dt'] = max_date;\n    msg.payload = open;\n    msg.missing_keys = missing_keys;\n    msg.topic = \"openweather\";\n    return msg;\n\n}\nmsg.payload = {};\nlet open = {};\nlet lat = parseFloat(flow.get(\"lat\"));\nlet lng = parseFloat(flow.get(\"lng\"));\n// openweathermap['coord'] = msg.payload['openweather']['coord'];\n// openweathermap['weather'] = msg.payload['openweather']['weather'];\n// openweathermap['sys'] = msg.payload['openweather']['sys'];\n// openweathermap['name'] = msg.payload['openweather']['name'];\nopen[\"coord\"] = {\"lon\":lng,\"lat\":lat};\nopen[\"weather\"] = [{ \"id\": 0, \"main\": \"Unknown\", \"description\": \"unknown\", \"icon\":\"50d\"}];\nopen[\"name\"] = \"unknown\";\nopen[\"sys\"] = {\"country\":\"unknown\",\"sunrise\":\"unknown\",\"sunset\":\"unknown\"};\nopen['dt'] = max_date;\nmsg.payload = open;\nmsg.missing_keys = missing_keys;\nmsg.topic = \"openweather\";\n\nreturn msg;\n",
+        "func": "var value_weatherapi=0;\nvar value_tommorow=0;\nvar value_openweather=0;\nvar missing_keys = [];\nif (!msg.payload['weatherapi']['error']) {\n    value_weatherapi = msg.payload['weatherapi']['current']['last_updated_epoch'] * 1000;\n} else {\n    missing_keys.push(\"weatherapi\");\n}\nif (!msg.payload['tommorowapi']['code']) {\n    value_tommorow = Date.parse(msg.payload['tommorowapi']['data']['time']);\n} else {\n    missing_keys.push(\"tommorowapi\");\n}\nif (msg.payload['openweather']['cod'] == 200) {\n    value_openweather = msg.payload['openweather']['dt'] * 1000;\n} else {\n    missing_keys.push(\"openweatherapi\");\n}\nvar max_date = Math.max(value_weatherapi, value_tommorow, Date.parse(msg.payload['openmeteoapi']['current_weather']['time']), value_openweather);\n// console.log(\"MAXDATE:\"+max_date);\n// console.log(\"DATE DEBUGGING =================== \");\n// console.log(\"WEATHER_API:\"+Date.parse(msg.payload['weatherapi']['current']['last_updated']));\n// console.log(\"OPENMETEO_API:\"+Date.parse(msg.payload['openmeteoapi']['current_weather']['time']));\n// console.log(\"TOMMOROW_API:\"+Date.parse(msg.payload['tommorowapi']['data']['time']));\n// console.log(\"OPENWEATHERMAP:\"+msg.payload['openweather']['dt'] * 1000);\n\n// var open = msg.payload[\"openweather\"];\n// open['dt'] = max_date;\n// msg.payload = {};\n// msg.payload = open;\n// msg.missing_keys = missing_keys;\n// msg.topic = \"openweather\";\n// return msg;\n\nif (msg.payload['openweather']['cod'] == 200) {\n    let open = msg.payload[\"openweather\"];\n    open['dt'] = max_date;\n    msg.payload = open;\n    msg.missing_keys = missing_keys;\n    msg.topic = \"openweather\";\n    return msg;\n\n}\nmsg.payload = {};\nlet open = {};\nlet lat = parseFloat(flow.get(\"lat\"));\nlet lng = parseFloat(flow.get(\"lng\"));\n// openweathermap['coord'] = msg.payload['openweather']['coord'];\n// openweathermap['weather'] = msg.payload['openweather']['weather'];\n// openweathermap['sys'] = msg.payload['openweather']['sys'];\n// openweathermap['name'] = msg.payload['openweather']['name'];\nopen[\"coord\"] = {\"lon\":lng,\"lat\":lat};\nopen[\"weather\"] = [{ \"id\": 0, \"main\": \"Unknown\", \"description\": \"unknown\", \"icon\":\"50d\"}];\nopen[\"name\"] = \"unknown\";\nopen[\"sys\"] = {\"country\":\"unknown\",\"sunrise\":\"unknown\",\"sunset\":\"unknown\"};\nopen['dt'] = max_date;\nmsg.payload = open;\nmsg.missing_keys = missing_keys;\nmsg.topic = \"openweather\";\n\nreturn msg;\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -2467,7 +2467,7 @@
         "type": "function",
         "z": "7aad426696768e58",
         "name": "Correct data set",
-        "func": "var data = msg.payload;\n// Remove empty values for each key\nfor (const key in data) {\n    if (Array.isArray(data[key])) {\n        data[key] = data[key].filter(item => Object.keys(item).length !== 0);\n    }\n}\nmsg.payload = {};\nmsg.payload.value = {};\nmsg.payload.value[\"data\"] = data;\nconsole.log(msg.payload.value[\"data\"]);\nreturn msg;",
+        "func": "var data = msg.payload;\n// Remove empty values for each key\nfor (const key in data) {\n    if (Array.isArray(data[key])) {\n        data[key] = data[key].filter(item => Object.keys(item).length !== 0);\n    }\n}\nmsg.payload = {};\nmsg.payload.value = {};\nmsg.payload.value[\"data\"] = data;\n// console.log(msg.payload.value[\"data\"]);\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -3076,7 +3076,7 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1100,
+        "x": 1060,
         "y": 740,
         "wires": []
     },
@@ -3179,7 +3179,7 @@
         "order": 10,
         "width": 0,
         "height": 0,
-        "format": "<h3>Map Url</h3>\n<!-- <p><a href=\"{{msg.payload.map_url}}\">{{msg.payload.map_url}}</a></p> -->\n<!-- <p><a href=\"{{msg.payload.map_url}}\">View Map Here</a></p> -->\n<p><a href=\"{{msg.payload.map_url}}\" target=\"_blank\" style=\"color:orange;\">View Map Here</a></p>",
+        "format": "<h3>Map View</h3>\n<!-- <p><a href=\"{{msg.payload.map_url}}\">{{msg.payload.map_url}}</a></p> -->\n<!-- <p><a href=\"{{msg.payload.map_url}}\">View Map Here</a></p> -->\n<p><a href=\"{{msg.payload.map_url}}\" target=\"_blank\" style=\"color:orange;\">View Map Here</a></p>",
         "storeOutMessages": true,
         "fwdInMessages": true,
         "resendOnRefresh": true,
@@ -3246,8 +3246,8 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1320,
-        "y": 600,
+        "x": 1460,
+        "y": 620,
         "wires": []
     },
     {
@@ -3263,8 +3263,8 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1520,
-        "y": 660,
+        "x": 1620,
+        "y": 500,
         "wires": []
     },
     {
@@ -3292,7 +3292,7 @@
         "order": 9,
         "width": 0,
         "height": 0,
-        "format": "<p>This city has <b>{{msg.label}}</b> temperature than other cities in database.</p>",
+        "format": "<p>This city has <b>{{msg.label}}</b> temperature than other cities in the database.</p>",
         "storeOutMessages": true,
         "fwdInMessages": true,
         "resendOnRefresh": true,
@@ -3356,7 +3356,7 @@
         "type": "function",
         "z": "ee89b44531c9be79",
         "name": "function 36",
-        "func": "msg.openweathermapapi_key = global.get(\"open_weather_appid\");\nmsg.weatherapi_key = global.get(\"weatherapi_key\");\nmsg.tommorowapi_key = global.get(\"tommorowapi_key\");\ntry{\n    var city = msg.payload[0];\n    var oldCity = global.get(\"current_openweather\");\n    console.log(\"OLD CITTYYYYY\");\n    console.log(oldCity);\n    if (!oldCity || oldCity != city) {\n        if (city) {\n            global.set(\"current_openweather\", city);\n        }\n        // console.log(global.get(\"current_openweather\"));\n    }\n    msg.city = {};\n    msg.city.lat = city.lat;\n    msg.city.lng = city.lng;\n    return [msg, null];\n}\ncatch (error) {\n    var city = global.get(\"current_openweather\");\n    if (!city) {\n        return [null, msg];\n    }\n    console.log(city);\n    msg.city.lat = city.lat;\n    msg.city.lng = city.lng;\n    return [msg, null];\n}\n\n",
+        "func": "msg.openweathermapapi_key = global.get(\"open_weather_appid\");\nmsg.weatherapi_key = global.get(\"weatherapi_key\");\nmsg.tommorowapi_key = global.get(\"tommorowapi_key\");\ntry{\n    var city = msg.payload[0];\n    var oldCity = global.get(\"current_openweather\");\n    // console.log(oldCity);\n    if (!oldCity || oldCity != city) {\n        if (city) {\n            global.set(\"current_openweather\", city);\n        }\n        // console.log(global.get(\"current_openweather\"));\n    }\n    msg.city = {};\n    msg.city.lat = city.lat;\n    msg.city.lng = city.lng;\n    return [msg, null];\n}\ncatch (error) {\n    var city = global.get(\"current_openweather\");\n    if (!city) {\n        return [null, msg];\n    }\n    // console.log(city);\n    msg.city.lat = city.lat;\n    msg.city.lng = city.lng;\n    return [msg, null];\n}\n\n",
         "outputs": 2,
         "noerr": 0,
         "initialize": "",
@@ -3379,7 +3379,7 @@
         "type": "function",
         "z": "ee89b44531c9be79",
         "name": "function 37",
-        "func": "function timedate(timestamp) {\n    var milliseconds = timestamp * 1000;\n    var date = new Date(milliseconds);\n\n    var hours = date.getHours();\n    var minutes = date.getMinutes();\n    minutes = minutes < 10 ? '0' + minutes : minutes;\n    var period = hours >= 12 ? 'PM' : 'AM';\n\n    // Convert the hours from 24-hour format to 12-hour format if needed\n    if (hours > 12) {\n        hours -= 12;\n    }\n\n    return hours + ':' + minutes + ' ' + period;\n}\n\n// function datetime(timestamp){\n//     var milliseconds = timestamp * 1000;\n//     var date = new Date(milliseconds);\n//     return \"\"+date\n// }\n\nfunction datetime(timestamp) {\n    var milliseconds = timestamp;\n    var date = new Date(milliseconds);\n    var options = { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true };\n    var formattedDate = date.toLocaleString('en-US', options);\n    return formattedDate;\n}\n\ntry {\n    var json = JSON.parse(msg.payload);\n    msg.payload = json;\n    var msgs = msg.payload;\n    var sunrise = msg.payload.sys.sunrise; // Replace with your Unix timestamp\n    if (sunrise !== \"unknown\") {\n        msg.payload.sys.sunrise = timedate(sunrise);\n    }\n    var sunset = msg.payload.sys.sunset;\n    if (sunset !== \"unknown\") {\n        msg.payload.sys.sunset = timedate(sunset);\n    }\n    var date = new Date();\n    var currentHour = date.toLocaleTimeString();\n    msg.payload.current_session = currentHour;\n    var description = msg.payload.weather[0].description;\n    var capitalizedDescription = description.charAt(0).toUpperCase() + description.slice(1);\n    msg.payload.weather[0].description = capitalizedDescription; // Output the capitalized description\n    var data_upd = msg.payload.dt;\n    console.log(data_upd);\n    msg.payload.dt = datetime(data_upd);\n    return [msg, null];\n} catch(error) {\n    return [null, msg]\n}",
+        "func": "function timedate(timestamp) {\n    var milliseconds = timestamp * 1000;\n    var date = new Date(milliseconds);\n\n    var hours = date.getHours();\n    var minutes = date.getMinutes();\n    minutes = minutes < 10 ? '0' + minutes : minutes;\n    var period = hours >= 12 ? 'PM' : 'AM';\n\n    // Convert the hours from 24-hour format to 12-hour format if needed\n    if (hours > 12) {\n        hours -= 12;\n    }\n\n    return hours + ':' + minutes + ' ' + period;\n}\n\n// function datetime(timestamp){\n//     var milliseconds = timestamp * 1000;\n//     var date = new Date(milliseconds);\n//     return \"\"+date\n// }\n\nfunction datetime(timestamp) {\n    var milliseconds = timestamp;\n    var date = new Date(milliseconds);\n    var options = { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true };\n    var formattedDate = date.toLocaleString('en-US', options);\n    return formattedDate;\n}\n\ntry {\n    var json = JSON.parse(msg.payload);\n    msg.payload = json;\n    var msgs = msg.payload;\n    var sunrise = msg.payload.sys.sunrise; // Replace with your Unix timestamp\n    if (sunrise !== \"unknown\") {\n        msg.payload.sys.sunrise = timedate(sunrise);\n    }\n    var sunset = msg.payload.sys.sunset;\n    if (sunset !== \"unknown\") {\n        msg.payload.sys.sunset = timedate(sunset);\n    }\n    var date = new Date();\n    var currentHour = date.toLocaleTimeString();\n    msg.payload.current_session = currentHour;\n    var description = msg.payload.weather[0].description;\n    var capitalizedDescription = description.charAt(0).toUpperCase() + description.slice(1);\n    msg.payload.weather[0].description = capitalizedDescription; // Output the capitalized description\n    var data_upd = msg.payload.dt;\n    // console.log(data_upd);\n    msg.payload.dt = datetime(data_upd);\n    return [msg, null];\n} catch(error) {\n    return [null, msg]\n}",
         "outputs": 2,
         "noerr": 0,
         "initialize": "",
@@ -3614,7 +3614,7 @@
         "type": "subflow:3a49ab9ee4c51e71",
         "z": "ee89b44531c9be79",
         "name": "",
-        "x": 1190,
+        "x": 1290,
         "y": 560,
         "wires": [
             [
@@ -3628,36 +3628,19 @@
         "type": "function",
         "z": "ee89b44531c9be79",
         "name": "function 40",
-        "func": "// var avg_tmp = msg.payload[0].avg_continent_temp;\nvar centers = msg.payload.centroids[0].temperature;\nconsole.log(\"CENTERS \" + centers);\nvar city_tmp = msg.city_temperature;\n// console.log(avg_tmp+\" \"+city_tmp);\nvar s = \"\";\n// var minDistance = Infinity;\n// var nearestCenter = -1;\n// for (let i = 0; i < centers.length; i++) {\n//     var distance = Math.abs(city_tmp - centers[i]);\n//     if (distance < minDistance) {\n//         minDistance = distance;\n//         nearestCenter = i;\n//     }\n// }\nvar max = Math.max(...centers);\nvar lowest = Math.min(...centers);\nconsole.log(\"TERMINAL FINDER\");\nconsole.log(city_tmp);\n// console.log(minDistance);\nconsole.log(max);\n\nif (city_tmp >= max){\n    s = \"higher\";\n    // console.log(s);\n} else if (city_tmp <= lowest){\n    s = \"lower\";\n    // console.log(s);\n} else {\n    s = \"middle\";\n    // console.log(s);\n}\nmsg.label = s;\nreturn msg;",
+        "func": "// var avg_tmp = msg.payload[0].avg_continent_temp;\nvar centers = msg.payload.centroids[0].temperature;\n// console.log(\"CENTERS \" + centers);\nvar city_tmp = msg.city_temperature;\n// console.log(avg_tmp+\" \"+city_tmp);\nvar s = \"\";\n// var minDistance = Infinity;\n// var nearestCenter = -1;\n// for (let i = 0; i < centers.length; i++) {\n//     var distance = Math.abs(city_tmp - centers[i]);\n//     if (distance < minDistance) {\n//         minDistance = distance;\n//         nearestCenter = i;\n//     }\n// }\nvar max = Math.max(...centers);\nvar lowest = Math.min(...centers);\n// console.log(\"TERMINAL FINDER\");\n// console.log(city_tmp);\n// console.log(minDistance);\n// console.log(max);\n\nif (city_tmp >= max){\n    s = \"higher\";\n    // console.log(s);\n} else if (city_tmp <= lowest){\n    s = \"lower\";\n    // console.log(s);\n} else {\n    s = \"middle\";\n    // console.log(s);\n}\nmsg.label = s;\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1490,
-        "y": 540,
+        "x": 1510,
+        "y": 560,
         "wires": [
             [
                 "be8e4a4de8f67059",
                 "d143027c3df61084"
             ]
-        ]
-    },
-    {
-        "id": "05b1ce936ac110d0",
-        "type": "function",
-        "z": "ee89b44531c9be79",
-        "name": "function 35",
-        "func": "var continent_codes = { \"AF\": \"Africa\", \"NA\": \"North America\", \"OC\": \"Oceania\", \"AN\": \"Antarctica\", \"AS\": \"Asia\", \"EU\": \"Europe\", \"SA\": \"South America\" }\nvar continent = continent_codes[msg.continent_code];\nvar listing = global.get(\"foundclusters\");\nvar city_tmp = msg.city_temperature;\n\n// Check if listing is an array\nif (Array.isArray(listing)) {\n    // Find the minimum, maximum, and middle centroids\n    var centroids = listing.map(function (cluster) {\n        return cluster.centroid;\n    });\n    var lowestCentroid = Math.min(...centroids);\n    var highestCentroid = Math.max(...centroids);\n    var middleCentroid = centroids.reduce(function (acc, val) {\n        return (val !== lowestCentroid && val !== highestCentroid) ? val : acc;\n    });\n\n    // Compare city temperature with the centroids\n    if (city_tmp < lowestCentroid) {\n        msg.label = \"lower\";\n    } else if (city_tmp > highestCentroid) {\n        msg.label = \"higher\";\n    } else {\n        msg.label = \"middle\";\n    }\n} else {\n    // Handle the case when listing is not an array\n    msg.label = \"unknown\";\n}\nmsg.continent = continent;\nreturn msg;\n\n\n\n// return msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 1670,
-        "y": 840,
-        "wires": [
-            []
         ]
     },
     {
@@ -3673,8 +3656,8 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 840,
-        "y": 460,
+        "x": 1080,
+        "y": 560,
         "wires": []
     },
     {
@@ -3682,29 +3665,13 @@
         "type": "function",
         "z": "ee89b44531c9be79",
         "name": "function 41",
-        "func": "try {\n    var city = msg.payload[0]; //this has all the rankings\n    msg.city_temperature = city.temperature;\n    msg.continent_code = city.continent_code;\n    console.log(\"CONTINENT: \"+city.continent_code);\n    msg.topic = `SELECT AVG(temperature) as avg_continent_temp from weather_table WHERE continent_code = '${city.continent_code}'`;\n    return [msg, null];\n}\ncatch (error) {\n    return [null, msg];\n}\n",
+        "func": "try {\n    var city = msg.payload[0]; //this has all the rankings\n    msg.city_temperature = city.temperature;\n    return [msg, null];\n}\ncatch (error) {\n    return [null, msg];\n}\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
         "x": 1310,
-        "y": 740,
-        "wires": [
-            [
-                "af78cc33ee4a2da5"
-            ]
-        ]
-    },
-    {
-        "id": "af78cc33ee4a2da5",
-        "type": "sqlite",
-        "z": "ee89b44531c9be79",
-        "mydb": "e1b7d6f10fa6ce00",
-        "sqlquery": "msg.topic",
-        "sql": "",
-        "name": "",
-        "x": 1530,
         "y": 740,
         "wires": [
             [

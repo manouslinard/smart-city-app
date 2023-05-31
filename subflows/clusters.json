@@ -3,7 +3,7 @@
         "id": "3a49ab9ee4c51e71",
         "type": "subflow",
         "name": "ClusterMaker",
-        "info": "",
+        "info": "<div>\n  <p>This node utilizes the kmeans function from the <a href=\"https://hub.docker.com/r/kazakos13/common-functions\">common-functions</a> Docker image for grouping the temperatures of the database.</p>\n  <p>The output of this node is the centers of the temperatures in the database for the current day.</p>\n  <p>You can access the output in <code>msg.payload.centroids</code>, which is a list containing all three centers for the given values.</p>\n</div>",
         "category": "",
         "in": [
             {
@@ -18,8 +18,8 @@
         ],
         "out": [
             {
-                "x": 1060,
-                "y": 160,
+                "x": 1080,
+                "y": 180,
                 "wires": [
                     {
                         "id": "3d7dc3925d93ab65",
@@ -34,7 +34,7 @@
         ],
         "env": [],
         "meta": {},
-        "color": "#C0DEED"
+        "color": "#E2D96E"
     },
     {
         "id": "8aaeff7df4c1e2fc",
@@ -75,7 +75,7 @@
         "id": "70f222d52b19d8d9",
         "type": "http request",
         "z": "3a49ab9ee4c51e71",
-        "name": "",
+        "name": "Req Docker Kmeans",
         "method": "POST",
         "ret": "obj",
         "paytoqs": "ignore",
@@ -87,7 +87,7 @@
         "authType": "",
         "senderr": false,
         "headers": [],
-        "x": 790,
+        "x": 820,
         "y": 160,
         "wires": [
             [
@@ -125,8 +125,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 600,
-        "y": 340,
+        "x": 780,
+        "y": 260,
         "wires": [
             [],
             [
@@ -148,8 +148,8 @@
         "targetType": "jsonata",
         "statusVal": "",
         "statusType": "auto",
-        "x": 820,
-        "y": 420,
+        "x": 840,
+        "y": 340,
         "wires": []
     },
     {
@@ -163,8 +163,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 940,
-        "y": 340,
+        "x": 1040,
+        "y": 260,
         "wires": [
             []
         ]
