@@ -10,7 +10,7 @@ docker run -p 8080:8080 -it kazakos13/common-functions
 ```
 If you dont want to install this docker image you should not encounter any problems in the execution of the app, because some local flows were developed, which have the same functions as the docker image (and they are executed if the docker image is not running).
 <br>
-You can also read the overview of the docker image [here](https://hub.docker.com/r/kazakos13/common-functions).
+You can also read the overview of the details of the docker image [here](https://hub.docker.com/r/kazakos13/common-functions).
 
 ---
 ## Configuration:
