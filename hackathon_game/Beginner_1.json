@@ -1,0 +1,74 @@
+[
+    {
+        "id": "7e9801898105f458",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "b96f8a3332000b82",
+        "type": "inject",
+        "z": "7e9801898105f458",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 180,
+        "y": 180,
+        "wires": [
+            [
+                "c6ae5dd625642596"
+            ]
+        ]
+    },
+    {
+        "id": "c6ae5dd625642596",
+        "type": "function",
+        "z": "7e9801898105f458",
+        "name": "function 1",
+        "func": "msg.payload = new Date(msg.payload).toString();\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 340,
+        "y": 180,
+        "wires": [
+            [
+                "253636e697f29199"
+            ]
+        ]
+    },
+    {
+        "id": "253636e697f29199",
+        "type": "debug",
+        "z": "7e9801898105f458",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 480,
+        "y": 180,
+        "wires": []
+    }
+]

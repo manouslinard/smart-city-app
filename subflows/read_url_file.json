@@ -1,0 +1,176 @@
+[
+    {
+        "id": "4a19b4a0382b6741",
+        "type": "subflow",
+        "name": "READ DATA FROM URL OR LOCAL",
+        "info": "<div>\n  <p>\n    This subflow is used in the data visualization challenges of the 2nd Hackathon 2023.\n    It specifically reads a JSON from a URL specified in the <code>msg.url</code> property.\n    If the URL is not available, it reads a JSON file downloaded on the PC. To specify the local JSON file path, provide it in the <code>msg.fileNamePath</code> property.\n  </p>\n  <p>\n    The subflow returns a string with the contents of the JSON, allowing further processing and visualization of the data.\n  </p>\n</div>\n",
+        "category": "",
+        "in": [
+            {
+                "x": 40,
+                "y": 140,
+                "wires": [
+                    {
+                        "id": "6bdbb79045e34126"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 660,
+                "y": 200,
+                "wires": [
+                    {
+                        "id": "64f0f938de14c74f",
+                        "port": 0
+                    },
+                    {
+                        "id": "e056b791e83f857a",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [],
+        "meta": {},
+        "color": "#DDAA99"
+    },
+    {
+        "id": "dba32c62667a02b4",
+        "type": "debug",
+        "z": "4a19b4a0382b6741",
+        "name": "FILE FOUND",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "\"Local Data file found.\"",
+        "targetType": "jsonata",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 690,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "e056b791e83f857a",
+        "type": "switch",
+        "z": "4a19b4a0382b6741",
+        "name": "",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "nnull"
+            },
+            {
+                "t": "null"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 470,
+        "y": 260,
+        "wires": [
+            [
+                "dba32c62667a02b4"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "cd11529b361d8ffb",
+        "type": "file in",
+        "z": "4a19b4a0382b6741",
+        "name": "",
+        "filename": "fileNamePath",
+        "filenameType": "msg",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "none",
+        "allProps": false,
+        "x": 300,
+        "y": 260,
+        "wires": [
+            [
+                "e056b791e83f857a"
+            ]
+        ]
+    },
+    {
+        "id": "64f0f938de14c74f",
+        "type": "switch",
+        "z": "4a19b4a0382b6741",
+        "name": "",
+        "property": "statusCode",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "200",
+                "vt": "num"
+            },
+            {
+                "t": "neq",
+                "v": "200",
+                "vt": "num"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 350,
+        "y": 180,
+        "wires": [
+            [],
+            [
+                "cd11529b361d8ffb",
+                "76ff81e5b8e484f2"
+            ]
+        ]
+    },
+    {
+        "id": "6bdbb79045e34126",
+        "type": "http request",
+        "z": "4a19b4a0382b6741",
+        "name": "",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 190,
+        "y": 140,
+        "wires": [
+            [
+                "64f0f938de14c74f"
+            ]
+        ]
+    },
+    {
+        "id": "76ff81e5b8e484f2",
+        "type": "debug",
+        "z": "4a19b4a0382b6741",
+        "name": "NO INTERNET",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "\"Could not find Requested URL. Checking for file locally...\"",
+        "targetType": "jsonata",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 400,
+        "y": 80,
+        "wires": []
+    }
+]

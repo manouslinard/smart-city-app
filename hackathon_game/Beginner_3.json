@@ -1,0 +1,57 @@
+[
+    {
+        "id": "f518d85206bceacf",
+        "type": "tab",
+        "label": "Beginner_3",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "8f0f42531f82723b",
+        "type": "function",
+        "z": "f518d85206bceacf",
+        "name": "function 2",
+        "func": "msg.payload.name = \"Manousos\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 180,
+        "wires": [
+            [
+                "ae9ac8ac9487ace4"
+            ]
+        ]
+    },
+    {
+        "id": "ae9ac8ac9487ace4",
+        "type": "http response",
+        "z": "f518d85206bceacf",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 490,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "37dc879bf85b8230",
+        "type": "http in",
+        "z": "f518d85206bceacf",
+        "name": "",
+        "url": "/beginner/function",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 170,
+        "y": 260,
+        "wires": [
+            [
+                "8f0f42531f82723b"
+            ]
+        ]
+    }
+]

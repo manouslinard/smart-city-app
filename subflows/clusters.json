@@ -1,0 +1,178 @@
+[
+    {
+        "id": "3a49ab9ee4c51e71",
+        "type": "subflow",
+        "name": "ClusterMaker",
+        "info": "<div>\n  <p>This node utilizes the kmeans function from the <a href=\"https://hub.docker.com/r/kazakos13/common-functions\">common-functions</a> Docker image for grouping the temperatures of the database.</p>\n  <p>The output of this node is the centers of the temperatures in the database for the current day.</p>\n  <p>You can access the output in <code>msg.payload.centroids</code>, which is a list containing all three centers for the given values.</p>\n</div>",
+        "category": "",
+        "in": [
+            {
+                "x": 40,
+                "y": 80,
+                "wires": [
+                    {
+                        "id": "8aaeff7df4c1e2fc"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 1080,
+                "y": 180,
+                "wires": [
+                    {
+                        "id": "3d7dc3925d93ab65",
+                        "port": 0
+                    },
+                    {
+                        "id": "7444a621b56f8254",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [],
+        "meta": {},
+        "color": "#E2D96E"
+    },
+    {
+        "id": "8aaeff7df4c1e2fc",
+        "type": "function",
+        "z": "3a49ab9ee4c51e71",
+        "name": "function 38",
+        "func": "var currentDate = new Date().toISOString().split('T')[0];\n\nmsg.topic = `SELECT temperature\nFROM weather_table wt\nJOIN cities_table ct ON wt.city_name = ct.city_name\nWHERE wt.time = '${currentDate}'`;\n\nreturn msg;\n\n\n\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 190,
+        "y": 80,
+        "wires": [
+            [
+                "e769d67aedaa3184"
+            ]
+        ]
+    },
+    {
+        "id": "e769d67aedaa3184",
+        "type": "sqlite",
+        "z": "3a49ab9ee4c51e71",
+        "mydb": "d9f236dca5911a50",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "",
+        "x": 430,
+        "y": 80,
+        "wires": [
+            [
+                "c2727d5a0e6834ff"
+            ]
+        ]
+    },
+    {
+        "id": "70f222d52b19d8d9",
+        "type": "http request",
+        "z": "3a49ab9ee4c51e71",
+        "name": "Req Docker Kmeans",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://127.0.0.1:8080/run",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 820,
+        "y": 160,
+        "wires": [
+            [
+                "3d7dc3925d93ab65"
+            ]
+        ]
+    },
+    {
+        "id": "c2727d5a0e6834ff",
+        "type": "function",
+        "z": "3a49ab9ee4c51e71",
+        "name": "function 39",
+        "func": "var list = [];\nfor(var values of msg.payload){\n    list.push(values.temperature);\n}\nmsg.payload = { \"value\": { \"data\": [{ \"name\": \"temperature\", \"value\": list }], \"mode\": \"multiple\", \"function\": \"kmeans\" } };\nmsg.copy_input = msg.payload;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 590,
+        "y": 160,
+        "wires": [
+            [
+                "70f222d52b19d8d9"
+            ]
+        ]
+    },
+    {
+        "id": "3d7dc3925d93ab65",
+        "type": "function",
+        "z": "3a49ab9ee4c51e71",
+        "name": "Error Handler",
+        "func": "if (msg.statusCode != 200) {\n    msg.payload = msg.copy_input;\n    return [null,msg];\n}\nreturn[msg,null];",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 780,
+        "y": 260,
+        "wires": [
+            [],
+            [
+                "b581e302cd34c01a",
+                "7444a621b56f8254"
+            ]
+        ]
+    },
+    {
+        "id": "b581e302cd34c01a",
+        "type": "debug",
+        "z": "3a49ab9ee4c51e71",
+        "name": "Error Docker Debug",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "\"Could not find docker kmeans algorithm. Executing local kmeans subflow.\"",
+        "targetType": "jsonata",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 840,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "7444a621b56f8254",
+        "type": "function",
+        "z": "3a49ab9ee4c51e71",
+        "name": "Local Cluster Maker",
+        "func": "const clusterMaker = global.get('clusters');\nvar centroids = [];\nclusterMaker.k(3);\nclusterMaker.iterations(750)\n// console.log(\"DASDASDASDASDASD\")\n\n//for each resource\nmsg.payload.value.data.forEach(element => {\n\n    //creating clusterMakerInput\n    let clusterMakerInput = [];\n    element.value.forEach(value => {\n        clusterMakerInput.push([value])\n    });\n\n    clusterMaker.data(clusterMakerInput);\n\n    let temp = clusterMaker.clusters();\n\n    //creating the output \n    let clusterMakerOutput = [];\n    temp.forEach(element => {\n        element.centroid.forEach(element2 => {\n            clusterMakerOutput.push(element2)\n        });\n    });\n    clusterMakerOutput.sort()\n    centroids.push({ [element.name]: clusterMakerOutput });\n});\nmsg.payload = { centroids };\nreturn msg; \n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1040,
+        "y": 260,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d9f236dca5911a50",
+        "type": "sqlitedb",
+        "db": "/tmp/cities.db",
+        "mode": "RWC"
+    }
+]

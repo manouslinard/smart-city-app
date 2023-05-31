@@ -1,0 +1,79 @@
+[
+    {
+        "id": "e89cb1e787460c56",
+        "type": "tab",
+        "label": "Beginner_2",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "81167b0e14c8bfcf",
+        "type": "inject",
+        "z": "e89cb1e787460c56",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 160,
+        "y": 180,
+        "wires": [
+            [
+                "04a799a3a758b3d7"
+            ]
+        ]
+    },
+    {
+        "id": "6fca144ca14cf38f",
+        "type": "debug",
+        "z": "e89cb1e787460c56",
+        "name": "debug 2",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 460,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "04a799a3a758b3d7",
+        "type": "http request",
+        "z": "e89cb1e787460c56",
+        "name": "",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "localhost:3000/game/beginner/resource.json",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 310,
+        "y": 180,
+        "wires": [
+            [
+                "6fca144ca14cf38f"
+            ]
+        ]
+    }
+]

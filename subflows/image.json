@@ -1,0 +1,172 @@
+[
+    {
+        "id": "54efb170ba57aaef",
+        "type": "subflow",
+        "name": "ImageFlow",
+        "info": "The Image Subflow is used to save the image urls of cities in the database.",
+        "category": "",
+        "in": [
+            {
+                "x": 40,
+                "y": 220,
+                "wires": [
+                    {
+                        "id": "d723df97e161c358"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 920,
+                "y": 320,
+                "wires": [
+                    {
+                        "id": "668cf3cefbab0d16",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [],
+        "meta": {},
+        "color": "#C0DEED"
+    },
+    {
+        "id": "d723df97e161c358",
+        "type": "function",
+        "z": "54efb170ba57aaef",
+        "name": "function 19",
+        "func": "var city = msg.payload;\nvar options = [];\nmsg.url = `https://api.teleport.org/api/urban_areas/slug:${city.city_name}/images/`\nmsg.city_name = city.city_name;\nmsg.city_lat = city.lat;\nmsg.city_lng = city.lng;\nmsg.geonameId = city.geonameId;\n// console.log(city.city_name);\n// global.set(\"city_name\", city.city_name);\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 190,
+        "y": 220,
+        "wires": [
+            [
+                "a19142826a4c2185"
+            ]
+        ]
+    },
+    {
+        "id": "a19142826a4c2185",
+        "type": "http request",
+        "z": "54efb170ba57aaef",
+        "name": "",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 390,
+        "y": 220,
+        "wires": [
+            [
+                "737bbb66489882b5",
+                "3176b95add9ad229"
+            ]
+        ]
+    },
+    {
+        "id": "737bbb66489882b5",
+        "type": "debug",
+        "z": "54efb170ba57aaef",
+        "name": "debug 36",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 380,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "3176b95add9ad229",
+        "type": "function",
+        "z": "54efb170ba57aaef",
+        "name": "function 20",
+        "func": "var photos = msg.payload.photos;\nvar mobile_url = \"\";\nvar web_url = \"\";\nfor (var i = 0; i < photos.length; i ++) {\n    mobile_url = photos[i].image.mobile;\n    web_url = photos[i].image.web;\n}\n\nmsg.topic = `INSERT OR IGNORE INTO image_table (web_img_url, mob_img_url, city_name, lat, lng, geonameId) VALUES ('${web_url}', '${mobile_url}', '${msg.city_name}', ${msg.city_lat}, ${msg.city_lng}, ${msg.geonameId})`;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 570,
+        "y": 260,
+        "wires": [
+            [
+                "b3bc823371a8e6c0",
+                "668cf3cefbab0d16"
+            ]
+        ]
+    },
+    {
+        "id": "b3bc823371a8e6c0",
+        "type": "debug",
+        "z": "54efb170ba57aaef",
+        "name": "debug 40",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "topic",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 640,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "668cf3cefbab0d16",
+        "type": "sqlite",
+        "z": "54efb170ba57aaef",
+        "mydb": "e1b7d6f10fa6ce00",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "INSERT",
+        "x": 780,
+        "y": 320,
+        "wires": [
+            [
+                "cd5a4bcfaa142099"
+            ]
+        ]
+    },
+    {
+        "id": "cd5a4bcfaa142099",
+        "type": "debug",
+        "z": "54efb170ba57aaef",
+        "name": "debug 37",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "topic",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 840,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "e1b7d6f10fa6ce00",
+        "type": "sqlitedb",
+        "db": "/tmp/cities.db",
+        "mode": "RWC"
+    }
+]

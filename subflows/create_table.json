@@ -1,0 +1,154 @@
+[
+    {
+        "id": "d1371e6d62f03d35",
+        "type": "subflow",
+        "name": "Create DB Tables",
+        "info": "The Create DB Tables subflow is used to create all the required database tables.",
+        "category": "",
+        "in": [
+            {
+                "x": 50,
+                "y": 30,
+                "wires": [
+                    {
+                        "id": "2f746a4dbc433a2b"
+                    },
+                    {
+                        "id": "08bfe525d7e8cd1d"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 600,
+                "y": 200,
+                "wires": [
+                    {
+                        "id": "32cd338f3c480133",
+                        "port": 0
+                    }
+                ]
+            },
+            {
+                "x": 680,
+                "y": 80,
+                "wires": [
+                    {
+                        "id": "f2df9060531d2d43",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [],
+        "meta": {},
+        "color": "#C0DEED"
+    },
+    {
+        "id": "2f746a4dbc433a2b",
+        "type": "function",
+        "z": "d1371e6d62f03d35",
+        "name": "CREATE TABLE WEATHER",
+        "func": "msg.topic = \"CREATE TABLE IF NOT EXISTS weather_table (time DATE, weathercode INTEGER, temperature REAL, uv_index_max REAL, uv_index_clear_sky_max REAL, rain_sum REAL, snowfall_sum REAL, windspeed_10m_max REAL, winddirection_10m_dominant REAL, shortwave_radiation_sum REAL, lat REAL, lng REAL, city_name TEXT, continent_code TEXT, geonameId INTEGER, CONSTRAINT unique_city_time UNIQUE (geonameId, time), FOREIGN KEY(geonameId) REFERENCES cities_table(geonameId))\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 220,
+        "y": 200,
+        "wires": [
+            [
+                "32cd338f3c480133",
+                "e9c165b94957c990"
+            ]
+        ]
+    },
+    {
+        "id": "32cd338f3c480133",
+        "type": "sqlite",
+        "z": "d1371e6d62f03d35",
+        "mydb": "e1b7d6f10fa6ce00",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "",
+        "x": 450,
+        "y": 200,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e9c165b94957c990",
+        "type": "function",
+        "z": "d1371e6d62f03d35",
+        "name": "CREATE TABLE",
+        "func": "msg.topic = 'CREATE TABLE IF NOT EXISTS cities_table (city_name TEXT, city_summary TEXT, housing REAL, cost_of_living REAL, startups REAL, venture_capital REAL, travel_connectivity REAL, commute REAL, business_freedom REAL, safety REAL, healthcare REAL, education REAL, environmental_quality REAL, economy REAL, taxation REAL, internet_access REAL, leisure_culture REAL, tolerance REAL, outdoors REAL, country_code TEXT, continent_code TEXT, lat REAL, lng REAL, geonameId INTEGER PRIMARY KEY)';\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 460,
+        "y": 140,
+        "wires": [
+            [
+                "3a371eb5d36ea046"
+            ]
+        ]
+    },
+    {
+        "id": "3a371eb5d36ea046",
+        "type": "sqlite",
+        "z": "d1371e6d62f03d35",
+        "mydb": "e1b7d6f10fa6ce00",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "",
+        "x": 690,
+        "y": 140,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "08bfe525d7e8cd1d",
+        "type": "function",
+        "z": "d1371e6d62f03d35",
+        "name": "CREATE TABLE IMAGE",
+        "func": "msg.topic = \"CREATE TABLE IF NOT EXISTS image_table (web_img_url TEXT, mob_img_url TEXT, city_name TEXT, lat REAL, lng REAL, geonameId INTEGER, CONSTRAINT unique_city_img UNIQUE(geonameId, mob_img_url, web_img_url), FOREIGN KEY(geonameId) REFERENCES cities_table(geonameId)) \";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 270,
+        "y": 40,
+        "wires": [
+            [
+                "f2df9060531d2d43"
+            ]
+        ]
+    },
+    {
+        "id": "f2df9060531d2d43",
+        "type": "sqlite",
+        "z": "d1371e6d62f03d35",
+        "mydb": "e1b7d6f10fa6ce00",
+        "sqlquery": "msg.topic",
+        "sql": "",
+        "name": "",
+        "x": 530,
+        "y": 80,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e1b7d6f10fa6ce00",
+        "type": "sqlitedb",
+        "db": "/tmp/cities.db",
+        "mode": "RWC"
+    }
+]
