@@ -1,5 +1,16 @@
 # Smart City App
-This is a smart city app that saves many cities (and their rankings, weather and other data). Also within this repo, there are solutions for the <strong>hackathon 2023 challenges</strong>.You can view a detailed description of this project and the challenges [here](https://docs.google.com/document/d/1qboEuLH-l-9isQfCn9RzCzkCyO4TYGtqEFc8UejJHHo/edit?usp=sharing). You can checkout the app for yourself by installing [Node-RED](https://nodered.org/). Before you run the app, you should follow the configuration steps specified in the "Configuration" section of this README.
+This is a smart city app that saves many cities (and their rankings, weather and other data). Also within this repo, there are solutions for the <strong>hackathon 2023 challenges</strong>.You can view a detailed description of this project and the challenges [here](https://docs.google.com/document/d/1qboEuLH-l-9isQfCn9RzCzkCyO4TYGtqEFc8UejJHHo/edit?usp=sharing). You can checkout the app for yourself by installing [Node-RED](https://nodered.org/). Before you run the app, you should follow the prerequisites and configuration steps specified in the corresponding sections of this README.
+
+---
+## Prerequisites - Docker Installation:
+Before you start this app, it is recommended to install a docker image that was developed for the common-functions challenge of <strong>hackathon 2023</strong>. Here are the commands to install and run this image:
+```
+docker pull kazakos13/common-functions
+docker run -p 8080:8080 -it kazakos13/common-functions
+```
+If you dont want to install this docker image you should not encounter any problems in the execution of the app, because some local flows were developed, which have the same functions as the docker image (and they are executed if the docker image is not running).
+<br>
+You can also read the overview of the docker image [here](https://hub.docker.com/r/kazakos13/common-functions).
 
 ---
 ## Configuration:
