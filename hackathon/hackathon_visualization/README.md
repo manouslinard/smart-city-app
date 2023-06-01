@@ -1,0 +1,1 @@
+In visualize.json there are all the flows required to make the visualization challenges (you can view the results [here](https://docs.google.com/document/d/1qboEuLH-l-9isQfCn9RzCzkCyO4TYGtqEFc8UejJHHo/edit#bookmark=id.z53klz8lz8m4)).

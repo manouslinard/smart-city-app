@@ -1,5 +1,5 @@
 # Smart City App
-This is a smart city app that saves many cities (and their rankings, weather and other data). Also within this repo, there are solutions for the <strong>hackathon 2023 challenges</strong>.You can view a detailed description of this project and the challenges [here](https://docs.google.com/document/d/1qboEuLH-l-9isQfCn9RzCzkCyO4TYGtqEFc8UejJHHo/edit?usp=sharing). You can checkout the app for yourself by installing [Node-RED](https://nodered.org/). Before you run the app, you should follow the prerequisites and configuration steps specified in the corresponding sections of this README.
+This is a smart city app that saves many cities (and their rankings, weather and other data). Also in the <strong>hackathon</strong> folder of this repo (view README in hackathon folder for more info), there are solutions for the <strong>hackathon 2023 challenges</strong>.You can view a detailed description of the entire project and the challenges [here](https://docs.google.com/document/d/1qboEuLH-l-9isQfCn9RzCzkCyO4TYGtqEFc8UejJHHo/edit?usp=sharing). You can checkout the app for yourself by installing [Node-RED](https://nodered.org/). Before you run the app, you should follow the prerequisites and configuration steps specified in the corresponding sections of this README.
 
 ---
 ## Prerequisites - Docker Installation:

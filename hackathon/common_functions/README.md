@@ -1,5 +1,12 @@
+In this folder, you can find the subflow we have implemented for the common functions challenge. Specifically, we have developed a docker image which has three functions:
+* Quicksort
+* Kmeans Clustering
+* Weighted Average
+
+This docker image can also run with openwhisk ([here](https://docs.google.com/document/d/1qboEuLH-l-9isQfCn9RzCzkCyO4TYGtqEFc8UejJHHo/edit#bookmark=id.j3wtc5rmsiuz) is a tutorial on how to send the correct input data and get the result).
+
 ---
-## Configuration:
+## Docker Push and Pull Commands:
 
 * ### Run the functions at Docker:
 
