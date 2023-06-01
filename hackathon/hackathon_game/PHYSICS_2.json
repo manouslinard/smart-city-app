@@ -1,0 +1,440 @@
+[
+    {
+        "id": "b8218229e9c66bfb",
+        "type": "subflow",
+        "name": "OW monitor",
+        "info": "\n\nThis is a subflow node in order to monitor the latest performance (sliding window) of Openwhisk actions. The flow pings periodically the target Openwhisk installation in order to retrieve the last executed actions and extract statistics from their execution.\n\nConfiguration includes:\n - the polling time of the monitor (default 30 seconds, `msg.pollingPeriod`)\n - the target Openwhisk endpoint (`msg.targetEndpoint`)\n - credentials for that endpoint (`msg.creds`) in the form of user:key\n - the window of time (in minutes) in the past for which you want to retrieve results (`msg.window`)\n - an optional action name (`msg.action`), if one wants to filter specific action activations\n\nThe configuration can be set either via the flow UI or the incoming message. The incoming message prevails over the UI-set value.\n\nThe monitor can be stopped via a `msg.stop=true` message. The subflow uses a flow variable in order to control starting and stopping, hence only one OW monitor should be used in each flow.\n\nThe results include the raw data acquired (`msg.payload.rawData`) in the last window of time, as well as the moving averages of duration (`msg.payload.results.movingAverageDuration`), init time (`msg.payload.results.movingAverageInitTime`) and wait time (`msg.payload.results.movingAverageWaitTime`) of the window. The number of cold starts are also included (`msg.payload.results.coldStarts`) as well as the percentage with relation to the total calls (`msg.payload.results.coldStartPercentage`).\n\n\n",
+        "category": "PHYSICS PEF",
+        "in": [
+            {
+                "x": 60,
+                "y": 80,
+                "wires": [
+                    {
+                        "id": "5b92b00a559c23d6"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 820,
+                "y": 180,
+                "wires": [
+                    {
+                        "id": "ae6bc8649fda071b",
+                        "port": 0
+                    }
+                ]
+            },
+            {
+                "x": 560,
+                "y": 80,
+                "wires": [
+                    {
+                        "id": "a27743069b5d7075",
+                        "port": 0
+                    }
+                ]
+            },
+            {
+                "x": 1080,
+                "y": 320,
+                "wires": [
+                    {
+                        "id": "37dbab2b61f1bbab",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [
+            {
+                "name": "targetEndpoint",
+                "type": "str",
+                "value": "http://10.100.59.182:3233/api/v1",
+                "ui": {
+                    "label": {
+                        "en-US": "Target Endpoint"
+                    }
+                }
+            },
+            {
+                "name": "pollingPeriod",
+                "type": "num",
+                "value": "30",
+                "ui": {
+                    "label": {
+                        "en-US": "Polling Period (seconds)"
+                    }
+                }
+            },
+            {
+                "name": "window",
+                "type": "num",
+                "value": "10",
+                "ui": {
+                    "label": {
+                        "en-US": "Window of Time (minutes)"
+                    }
+                }
+            },
+            {
+                "name": "namespace",
+                "type": "str",
+                "value": "guest",
+                "ui": {
+                    "label": {
+                        "en-US": "Namespace"
+                    }
+                }
+            },
+            {
+                "name": "action",
+                "type": "str",
+                "value": "",
+                "ui": {
+                    "label": {
+                        "en-US": "Optional Action Name"
+                    }
+                }
+            },
+            {
+                "name": "creds",
+                "type": "cred",
+                "ui": {
+                    "label": {
+                        "en-US": "Credentials (user:key)"
+                    }
+                }
+            }
+        ],
+        "meta": {
+            "module": "node-red-contrib-owmonitor",
+            "version": "0.0.1",
+            "author": "George Kousiours <gkousiou@hua.gr>",
+            "desc": "This is a subflow node in order to monitor the latest performance (sliding window) of Openwhisk actions. The flow pings periodically the target Openwhisk installation in order to retrieve the last executed actions and extract statistics from their execution.",
+            "keywords": "openwhisk, performance, monitor, sliding window",
+            "license": "Apache-2.0"
+        },
+        "color": "#E9967A",
+        "icon": "node-red/status.svg"
+    },
+    {
+        "id": "1242c9ad8897f17b",
+        "type": "http request",
+        "z": "b8218229e9c66bfb",
+        "name": "",
+        "method": "use",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "df3a306242e21be5",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "x": 290,
+        "y": 180,
+        "wires": [
+            [
+                "557c287f0ccd9365"
+            ]
+        ]
+    },
+    {
+        "id": "5b92b00a559c23d6",
+        "type": "function",
+        "z": "b8218229e9c66bfb",
+        "name": "defaults",
+        "func": "if (msg.hasOwnProperty('window')){\n    \n} else {\n    msg.window=env.get('window');\n}\n\nif (msg.hasOwnProperty('targetEndpoint')){\n    \n} else {\n    msg.targetEndpoint=env.get('targetEndpoint');\n}\n\nif (msg.hasOwnProperty('pollingPeriod')){\n    \n} else {\n    msg.pollingPeriod=env.get('pollingPeriod');\n}\n\nif (msg.hasOwnProperty('creds')){\n    \n} else {\n    msg.creds=env.get('creds');\n}\n\nif (msg.hasOwnProperty('namespace')){\n    \n} else {\n    msg.namespace=env.get('namespace');\n}\n\nif (msg.hasOwnProperty('action')){\n    \n} else {\n    msg.action=env.get('action');\n}\n\nif (msg.hasOwnProperty('stop')){\n    flow.set('stop',msg.stop);\n} else {\n    flow.set('stop',false);\n}\n\nmsg.headers={};\nvar auth = 'Basic ' + new Buffer(msg.creds).toString('base64');\nmsg.headers = {\n    \"Authorization\": auth\n}\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 180,
+        "y": 80,
+        "wires": [
+            [
+                "a27743069b5d7075"
+            ]
+        ]
+    },
+    {
+        "id": "a27743069b5d7075",
+        "type": "function",
+        "z": "b8218229e9c66bfb",
+        "name": "produce rate",
+        "func": "\nfunction sayHi(input) {\n  \n  if (flow.get('stop')) {\n    msg.payload=\"STOPPED\";\n    node.send([msg,null]);\n    clearTimeout(timerId);\n    \n  } else {\n      msg.since=Date.now()-msg.window*60*1000; //remove window of time from timestamp\n      //add since filter\n      msg.url=msg.baseurl+'?since='+msg.since;\n      msg.url=msg.url+'&limit=0';//by default, OW returns 30 results. We need this to return without limit\n      //add optional action name filter. This needs to be second since it may not always exist\n      if (msg.action!==\"\"){\n          msg.url=msg.url+'&name='+msg.action;\n      }\n\n      node.send([null,msg])\n      \n  }\n}\n\nmsg.baseurl=msg.targetEndpoint+'/namespaces/'+msg.namespace+'/activations';\n\nmsg.method='GET';\nvar timerId=setInterval(sayHi, msg.pollingPeriod*1000,msg);\n\n\n",
+        "outputs": "2",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 370,
+        "y": 80,
+        "wires": [
+            [],
+            [
+                "1242c9ad8897f17b"
+            ]
+        ]
+    },
+    {
+        "id": "557c287f0ccd9365",
+        "type": "function",
+        "z": "b8218229e9c66bfb",
+        "name": "preprocess results",
+        "func": "\n\nvar resultsArray=[];\n\nvar results={};\n\nvar errorsArray=[];\n\nfor (let k=0;k<msg.payload.length;k++){\n    //from OW\n    results.activationId=msg.payload[k].activationId;\n    results.duration=msg.payload[k].duration;\n    results.start=msg.payload[k].start;\n    results.end=msg.payload[k].end;\n    results.action=msg.payload[k].name;\n    results.namespace=msg.payload[k].namespace;\n    results.statusCode=msg.payload[k].statusCode;\n    results.version=msg.payload[k].version;\n    \n    if (msg.payload[k].statusCode!=0){\n        errorsArray.push(msg.payload[k].activationId);\n    }\n    \n    //results.success=msg.payload[k].response.success; This is not included in the summary results\n    for (let i=0;i<msg.payload[k].annotations.length;i++){\n        if (msg.payload[k].annotations[i].key==='waitTime'){\n            results.waitTime=msg.payload[k].annotations[i].value;\n        }\n        if (msg.payload[k].annotations[i].key==='initTime'){\n            results.initTime=msg.payload[k].annotations[i].value;\n        }\n        \n    }\n    \n    if (!(results.hasOwnProperty('initTime'))){\n        results.initTime=0;\n    }\n    if (msg.action===\"\"){\n        resultsArray.push(results);    \n    } else {\n        if (results.action===msg.action){\n            resultsArray.push(results);\n        }\n    }\n    \n    // @ts-ignore\n    results={};\n    \n}    \nmsg.payload={};\nmsg.payload=resultsArray;\nmsg.errors=errorsArray;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 490,
+        "y": 180,
+        "wires": [
+            [
+                "ae6bc8649fda071b",
+                "71732c27b0fcedd6"
+            ]
+        ]
+    },
+    {
+        "id": "ae6bc8649fda071b",
+        "type": "function",
+        "z": "b8218229e9c66bfb",
+        "name": "averages",
+        "func": "var rawData=msg.payload;\nmsg.payload={};\nmsg.payload.rawData=rawData;\nvar samples=msg.payload.rawData.length;\n\nmsg.results={};\nmsg.results.averageDuration=0;\nmsg.results.averageWaitTime=0;\nmsg.results.averageInitTime=0;\nmsg.results.coldStarts=0;\nmsg.results.successPercentage=0;\n\nvar duration= [];//=new Array();\nvar waitTime=[];\nvar initTime=[];\n\n\nfor (i=0;i<msg.payload.rawData.length;i++){\n    msg.results.averageDuration=msg.results.averageDuration+msg.payload.rawData[i].duration;\n    duration.push(msg.payload.rawData[i].duration);\n    \n    msg.results.averageWaitTime=msg.results.averageWaitTime+msg.payload.rawData[i].waitTime;\n    waitTime.push(msg.payload.rawData[i].waitTime);\n    \n    msg.results.averageInitTime=msg.results.averageInitTime+msg.payload.rawData[i].initTime;\n    initTime.push(msg.payload.rawData[i].initTime);\n    if (msg.payload.rawData[i].initTime!==0){\n        msg.results.coldStarts=msg.results.coldStarts+1;\n    }\n    if (msg.payload.rawData[i].statusCode===0){\n        msg.results.successPercentage=msg.results.successPercentage+1;\n    }\n    \n\n}\nmsg.results.successPercentage=(msg.results.successPercentage/msg.payload.rawData.length)*100;\nmsg.results.averageDuration=toFixedNumber(msg.results.averageDuration/samples,2);\nmsg.results.averageWaitTime=toFixedNumber(msg.results.averageWaitTime/samples,2);\nmsg.results.averageInitTime=toFixedNumber(msg.results.averageInitTime/samples,2);\nmsg.results.coldStartPercentage=toFixedNumber((msg.results.coldStarts/samples)*100,2);\n\nmsg.results.movingAverageDuration=msg.results.averageDuration;\ndelete msg.results.averageDuration;\n\nmsg.results.movingAverageWaitTime=msg.results.averageWaitTime;\ndelete msg.results.averageWaitTime;\n\nmsg.results.movingAverageInitTime=msg.results.averageInitTime;\ndelete msg.results.averageInitTime;\n\n\nmsg.payload.results=msg.results;\nreturn msg;\n\n\nfunction toFixedNumber(num, digits, base){\n  var pow = Math.pow(base||10, digits);\n  return Math.round(num*pow) / pow;\n}\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 680,
+        "y": 180,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "45a102851f96a251",
+        "type": "split",
+        "z": "b8218229e9c66bfb",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 370,
+        "y": 320,
+        "wires": [
+            [
+                "f9e10aaf7b5646cd"
+            ]
+        ]
+    },
+    {
+        "id": "71732c27b0fcedd6",
+        "type": "change",
+        "z": "b8218229e9c66bfb",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "errors",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 220,
+        "y": 320,
+        "wires": [
+            [
+                "45a102851f96a251"
+            ]
+        ]
+    },
+    {
+        "id": "f9e10aaf7b5646cd",
+        "type": "function",
+        "z": "b8218229e9c66bfb",
+        "name": "prepare call",
+        "func": "msg.url=msg.targetEndpoint+'/namespaces/'+msg.namespace+'/activations/'+msg.payload;\nmsg.method='GET';\nmsg.headers={};\nvar auth = 'Basic ' + new Buffer(msg.creds).toString('base64');\nmsg.headers = {\n    \"Authorization\": auth\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 510,
+        "y": 320,
+        "wires": [
+            [
+                "25c20334076b73d8"
+            ]
+        ]
+    },
+    {
+        "id": "25c20334076b73d8",
+        "type": "http request",
+        "z": "b8218229e9c66bfb",
+        "name": "",
+        "method": "use",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "df3a306242e21be5",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "x": 670,
+        "y": 320,
+        "wires": [
+            [
+                "6d96c447431b26d6"
+            ]
+        ]
+    },
+    {
+        "id": "37dbab2b61f1bbab",
+        "type": "join",
+        "z": "b8218229e9c66bfb",
+        "name": "",
+        "mode": "auto",
+        "build": "object",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": "false",
+        "timeout": "",
+        "count": "",
+        "reduceRight": false,
+        "x": 970,
+        "y": 320,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6d96c447431b26d6",
+        "type": "function",
+        "z": "b8218229e9c66bfb",
+        "name": "logs string",
+        "func": "msg.payload.logs=msg.payload.logs.join('\\r\\n');\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 830,
+        "y": 320,
+        "wires": [
+            [
+                "37dbab2b61f1bbab"
+            ]
+        ]
+    },
+    {
+        "id": "c3d374152463b5bd",
+        "type": "comment",
+        "z": "b8218229e9c66bfb",
+        "name": "STOP",
+        "info": "",
+        "x": 650,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "ba21921f45a01e58",
+        "type": "comment",
+        "z": "b8218229e9c66bfb",
+        "name": "PERFORMANCE STATISTICS",
+        "info": "",
+        "x": 990,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "9001e0a07df5442d",
+        "type": "comment",
+        "z": "b8218229e9c66bfb",
+        "name": "ERROR LOGS",
+        "info": "",
+        "x": 1000,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "df3a306242e21be5",
+        "type": "tls-config",
+        "name": "",
+        "cert": "",
+        "key": "",
+        "ca": "",
+        "certname": "",
+        "keyname": "",
+        "caname": "",
+        "servername": "",
+        "verifyservercert": false,
+        "alpnprotocol": ""
+    },
+    {
+        "id": "6eadf833255822ef",
+        "type": "tab",
+        "label": "Physics_2",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "c0f2b1f59122cec7",
+        "type": "http in",
+        "z": "6eadf833255822ef",
+        "name": "",
+        "url": "/openwhisk/results",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 150,
+        "y": 180,
+        "wires": [
+            [
+                "4fdbaa28343da351"
+            ]
+        ]
+    },
+    {
+        "id": "4fdbaa28343da351",
+        "type": "subflow:b8218229e9c66bfb",
+        "z": "6eadf833255822ef",
+        "name": "Openwhisk MONITOR AND LOGGER",
+        "env": [
+            {
+                "name": "window",
+                "value": "10000",
+                "type": "num"
+            },
+            {
+                "name": "creds",
+                "type": "cred"
+            }
+        ],
+        "x": 370,
+        "y": 280,
+        "wires": [
+            [],
+            [],
+            []
+        ]
+    }
+]
