@@ -11,18 +11,18 @@
                 "y": 180,
                 "wires": [
                     {
-                        "id": "b8419a967a575620"
+                        "id": "d8e9daa2c8509009"
                     }
                 ]
             }
         ],
         "out": [
             {
-                "x": 1080,
+                "x": 780,
                 "y": 180,
                 "wires": [
                     {
-                        "id": "406e1ff4aa87c4dd",
+                        "id": "a305889cee5bf6fb",
                         "port": 0
                     }
                 ]
@@ -37,18 +37,16 @@
         "type": "function",
         "z": "da362e744a99a41b",
         "name": "Calculate Weighted Average",
-        "func": "function calc_weight_avg(list) {\n    // Calculate total weight and weighted sum\n    let totalWeight = 0;\n    let weightedSum = 0;\n\n    list.forEach((temperature, index) => {\n        const weight = index + 1;\n\n        weightedSum += temperature.value * weight;\n        totalWeight += weight;\n    });\n\n    const weightedAverage = weightedSum / totalWeight;\n    return weightedAverage;\n}\n\nconst list = msg.payload.value.data;\nfor (let key in list) {\n    list[key] = calc_weight_avg(list[key]);\n}\n\nmsg.payload.value.data = list;\nreturn msg;\n",
+        "func": "// function conv_date(unixTime){\n//     // Create a new Date object by multiplying the Unix timestamp by 1000 to convert it to milliseconds\n//     const date = new Date(unixTime);\n\n//     // Extract the various components of the date and time\n//     const year = date.getFullYear();\n//     const month = date.getMonth() + 1; // Months are zero-based, so add 1\n//     const day = date.getDate();\n//     const hours = date.getHours();\n//     const minutes = date.getMinutes();\n//     const seconds = date.getSeconds();\n\n//     // Create a formatted date and time string\n//     return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')} ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;\n\n// }\n\nfunction calc_weight_avg(list) {\n    // Calculate total weight and weighted sum\n    let totalWeight = 0;\n    let weightedSum = 0;\n\n    list.forEach((temperature, index) => {\n        const weight = index + 1;\n        // Used for debugging:\n        // console.log(conv_date(temperature.date) + \": \" + weight);\n        weightedSum += temperature.value * weight;\n        totalWeight += weight;\n    });\n\n    const weightedAverage = weightedSum / totalWeight;\n    return weightedAverage;\n}\n\nconst list = msg.payload.value.data;\nfor (let key in list) {\n    list[key] = calc_weight_avg(list[key]);\n}\n\nmsg.payload.value.data = list;\nreturn msg;\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 700,
+        "x": 560,
         "y": 180,
         "wires": [
-            [
-                "406e1ff4aa87c4dd"
-            ]
+            []
         ]
     },
     {
@@ -56,48 +54,12 @@
         "type": "subflow:6fd479bb119a914b",
         "z": "da362e744a99a41b",
         "name": "",
-        "x": 460,
+        "x": 320,
         "y": 180,
         "wires": [
             [
                 "a305889cee5bf6fb"
             ]
-        ]
-    },
-    {
-        "id": "b8419a967a575620",
-        "type": "function",
-        "z": "da362e744a99a41b",
-        "name": "Reverse",
-        "func": "msg.payload.value.reverse = !msg.payload.value.reverse; \nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 280,
-        "y": 180,
-        "wires": [
-            [
-                "d8e9daa2c8509009"
-            ]
-        ]
-    },
-    {
-        "id": "406e1ff4aa87c4dd",
-        "type": "function",
-        "z": "da362e744a99a41b",
-        "name": "Reverse",
-        "func": "msg.payload.value.reverse = !msg.payload.value.reverse; \nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 940,
-        "y": 180,
-        "wires": [
-            []
         ]
     },
     {
@@ -170,7 +132,7 @@
         ]
     },
     {
-        "id": "c9822cfb3a2adfc0",
+        "id": "ca1d3773f6a8a7e2",
         "type": "tab",
         "label": "CommonFunctions",
         "disabled": false,
@@ -178,9 +140,9 @@
         "env": []
     },
     {
-        "id": "f2752dd6e860fb6e",
+        "id": "ddcd7a83417b8a46",
         "type": "http in",
-        "z": "c9822cfb3a2adfc0",
+        "z": "ca1d3773f6a8a7e2",
         "name": "",
         "url": "/run",
         "method": "post",
@@ -190,14 +152,14 @@
         "y": 400,
         "wires": [
             [
-                "2cf56eb78e77f3c7"
+                "f38dfea68369a1f1"
             ]
         ]
     },
     {
-        "id": "1833b933f2424012",
+        "id": "03068d670bf90da0",
         "type": "http response",
-        "z": "c9822cfb3a2adfc0",
+        "z": "ca1d3773f6a8a7e2",
         "name": "",
         "statusCode": "",
         "headers": {},
@@ -206,9 +168,9 @@
         "wires": []
     },
     {
-        "id": "a127942d13733dd4",
+        "id": "c1b9dd6fefeed7f6",
         "type": "debug",
-        "z": "c9822cfb3a2adfc0",
+        "z": "ca1d3773f6a8a7e2",
         "name": "debug 59",
         "active": true,
         "tosidebar": true,
@@ -223,9 +185,9 @@
         "wires": []
     },
     {
-        "id": "46c18287c2bf6a37",
+        "id": "f1ebe72c0ff98da6",
         "type": "http in",
-        "z": "c9822cfb3a2adfc0",
+        "z": "ca1d3773f6a8a7e2",
         "name": "",
         "url": "/init",
         "method": "post",
@@ -235,14 +197,14 @@
         "y": 620,
         "wires": [
             [
-                "bd7e7931e18334fd"
+                "6f7de24953ec052d"
             ]
         ]
     },
     {
-        "id": "bd7e7931e18334fd",
+        "id": "6f7de24953ec052d",
         "type": "http response",
-        "z": "c9822cfb3a2adfc0",
+        "z": "ca1d3773f6a8a7e2",
         "name": "",
         "statusCode": "",
         "headers": {},
@@ -251,9 +213,9 @@
         "wires": []
     },
     {
-        "id": "8d5b0e1e338f7668",
+        "id": "855534482947041f",
         "type": "catch",
-        "z": "c9822cfb3a2adfc0",
+        "z": "ca1d3773f6a8a7e2",
         "name": "",
         "scope": null,
         "uncaught": false,
@@ -261,14 +223,14 @@
         "y": 540,
         "wires": [
             [
-                "8eb112bf99a1824b"
+                "d0e4c2618b2efd26"
             ]
         ]
     },
     {
-        "id": "8eb112bf99a1824b",
+        "id": "d0e4c2618b2efd26",
         "type": "function",
-        "z": "c9822cfb3a2adfc0",
+        "z": "ca1d3773f6a8a7e2",
         "name": "ADD ERROR INFO",
         "func": "var payload=msg.payload;\nmsg.payload={};\n\nmsg.payload.error=msg.error;\nmsg.payload.error.payload=payload;\nreturn msg;",
         "outputs": 1,
@@ -280,14 +242,14 @@
         "y": 560,
         "wires": [
             [
-                "1833b933f2424012"
+                "03068d670bf90da0"
             ]
         ]
     },
     {
-        "id": "2cf56eb78e77f3c7",
+        "id": "f38dfea68369a1f1",
         "type": "switch",
-        "z": "c9822cfb3a2adfc0",
+        "z": "ca1d3773f6a8a7e2",
         "name": "",
         "property": "payload.value.function",
         "propertyType": "msg",
@@ -315,20 +277,20 @@
         "y": 400,
         "wires": [
             [
-                "1b3bc63ac206b283"
+                "9378a17b2e0ed2cf"
             ],
             [
-                "ec03de87d9e8205e"
+                "92f96eb305df126f"
             ],
             [
-                "06c49a28ad37437b"
+                "57478f7fab95acaf"
             ]
         ]
     },
     {
-        "id": "1b3bc63ac206b283",
+        "id": "9378a17b2e0ed2cf",
         "type": "function",
-        "z": "c9822cfb3a2adfc0",
+        "z": "ca1d3773f6a8a7e2",
         "name": "Clustering function",
         "func": "const clusterMaker = global.get('clusters');\nvar centroids = [];\nclusterMaker.k(3);\nclusterMaker.iterations(750)\n\nif (msg.payload.value.mode === \"multiple\"){\n    \n    //for each resource\n    msg.payload.value.data.forEach( element => {\n        \n        //creating clusterMakerInput\n        let clusterMakerInput = [];\n        element.value.forEach( value => {\n            clusterMakerInput.push([value])\n        });\n        \n        clusterMaker.data(clusterMakerInput);\n        \n        let temp = clusterMaker.clusters();\n        \n        //creating the output \n        let clusterMakerOutput = [];\n        temp.forEach( element => {\n            element.centroid.forEach(element2 => {\n                clusterMakerOutput.push(element2)\n            });\n        });\n        clusterMakerOutput.sort()\n        centroids.push({ [element.name]: clusterMakerOutput});\n    });\n} else if (msg.payload.value.mode === \"single\") {\n\n    //data.length = m\n    //data.element1.lenght = n\n    //finding the max length of all data arrays\n    let temp = [];\n    let n = [];\n\n    for (let m = 0; m < msg.payload.value.data.length;m++){\n        n.push(msg.payload.value.data[m].value.length)\n    }\n\n    const nMax = Math.max(...n);\n\n    //creating the array for clusterMakerInput\n    let clusterMakerInput = []; \n    for (let n = 0; n < nMax; n++) {\n        let arrTemp = [];\n        msg.payload.value.data.forEach( m => {\n\n            arrTemp.push(m.value[n]);\n\n        });\n        clusterMakerInput.push(arrTemp);\n    }\n    console.log(clusterMakerInput);\n    clusterMaker.data(clusterMakerInput);\n    centroids = clusterMaker.clusters();\n\n}\nmsg.payload = {centroids};\nreturn msg;",
         "outputs": 1,
@@ -340,36 +302,36 @@
         "y": 280,
         "wires": [
             [
-                "1833b933f2424012",
-                "a127942d13733dd4"
+                "03068d670bf90da0",
+                "c1b9dd6fefeed7f6"
             ]
         ]
     },
     {
-        "id": "ec03de87d9e8205e",
+        "id": "92f96eb305df126f",
         "type": "subflow:6fd479bb119a914b",
-        "z": "c9822cfb3a2adfc0",
+        "z": "ca1d3773f6a8a7e2",
         "name": "",
         "x": 620,
         "y": 400,
         "wires": [
             [
-                "1833b933f2424012",
-                "a127942d13733dd4"
+                "03068d670bf90da0",
+                "c1b9dd6fefeed7f6"
             ]
         ]
     },
     {
-        "id": "06c49a28ad37437b",
+        "id": "57478f7fab95acaf",
         "type": "subflow:da362e744a99a41b",
-        "z": "c9822cfb3a2adfc0",
+        "z": "ca1d3773f6a8a7e2",
         "name": "",
         "x": 600,
-        "y": 460,
+        "y": 480,
         "wires": [
             [
-                "1833b933f2424012",
-                "a127942d13733dd4"
+                "03068d670bf90da0",
+                "c1b9dd6fefeed7f6"
             ]
         ]
     }

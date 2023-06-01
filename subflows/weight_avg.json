@@ -80,18 +80,18 @@
                 "y": 180,
                 "wires": [
                     {
-                        "id": "b8419a967a575620"
+                        "id": "d8e9daa2c8509009"
                     }
                 ]
             }
         ],
         "out": [
             {
-                "x": 1080,
+                "x": 780,
                 "y": 180,
                 "wires": [
                     {
-                        "id": "406e1ff4aa87c4dd",
+                        "id": "a305889cee5bf6fb",
                         "port": 0
                     }
                 ]
@@ -106,18 +106,16 @@
         "type": "function",
         "z": "da362e744a99a41b",
         "name": "Calculate Weighted Average",
-        "func": "function calc_weight_avg(list) {\n    // Calculate total weight and weighted sum\n    let totalWeight = 0;\n    let weightedSum = 0;\n\n    list.forEach((temperature, index) => {\n        const weight = index + 1;\n\n        weightedSum += temperature.value * weight;\n        totalWeight += weight;\n    });\n\n    const weightedAverage = weightedSum / totalWeight;\n    return weightedAverage;\n}\n\nconst list = msg.payload.value.data;\nfor (let key in list) {\n    list[key] = calc_weight_avg(list[key]);\n}\n\nmsg.payload.value.data = list;\nreturn msg;\n",
+        "func": "// function conv_date(unixTime){\n//     // Create a new Date object by multiplying the Unix timestamp by 1000 to convert it to milliseconds\n//     const date = new Date(unixTime);\n\n//     // Extract the various components of the date and time\n//     const year = date.getFullYear();\n//     const month = date.getMonth() + 1; // Months are zero-based, so add 1\n//     const day = date.getDate();\n//     const hours = date.getHours();\n//     const minutes = date.getMinutes();\n//     const seconds = date.getSeconds();\n\n//     // Create a formatted date and time string\n//     return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')} ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;\n\n// }\n\nfunction calc_weight_avg(list) {\n    // Calculate total weight and weighted sum\n    let totalWeight = 0;\n    let weightedSum = 0;\n\n    list.forEach((temperature, index) => {\n        const weight = index + 1;\n        // Used for debugging:\n        // console.log(conv_date(temperature.date) + \": \" + weight);\n        weightedSum += temperature.value * weight;\n        totalWeight += weight;\n    });\n\n    const weightedAverage = weightedSum / totalWeight;\n    return weightedAverage;\n}\n\nconst list = msg.payload.value.data;\nfor (let key in list) {\n    list[key] = calc_weight_avg(list[key]);\n}\n\nmsg.payload.value.data = list;\nreturn msg;\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 700,
+        "x": 560,
         "y": 180,
         "wires": [
-            [
-                "406e1ff4aa87c4dd"
-            ]
+            []
         ]
     },
     {
@@ -125,48 +123,12 @@
         "type": "subflow:6fd479bb119a914b",
         "z": "da362e744a99a41b",
         "name": "",
-        "x": 460,
+        "x": 320,
         "y": 180,
         "wires": [
             [
                 "a305889cee5bf6fb"
             ]
-        ]
-    },
-    {
-        "id": "b8419a967a575620",
-        "type": "function",
-        "z": "da362e744a99a41b",
-        "name": "Reverse",
-        "func": "msg.payload.value.reverse = !msg.payload.value.reverse; \nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 280,
-        "y": 180,
-        "wires": [
-            [
-                "d8e9daa2c8509009"
-            ]
-        ]
-    },
-    {
-        "id": "406e1ff4aa87c4dd",
-        "type": "function",
-        "z": "da362e744a99a41b",
-        "name": "Reverse",
-        "func": "msg.payload.value.reverse = !msg.payload.value.reverse; \nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 940,
-        "y": 180,
-        "wires": [
-            []
         ]
     }
 ]
