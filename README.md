@@ -67,5 +67,6 @@ The <strong>only</strong> diagram needed for import in order for the project to 
 
 ---
 ## Other links:
-* [Project documentation](https://docs.google.com/document/d/1qboEuLH-l-9isQfCn9RzCzkCyO4TYGtqEFc8UejJHHo/edit?usp=sharing)
+* [Project Documentation](https://docs.google.com/document/d/1qboEuLH-l-9isQfCn9RzCzkCyO4TYGtqEFc8UejJHHo/edit?usp=sharing)
+* [Project Presentation](https://docs.google.com/presentation/d/1f97FI4AqBjPz9CGxmDQP-JCVLRFj-Qf1/edit?usp=sharing&ouid=107246824104571234611&rtpof=true&sd=true)
 * [Weather Code Website](https://www.nodc.noaa.gov/archive/arc0021/0002199/1.1/data/0-data/HTML/WMO-CODE/WMO4677.HTM)

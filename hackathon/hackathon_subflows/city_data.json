@@ -1,0 +1,302 @@
+[
+    {
+        "id": "9820978c22086c87",
+        "type": "subflow",
+        "name": "Get City Data",
+        "info": "<!DOCTYPE html>\n<html>\n<head>\n  <title>Subflow Summary</title>\n</head>\n<body>\n  <h2>Subflow Summary</h2>\n  <p>This subflow gets data for a specific city name. To input the city name you can set it on the UI of this node or in msg.city_name (message will have priority). This subflow takes data from teleport, openstreetmap, and openeteo API.</p>\n  The result contains city rankings, latitude and longitude, country and weather forecast for the next 7 days.\n  <h3>Example Result:</h3>\n  <pre>\n    {\n      \"city\": \"perth\",\n      \"lat\": -31.9558933,\n      \"lng\": 115.8605855,\n      \"rank\": {\n        \"housing\": 5.233,\n        \"cost_of_living\": 4.795,\n        \"startups\": 5.127000000000001,\n        \"venture_capital\": 3.102,\n        \"travel_connectivity\": 2.1104999999999996,\n        \"commute\": 4.695,\n        \"business_freedom\": 9.399666666666667,\n        \"safety\": 7.1045,\n        \"healthcare\": 9.312666666666665,\n        \"education\": 5.143,\n        \"environmental_quality\": 8.132500000000002,\n        \"economy\": 6.0695000000000014,\n        \"taxation\": 4.5885,\n        \"internet_access\": 4.1785,\n        \"leisure_culture\": 4.5115,\n        \"tolerance\": 7.470500000000001,\n        \"outdoors\": 5.6835\n      },\n      \"forecast\": [\n        {\n          \"time\": \"2023-06-03\",\n          \"weathercode\": 3,\n          \"temperature\": 13.15,\n          \"uv_index_max\": 3.9,\n          \"uv_index_clear_sky_max\": 3.9,\n          \"rain_sum\": 0,\n          \"snowfall_sum\": 0,\n          \"windspeed_10m_max\": 8.7,\n          \"winddirection_10m_dominant\": 78,\n          \"shortwave_radiation_sum\": 12.21\n        },\n        ...\n      ],\n      \"photos\": {\n        \"mobile\": \"https://d13k13wj6adfdf.cloudfront.net/urban_areas/perth-1e220f50f9.jpg\",\n        \"web\": \"https://d13k13wj6adfdf.cloudfront.net/urban_areas/perth_web-99a082a61e.jpg\"\n      }\n    }\n  </pre>\n</body>\n</html>\n",
+        "category": "",
+        "in": [
+            {
+                "x": 40,
+                "y": 80,
+                "wires": [
+                    {
+                        "id": "9f1bff4fcd2084db"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 900,
+                "y": 540,
+                "wires": [
+                    {
+                        "id": "0fcb4e4e29c8e757",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [
+            {
+                "name": "CITY",
+                "type": "str",
+                "value": "city_name"
+            }
+        ],
+        "meta": {},
+        "color": "#DDAA99"
+    },
+    {
+        "id": "9f1bff4fcd2084db",
+        "type": "function",
+        "z": "9820978c22086c87",
+        "name": "get basic data for city",
+        "func": "if (msg.city_name){\n    msg.url = `https://nominatim.openstreetmap.org/search?format=json&q=${msg.city_name}&addressdetails=1`;\n} else {\n    let city_name = env.get(\"CITY\").toLowerCase();\n    msg.city_name = city_name;\n    msg.url = `https://nominatim.openstreetmap.org/search?format=json&q=${city_name}&addressdetails=1`;\n    // console.log(msg.url);\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 220,
+        "y": 80,
+        "wires": [
+            [
+                "5dca3979a04ca36b"
+            ]
+        ]
+    },
+    {
+        "id": "b8bb4745b7754be6",
+        "type": "http request",
+        "z": "9820978c22086c87",
+        "name": "",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 450,
+        "y": 260,
+        "wires": [
+            [
+                "a92354b730776eb0",
+                "df23645badb077e4"
+            ]
+        ]
+    },
+    {
+        "id": "f3a576dbfa60c67a",
+        "type": "debug",
+        "z": "9820978c22086c87",
+        "name": "debug 87",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 880,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "a92354b730776eb0",
+        "type": "function",
+        "z": "9820978c22086c87",
+        "name": "organize ranking",
+        "func": "var options = {};\n\ntry {\n    // console.log(msg.city);\n    var payload = msg.payload;\n    // msg.payload = JSON.parse(msg.payload);\n    if (payload.status === 404) {\n        return [null, msg];\n    }\n    // console.log(payload);\n    var url = payload._links.self.href;\n\n    var start = url.indexOf(\"slug:\") + 5; // Get the index of \"slug:\" and add 5 to skip over it\n    var end = url.indexOf(\"/\", start); // Get the index of the next \"/\" after \"slug:\"\n    var city_name = url.substring(start, end);\n\n    // console.log(citySlug);\n\n    //options.city_summary = payload.summary.replace(/(<([^>]+)>)/gi, \"\").trim();\n    var city_summary = payload.summary  // Remove HTML tags using regex\n        .replace(/<\\/?[^>]+(>|$)/g, \"\")\n        // Replace newline characters with empty string\n        .replace(/\\n/g, \"\")\n        .replace(/['\"]/g, \"\")\n        // Trim any remaining whitespace from beginning and end\n        .trim();\n\n    var city_rank = {};\n    for (var i = 0; i < payload.categories.length; i++) {\n        var categ = payload.categories[i];\n        var key = categ.name.replace(/[\\s&]+/g, '_').replace(/_{2,}/g, '_');\n        city_rank[key.toLowerCase()] = categ.score_out_of_10;\n        // console.log(key.toLowerCase()+\", \"+city_rank[key.toLowerCase()])\n    }\n\n    let lat = msg.city_lat;\n    let lng = msg.city_lng;\n    //options.geonameId = city_saved.geonameId;\n    //options.country_code = city_saved.country_code;\n    //options.continent_code = city_saved.continent_code;\n    msg.payload = { \"city\": city_name, \"lat\": lat, \"lng\": lng, \"rank\":city_rank};\n    return [msg, null];\n} catch (error) {\n    // does nothing\n    return [null, msg];\n}",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 670,
+        "y": 260,
+        "wires": [
+            [
+                "f3a576dbfa60c67a",
+                "55ba38960f7c3167"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "df23645badb077e4",
+        "type": "debug",
+        "z": "9820978c22086c87",
+        "name": "debug 88",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 640,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "414654a93613b25f",
+        "type": "function",
+        "z": "9820978c22086c87",
+        "name": "get rankings",
+        "func": "msg.city_lat = parseFloat(msg.payload[0].lat);\nmsg.city_lng = parseFloat(msg.payload[0].lon);\nmsg.country = msg.payload[0].address.country_code.toUpperCase();;\nmsg.url = \"https://api.teleport.org/api/urban_areas/slug:\" + msg.city_name.toLowerCase() + \"/scores/\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 250,
+        "y": 260,
+        "wires": [
+            [
+                "b8bb4745b7754be6"
+            ]
+        ]
+    },
+    {
+        "id": "5dca3979a04ca36b",
+        "type": "http request",
+        "z": "9820978c22086c87",
+        "name": "",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 250,
+        "y": 160,
+        "wires": [
+            [
+                "414654a93613b25f",
+                "d8a03eb8da0de489"
+            ]
+        ]
+    },
+    {
+        "id": "d8a03eb8da0de489",
+        "type": "debug",
+        "z": "9820978c22086c87",
+        "name": "debug 89",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 460,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "4d088ac286862301",
+        "type": "function",
+        "z": "9820978c22086c87",
+        "name": "gets weather forecast",
+        "func": "var options = [];\n// console.log(msg.city_name);\ntry {\n    var payload = msg.payload;\n    //console.log('payload.daily.city:', payload.city);\n    for (var i = 0; i < payload.daily.time.length; i++) {\n        var obj = {};\n        obj.time = payload.daily.time[i];\n        obj.weathercode = payload.daily.weathercode[i];\n        obj.temperature = parseFloat((payload.daily.temperature_2m_max[i] + payload.daily.temperature_2m_min[i]) / 2).toFixed(2);\n        obj.uv_index_max = payload.daily.uv_index_max[i];\n        obj.uv_index_clear_sky_max = payload.daily.uv_index_clear_sky_max[i];\n        obj.rain_sum = payload.daily.rain_sum[i];\n        obj.snowfall_sum = payload.daily.snowfall_sum[i];\n        obj.windspeed_10m_max = payload.daily.windspeed_10m_max[i];\n        obj.winddirection_10m_dominant = payload.daily.winddirection_10m_dominant[i];\n        obj.shortwave_radiation_sum = payload.daily.shortwave_radiation_sum[i];\n        //console.log(obj.city_name);\n        obj.temperature = parseFloat(obj.temperature);\n        options.push(obj);\n    }\n    msg.city.forecast = options;\n    msg.url = `https://api.teleport.org/api/urban_areas/slug:${msg.city.city}/images/`\n    return [msg, null];\n} catch (error) {\n    // does nothing\n    return [null, msg];\n}\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 640,
+        "y": 420,
+        "wires": [
+            [
+                "f5b897cc39dba4ea"
+            ]
+        ]
+    },
+    {
+        "id": "60aa2057b15d162c",
+        "type": "http request",
+        "z": "9820978c22086c87",
+        "name": "",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 390,
+        "y": 420,
+        "wires": [
+            [
+                "4d088ac286862301"
+            ]
+        ]
+    },
+    {
+        "id": "55ba38960f7c3167",
+        "type": "function",
+        "z": "9820978c22086c87",
+        "name": "req weather",
+        "func": "var city = msg.payload;\nmsg.url = `https://api.open-meteo.com/v1/forecast?latitude=${city.lat}&longitude=${city.lng}&daily=weathercode,temperature_2m_max,temperature_2m_min,uv_index_max,uv_index_clear_sky_max,rain_sum,snowfall_sum,windspeed_10m_max,winddirection_10m_dominant,shortwave_radiation_sum&current_weather=true&timezone=auto`\nmsg.city = msg.payload;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 530,
+        "y": 340,
+        "wires": [
+            [
+                "60aa2057b15d162c"
+            ]
+        ]
+    },
+    {
+        "id": "f5b897cc39dba4ea",
+        "type": "http request",
+        "z": "9820978c22086c87",
+        "name": "",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 730,
+        "y": 480,
+        "wires": [
+            [
+                "0fcb4e4e29c8e757"
+            ]
+        ]
+    },
+    {
+        "id": "0fcb4e4e29c8e757",
+        "type": "function",
+        "z": "9820978c22086c87",
+        "name": "sets to payload",
+        "func": "let photos = msg.payload.photos[0].image;\nmsg.city.photos = photos;\nmsg.payload = msg.city;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 760,
+        "y": 540,
+        "wires": [
+            []
+        ]
+    }
+]
