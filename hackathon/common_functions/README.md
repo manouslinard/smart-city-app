@@ -10,6 +10,11 @@ This docker image can also run with openwhisk ([here](https://docs.google.com/do
 
 If you do not have openwhisk already installed, check the slides of this [presentation](https://github.com/gkousiouris/2ndPHYSICSHackathon/blob/main/2nd%20Hackathon.pdf), and follow the instructions.
 
+First of all configure the whisk properly using this commands :
+```shell
+wsk property set --apihost https://10.100.59.208
+wsk property set --auth 23bc46b1-71f6-4ed5-8c54-816aa4f8c502:123zO3xZCLrMN6v2BKK1dXYFpXlPkccOFqm12CdAsMgRU4VrNZ9lyGVCGuMDGIwP
+```
 Once you have pulled the docker image and run it, do the following to create the openwhisk action:
 ```shell
 wsk action create <action_name> --docker kazakos13/common-functions
