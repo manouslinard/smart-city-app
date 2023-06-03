@@ -18,7 +18,7 @@ Secondly configure the whisk properly using this commands :
 wsk property set --apihost https://10.100.59.208
 wsk property set --auth 23bc46b1-71f6-4ed5-8c54-816aa4f8c502:123zO3xZCLrMN6v2BKK1dXYFpXlPkccOFqm12CdAsMgRU4VrNZ9lyGVCGuMDGIwP
 ```
-Once you have pulled the docker image and run it, do the following to create the openwhisk action:
+Once you have pulled the docker image, do the following to create the openwhisk action:
 ```shell
 wsk action create -i <action_name> --docker kazakos13/common-functions
 ```
