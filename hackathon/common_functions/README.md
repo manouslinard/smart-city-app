@@ -17,7 +17,7 @@ wsk property set --auth 23bc46b1-71f6-4ed5-8c54-816aa4f8c502:123zO3xZCLrMN6v2BKK
 ```
 Once you have pulled the docker image and run it, do the following to create the openwhisk action:
 ```shell
-wsk action create <action_name> --docker kazakos13/common-functions
+wsk action create -i <action_name> --docker kazakos13/common-functions
 ```
 
 In the following examples, we set <action_name> to “functionstest”.
