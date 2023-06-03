@@ -72,7 +72,7 @@
         "id": "668a9e3b55094c55",
         "type": "subflow",
         "name": "QuickSort Req Docker",
-        "info": "<div>\n  <p>\n    This subflow communicates with a Docker container running on your PC  and runs the QuickSort Algorithm (user can also get the reverse result - put <code>msg.payload.value.reverse = True</code>). It uses the Docker image available on Docker Hub:\n    <a href=\"https://hub.docker.com/r/kazakos13/common-functions\">kazakos13/common-functions</a>.\n    If the Docker endpoint is not available, it falls back to running the local build of the Quicksort subflow.\n  </p>\n  <h3>Input Structure</h3>\n  <p>\n    The subflow takes as input a list with the following structure, which should be placed in the <code>msg.payload.value.data</code> property:\n  </p>\n  <pre>\n    <code>\n{\n  \"attr_name1\": [\n    {\"value\": x, \"date\": y},\n    {\"value\": z, \"date\": e}\n  ],\n  \"attr_name2\": [\n    {\"value\": q, \"date\": w},\n    ...\n  ]\n}\n    </code>\n  </pre>\n  <p>\n    In the input list, each attribute (<em>attr_name1</em>, <em>attr_name2</em>, etc.) is associated with a list of dictionaries.\n    Each dictionary represents a value entry and contains two keys that should remain as is:\n  </p>\n  <ul>\n    <li><strong>\"value\"</strong>: Specifies the value of the attribute for a specific date.</li>\n    <li><strong>\"date\"</strong>: Specifies the date of the value entry. The date should be in UNIX timestamp format.</li>\n  </ul>\n  <h3>Output Structure</h3>\n  <p>\n    The subflow returns the same structure as the input list, but with the lists of each attribute key sorted either in normal order or in reverse order, based on the chosen option. The output can be found in the <code>msg.payload.value.data</code> property.\n  </p>\n</div>\n",
+        "info": "<div>\n  <p>\n    This subflow communicates with the url provided in the ui (you can change it in FUNCTIONS_URL attribute), the default is a Docker container running on your PC  and runs the QuickSort Algorithm (user can also get the reverse result - put <code>msg.payload.value.reverse = True</code>). It uses the Docker image available on Docker Hub:\n    <a href=\"https://hub.docker.com/r/kazakos13/common-functions\">kazakos13/common-functions</a>.\n    If the Docker endpoint is not available, it falls back to running the local build of the Quicksort subflow.\n  </p>\n  <h3>Input Structure</h3>\n  <p>\n    The subflow takes as input a list with the following structure, which should be placed in the <code>msg.payload.value.data</code> property:\n  </p>\n  <pre>\n    <code>\n{\n  \"attr_name1\": [\n    {\"value\": x, \"date\": y},\n    {\"value\": z, \"date\": e}\n  ],\n  \"attr_name2\": [\n    {\"value\": q, \"date\": w},\n    ...\n  ]\n}\n    </code>\n  </pre>\n  <p>\n    In the input list, each attribute (<em>attr_name1</em>, <em>attr_name2</em>, etc.) is associated with a list of dictionaries.\n    Each dictionary represents a value entry and contains two keys that should remain as is:\n  </p>\n  <ul>\n    <li><strong>\"value\"</strong>: Specifies the value of the attribute for a specific date.</li>\n    <li><strong>\"date\"</strong>: Specifies the date of the value entry. The date should be in UNIX timestamp format.</li>\n  </ul>\n  <h3>Output Structure</h3>\n  <p>\n    The subflow returns the same structure as the input list, but with the lists of each attribute key sorted either in normal order or in reverse order, based on the chosen option. The output can be found in the <code>msg.payload.value.data</code> property.\n  </p>\n</div>\n",
         "category": "",
         "in": [
             {
@@ -101,7 +101,13 @@
                 ]
             }
         ],
-        "env": [],
+        "env": [
+            {
+                "name": "FUNCTIONS_URL",
+                "type": "str",
+                "value": "http://127.0.0.1:8080/run"
+            }
+        ],
         "meta": {},
         "color": "#E2D96E"
     },
@@ -113,18 +119,18 @@
         "rules": [
             {
                 "t": "set",
+                "p": "payload.value.function",
+                "pt": "msg",
+                "to": "quicksort",
+                "tot": "str"
+            },
+            {
+                "t": "set",
                 "p": "copy_input",
                 "pt": "msg",
                 "to": "payload",
                 "tot": "msg",
                 "dc": true
-            },
-            {
-                "t": "set",
-                "p": "payload.value.function",
-                "pt": "msg",
-                "to": "quicksort",
-                "tot": "str"
             }
         ],
         "action": "",
@@ -148,7 +154,7 @@
         "method": "POST",
         "ret": "obj",
         "paytoqs": "ignore",
-        "url": "http://127.0.0.1:8080/run",
+        "url": "${FUNCTIONS_URL}",
         "tls": "",
         "persist": false,
         "proxy": "",
@@ -194,7 +200,7 @@
         "tosidebar": true,
         "console": false,
         "tostatus": false,
-        "complete": "\"Could not find docker quicksort algorithm. Executing local quicksort subflow.\"",
+        "complete": "\"Could not find url quicksort algorithm. Executing local quicksort subflow.\"",
         "targetType": "jsonata",
         "statusVal": "",
         "statusType": "auto",

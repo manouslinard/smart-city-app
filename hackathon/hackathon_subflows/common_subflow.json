@@ -132,105 +132,70 @@
         ]
     },
     {
-        "id": "233e712e9b32d31e",
-        "type": "tab",
-        "label": "CommonFunctions",
-        "disabled": false,
-        "info": "",
-        "env": []
+        "id": "bd72a052d58b666d",
+        "type": "subflow",
+        "name": "CommonFunctions Subflow",
+        "info": "<p>This subflow is available in the following Docker image: <a href=\"https://hub.docker.com/r/kazakos13/common-functions\">https://hub.docker.com/r/kazakos13/common-functions</a></p>\n<p>To access it, you should use a POST HTTP request node and specify the endpoint you have declared.</p>\n<p>You can define the endpoint that the HTTP request will listen to by setting it in the UI of this subflow (the default is set to \"/run\").</p>\n<p>To use this subflow, you need to send a message with the attribute <code>msg.payload.value.function</code>. You can choose from three available functions implemented in this subflow:</p>\n<ul>\n  <li><code>wavg</code> - Weighted Average</li>\n  <li><code>quicksort</code> - QuickSort</li>\n  <li><code>kmeans</code> - K-means</li>\n</ul>\n<p>For the <code>wavg</code> and <code>quicksort</code> functions, you must include a <code>msg.payload.value.data</code> attribute in your message. You can also set a boolean <code>msg.payload.value.reverse</code> get the reversed results (or not by setting it to false). Here is an example JSON structure (declared in <code>msg.payload.value.data</code>):</p>\n<pre>\n{\n  \"temperature\": [\n    {\"value\": 20, \"date\": 1664515200000},\n    {\"value\": 23, \"date\": 1664774400000},\n    {\"value\": 18, \"date\": 1664428800000},\n    {\"value\": 25, \"date\": 1664601600000},\n    {\"value\": 22, \"date\": 1664688000000}\n  ],\n  \"humidity\": [\n    {\"value\": 20, \"date\": 1664515200000},\n    {\"value\": 23, \"date\": 1664774400000},\n    {\"value\": 18, \"date\": 1664428800000},\n    {\"value\": 25, \"date\": 1664601600000},\n    {\"value\": 22, \"date\": 1664688000000}\n  ]\n}\n</pre>\n<p>For sending data to the <code>kmeans</code> function, you should also declare <code>msg.payload.value.mode</code> as \"multiple\" or \"single\" depending on your requirements. Here is an example test input (declared in <code>msg.payload.value.data</code>):</p>\n<pre>\n[\n  {\"name\": \"cpu\", \"value\": [0.015876524497427744, 0.1902030897354209, 0.005733681579652651, 0.030480619519163435, 0.010371581070262016, 0.012062255039754171, 0.015249307746178593, 7.264773527105429e-7, 0.0050459685298976376, 0.004886347069983335]},\n  {\"name\": \"memory\", \"value\": [27979776, 38883328, 23392256, 22237184, 26570752, 24121344, 22372352, 22405120, 23105536, 22122496]}\n]\n</pre>\n<p>The output of all functions can be found in <code>msg.payload</code> and will contain the result of each function. You can find more test inputs and examples in the provided Docker image.</p>\nFor more info, see the documentation in the docker image.",
+        "category": "",
+        "in": [],
+        "out": [],
+        "env": [
+            {
+                "name": "ENDPOINT",
+                "type": "str",
+                "value": "/run"
+            }
+        ],
+        "meta": {},
+        "color": "#DDAA99"
     },
     {
-        "id": "cc71d00c5f617be2",
+        "id": "b6207518de9cf6a0",
         "type": "http in",
-        "z": "233e712e9b32d31e",
-        "name": "",
-        "url": "/run",
+        "z": "bd72a052d58b666d",
+        "name": "endpoint",
+        "url": "${ENDPOINT}",
         "method": "post",
         "upload": false,
         "swaggerDoc": "",
-        "x": 240,
-        "y": 400,
+        "x": 180,
+        "y": 200,
         "wires": [
             [
-                "f15fec75fd0fb4a4"
+                "1cfd6771ce7e339e"
             ]
         ]
     },
     {
-        "id": "9f3333c4dbc3ca7d",
+        "id": "d557216d393485c9",
         "type": "http response",
-        "z": "233e712e9b32d31e",
+        "z": "bd72a052d58b666d",
         "name": "",
         "statusCode": "",
         "headers": {},
-        "x": 950,
-        "y": 400,
+        "x": 910,
+        "y": 200,
         "wires": []
     },
     {
-        "id": "cfe0cb497cbd0a05",
-        "type": "debug",
-        "z": "233e712e9b32d31e",
-        "name": "debug 59",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "true",
-        "targetType": "full",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 960,
-        "y": 300,
-        "wires": []
-    },
-    {
-        "id": "ad573c84daa04fd5",
-        "type": "http in",
-        "z": "233e712e9b32d31e",
-        "name": "",
-        "url": "/init",
-        "method": "post",
-        "upload": false,
-        "swaggerDoc": "",
-        "x": 360,
-        "y": 620,
-        "wires": [
-            [
-                "3e6b2bc4d4e2c68d"
-            ]
-        ]
-    },
-    {
-        "id": "3e6b2bc4d4e2c68d",
-        "type": "http response",
-        "z": "233e712e9b32d31e",
-        "name": "",
-        "statusCode": "",
-        "headers": {},
-        "x": 550,
-        "y": 620,
-        "wires": []
-    },
-    {
-        "id": "ed7a113efee1b9d7",
+        "id": "164a5bc24ba63e73",
         "type": "catch",
-        "z": "233e712e9b32d31e",
+        "z": "bd72a052d58b666d",
         "name": "",
         "scope": null,
         "uncaught": false,
-        "x": 360,
-        "y": 540,
+        "x": 320,
+        "y": 340,
         "wires": [
             [
-                "5a91f182a594ab72"
+                "deaf433b2a897d51"
             ]
         ]
     },
     {
-        "id": "5a91f182a594ab72",
+        "id": "deaf433b2a897d51",
         "type": "function",
-        "z": "233e712e9b32d31e",
+        "z": "bd72a052d58b666d",
         "name": "ADD ERROR INFO",
         "func": "var payload=msg.payload;\nmsg.payload={};\n\nmsg.payload.error=msg.error;\nmsg.payload.error.payload=payload;\nreturn msg;",
         "outputs": 1,
@@ -238,18 +203,18 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 710,
-        "y": 560,
+        "x": 670,
+        "y": 360,
         "wires": [
             [
-                "9f3333c4dbc3ca7d"
+                "d557216d393485c9"
             ]
         ]
     },
     {
-        "id": "f15fec75fd0fb4a4",
+        "id": "1cfd6771ce7e339e",
         "type": "switch",
-        "z": "233e712e9b32d31e",
+        "z": "bd72a052d58b666d",
         "name": "",
         "property": "payload.value.function",
         "propertyType": "msg",
@@ -273,24 +238,24 @@
         "checkall": "true",
         "repair": false,
         "outputs": 3,
-        "x": 390,
-        "y": 400,
+        "x": 350,
+        "y": 200,
         "wires": [
             [
-                "69be298739803379"
+                "1a3e479697d40e12"
             ],
             [
-                "5d7e7a60556495bc"
+                "1f9ef041ff50bf87"
             ],
             [
-                "d3d97a2e7904975a"
+                "e87ed2db43046470"
             ]
         ]
     },
     {
-        "id": "69be298739803379",
+        "id": "1a3e479697d40e12",
         "type": "function",
-        "z": "233e712e9b32d31e",
+        "z": "bd72a052d58b666d",
         "name": "Clustering function",
         "func": "const clusterMaker = global.get('clusters');\nvar centroids = [];\nclusterMaker.k(3);\nclusterMaker.iterations(750)\n\nif (msg.payload.value.mode === \"multiple\"){\n    \n    //for each resource\n    msg.payload.value.data.forEach( element => {\n        \n        //creating clusterMakerInput\n        let clusterMakerInput = [];\n        element.value.forEach( value => {\n            clusterMakerInput.push([value])\n        });\n        \n        clusterMaker.data(clusterMakerInput);\n        \n        let temp = clusterMaker.clusters();\n        \n        //creating the output \n        let clusterMakerOutput = [];\n        temp.forEach( element => {\n            element.centroid.forEach(element2 => {\n                clusterMakerOutput.push(element2)\n            });\n        });\n        clusterMakerOutput.sort()\n        centroids.push({ [element.name]: clusterMakerOutput});\n    });\n} else if (msg.payload.value.mode === \"single\") {\n\n    //data.length = m\n    //data.element1.lenght = n\n    //finding the max length of all data arrays\n    let temp = [];\n    let n = [];\n\n    for (let m = 0; m < msg.payload.value.data.length;m++){\n        n.push(msg.payload.value.data[m].value.length)\n    }\n\n    const nMax = Math.max(...n);\n\n    //creating the array for clusterMakerInput\n    let clusterMakerInput = []; \n    for (let n = 0; n < nMax; n++) {\n        let arrTemp = [];\n        msg.payload.value.data.forEach( m => {\n\n            arrTemp.push(m.value[n]);\n\n        });\n        clusterMakerInput.push(arrTemp);\n    }\n    console.log(clusterMakerInput);\n    clusterMaker.data(clusterMakerInput);\n    centroids = clusterMaker.clusters();\n\n}\nmsg.payload = {centroids};\nreturn msg;",
         "outputs": 1,
@@ -298,40 +263,37 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 570,
+        "x": 610,
+        "y": 100,
+        "wires": [
+            [
+                "d557216d393485c9"
+            ]
+        ]
+    },
+    {
+        "id": "1f9ef041ff50bf87",
+        "type": "subflow:6fd479bb119a914b",
+        "z": "bd72a052d58b666d",
+        "name": "",
+        "x": 580,
+        "y": 200,
+        "wires": [
+            [
+                "d557216d393485c9"
+            ]
+        ]
+    },
+    {
+        "id": "e87ed2db43046470",
+        "type": "subflow:da362e744a99a41b",
+        "z": "bd72a052d58b666d",
+        "name": "",
+        "x": 560,
         "y": 280,
         "wires": [
             [
-                "9f3333c4dbc3ca7d",
-                "cfe0cb497cbd0a05"
-            ]
-        ]
-    },
-    {
-        "id": "5d7e7a60556495bc",
-        "type": "subflow:6fd479bb119a914b",
-        "z": "233e712e9b32d31e",
-        "name": "",
-        "x": 620,
-        "y": 400,
-        "wires": [
-            [
-                "9f3333c4dbc3ca7d",
-                "cfe0cb497cbd0a05"
-            ]
-        ]
-    },
-    {
-        "id": "d3d97a2e7904975a",
-        "type": "subflow:da362e744a99a41b",
-        "z": "233e712e9b32d31e",
-        "name": "",
-        "x": 600,
-        "y": 480,
-        "wires": [
-            [
-                "9f3333c4dbc3ca7d",
-                "cfe0cb497cbd0a05"
+                "d557216d393485c9"
             ]
         ]
     }

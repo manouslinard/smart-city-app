@@ -126,8 +126,8 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 640,
-        "y": 80,
+        "x": 860,
+        "y": 260,
         "wires": []
     },
     {
