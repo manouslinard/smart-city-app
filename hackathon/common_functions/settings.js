@@ -33,6 +33,7 @@ module.exports = {
 
     /** The file containing the flows. If not set, defaults to flows_<hostname>.json **/
     flowFile: 'flows.json',
+    credentialSecret:'23bc46b1-71f6-4ed5-8c54-816aa4f8c502:123zO3xZCLrMN6v2BKK1dXYFpXlPkccOFqm12CdAsMgRU4VrNZ9lyGVCGuMDGIwP',
 
     /** By default, credentials are encrypted in storage using a generated key. To
      * specify your own secret, set the following property.

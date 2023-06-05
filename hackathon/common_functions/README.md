@@ -10,9 +10,17 @@ This docker image can also run with openwhisk ([here](https://docs.google.com/do
 
 If you do not have openwhisk already installed, check the slides of this [presentation](https://github.com/gkousiouris/2ndPHYSICSHackathon/blob/main/2nd%20Hackathon.pdf), and follow the instructions.
 
-Once you have pulled the docker image and run it, do the following to create the openwhisk action:
+First of all you <strong>have to be connected into the Harokopio University Server with VPN.</strong>
+
+
+Secondly configure the whisk properly using this commands :
 ```shell
-wsk action create <action_name> --docker kazakos13/common-functions
+wsk property set --apihost https://10.100.59.208
+wsk property set --auth 23bc46b1-71f6-4ed5-8c54-816aa4f8c502:123zO3xZCLrMN6v2BKK1dXYFpXlPkccOFqm12CdAsMgRU4VrNZ9lyGVCGuMDGIwP
+```
+Once you have pulled the docker image, do the following to create the openwhisk action:
+```shell
+wsk action create -i <action_name> --docker kazakos13/common-functions
 ```
 
 In the following examples, we set <action_name> to “functionstest”.
@@ -174,7 +182,7 @@ docker pull kazakos13/common-functions
 docker run -p 8080:8080 -it kazakos13/common-functions
 "
 ```
-If you want to push a new container first you have to go inside the smart-city-app/subflows/common_functions folder (the parent folder of this README), then open the terminal and finally follow these steps:
+If you want to push a new container first you have to go inside the smart-city-app/hackathon/common_functions folder (the parent folder of this README), then open the terminal and finally follow these steps:
 ```
 docker build -t kazakos13/common-functions .
 docker push kazakos13/common-functions:latest
