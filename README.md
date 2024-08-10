@@ -1,5 +1,5 @@
 # Smart City App
-This is a smart city app that saves many cities (and their rankings, weather and other data). Also in the <strong>hackathon</strong> folder of this repo (view README in hackathon folder for more info), there are solutions for the <strong>hackathon 2023 challenges</strong>.You can view a detailed description of the entire project and the challenges [here](https://docs.google.com/document/d/1qboEuLH-l-9isQfCn9RzCzkCyO4TYGtqEFc8UejJHHo/edit?usp=sharing). You can checkout the app for yourself by installing [Node-RED](https://nodered.org/). Before you run the app, you should follow the prerequisites and configuration steps specified in the corresponding sections of this README.
+This is a smart city app that saves many cities (and their rankings, weather and other data). Also in the <strong>hackathon</strong> folder of this repo (view README in hackathon folder for more info), there are solutions for the <strong>hackathon 2023 challenges</strong>.You can view a detailed description of the entire project and the challenges [here](/files/Assignment_Internet-Services.pdf). You can checkout the app for yourself by installing [Node-RED](https://nodered.org/). Before you run the app, you should follow the prerequisites and configuration steps specified in the corresponding sections of this README.
 
 ---
 ## Prerequisites - Docker Installation:
@@ -67,7 +67,7 @@ The <strong>only</strong> diagram needed for import in order for the project to 
 
 ---
 ## Other links:
-* [Project Documentation](https://docs.google.com/document/d/1qboEuLH-l-9isQfCn9RzCzkCyO4TYGtqEFc8UejJHHo/edit?usp=sharing)
+* [Project Documentation](/files/Assignment_Internet-Services.pdf)
 * [Project Presentation](https://docs.google.com/presentation/d/1f97FI4AqBjPz9CGxmDQP-JCVLRFj-Qf1/edit?usp=sharing&ouid=107246824104571234611&rtpof=true&sd=true)
 * [App Video Showcase](https://youtu.be/Vl41Rlwa7sM)
 * [Weather Code Website](https://www.nodc.noaa.gov/archive/arc0021/0002199/1.1/data/0-data/HTML/WMO-CODE/WMO4677.HTM)
